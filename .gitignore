@@ -1,7 +1,7 @@
 
 
 # ignore properties file
-**/application.properties
+# **/application.properties
 
 # STS (Spring Tool Suite)
 .springBeans
