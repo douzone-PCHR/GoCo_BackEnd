@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BusinessTripDTO {
-	
 	private Long business_tripId;
 	
 	private Date businessTripStartDate; 
