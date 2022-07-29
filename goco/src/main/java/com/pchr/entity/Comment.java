@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +36,13 @@ public class Comment {
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
 	
-
+	@ManyToOne
+	@JoinColumn(name = "emp_num",nullable = false)
+	private Employee emp;	
 	
+	@ManyToOne
+	@JoinColumn(name = "board_id",nullable = false)
+	private Board board;
 	
 	
 }

@@ -10,6 +10,9 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +31,7 @@ public class Work {
 	@Column(name = "work_id")
 	private Long workId;
 	
-	@Column(name = "work_title")
+	@Column(name = "work_title",nullable = false)
 	private String workTitle;
 	
 	@Column(name = "work_content")
@@ -43,7 +46,9 @@ public class Work {
 	@Column(name = "work_type")
 	private boolean workType;
 	
-	
+	@ManyToOne
+	@JoinColumn(name = "emp_num",nullable = false)
+	private Employee emp;
 
 	
 	
