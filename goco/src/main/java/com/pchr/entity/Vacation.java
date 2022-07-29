@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,12 +43,15 @@ public class Vacation {
 	@Column(name = "vacation_content")
 	private String vacationContent;
 	
-	@Column(name = "vacation_request_date")
+	@Column(name = "vacation_request_date",nullable = false)
 	private LocalDateTime vacation_request_date;
 	
 	@Column(name = "vacation_approve_date")
 	private LocalDateTime vacation_approve_date;
 	
+	@ManyToOne
+	@JoinColumn(name = "emp_num",nullable = false)
+	private Employee emp;
 	
 	
 	

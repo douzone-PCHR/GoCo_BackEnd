@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ public class JobTitle {
 	@Column(name = "job_title_id")
 	private Long jobTitleId;
 	
-	@Column(name = "job_title_name")
+	@Column(name = "job_title_name",nullable = false)
 	private String jobTitleName;
+
 }

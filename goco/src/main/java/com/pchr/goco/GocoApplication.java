@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.pchr.api" , "com.pchr.service" , "com.pchr.service.impl" , "com.pchr.dto"})
+@ComponentScan(basePackages = {"com.pchr.api" , "com.pchr.service" , "com.pchr.service.impl" })
 @EntityScan(basePackages = {"com.pchr.entity"})
 @EnableJpaRepositories(basePackages = {"com.pchr.repository"})
 public class GocoApplication {
@@ -17,3 +17,5 @@ public class GocoApplication {
 	}
 
 }
+
+

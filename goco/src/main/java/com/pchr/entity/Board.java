@@ -1,13 +1,14 @@
 package com.pchr.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +28,7 @@ public class Board {
 	@Column(name = "board_id")
 	private Long boardId;
 	
-	@Column(name = "board_title")
+	@Column(name = "board_title",nullable = false)
 	private String boardTitle;
 	
 	@Column(name = "board_content")
@@ -42,5 +43,8 @@ public class Board {
 	@Column(name = "count")
 	private int count;
 	
-
+	@ManyToOne
+	@JoinColumn(name = "emp_num" ,nullable = false)
+	private Employee emp;
+	
 }
