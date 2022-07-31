@@ -51,7 +51,7 @@ public class Employee {
 	private String phoneNumber;
 	
 	@Column(name = "delete_yn",nullable = false)
-	private boolean deleteYN;
+	private boolean deleteYn;
 	
 	@Column(name = "update_datetime",nullable = false)
 	private Date updateDatetime;

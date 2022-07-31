@@ -27,16 +27,16 @@ public class VacationDTO {
 	
 	private Date vacationEndDate; 
 	
-	private boolean approveYN;
+	private boolean approveYn;
 	
 	private String vacationType;
 	
 	private String vacationContent;
 	
-	private LocalDateTime vacation_request_date;
+	private LocalDateTime vacationRequestDate;
 	
-	private LocalDateTime vacation_approve_date;
+	private LocalDateTime vacationApproveDate;
 	
-	
+	private EmployeeDTO employee;
 	
 }

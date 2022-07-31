@@ -19,13 +19,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BusinessTripDTO {
-	private Long business_tripId;
+	private Long businessTripId;
 	
 	private Date businessTripStartDate; 
 	
 	private Date businessTripEndDate; 
 	
-	private boolean approveYN;
+	private boolean approveYn;
 	
 	private String businessTripContent;
 	
@@ -33,5 +33,5 @@ public class BusinessTripDTO {
 	
 	private LocalDateTime businessTripApproveDate;
 	
-	
+	private EmployeeDTO employee;
 }

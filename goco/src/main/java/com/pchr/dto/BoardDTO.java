@@ -32,5 +32,5 @@ public class BoardDTO {
 	
 	private int count;
 	
-	
+	private EmployeeDTO employee;
 }

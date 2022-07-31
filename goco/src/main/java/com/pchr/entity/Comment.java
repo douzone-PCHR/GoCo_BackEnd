@@ -25,10 +25,10 @@ public class Comment {
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "comment_id")
-	private Long comment_id;
+	private Long commentId;
 	
 	@Column(name = "comment_content")
-	private String comment_content;
+	private String commentContent;
 	
 	@Column(name = "registered_date")
 	private LocalDateTime registeredDate;

@@ -35,7 +35,7 @@ public class Vacation {
 	private Date vacationEndDate; 
 	
 	@Column(name = "approve_yn")
-	private boolean approveYN;
+	private boolean approveYn;
 	
 	@Column(name = "vacation_type")
 	private String vacationType;
@@ -44,10 +44,10 @@ public class Vacation {
 	private String vacationContent;
 	
 	@Column(name = "vacation_request_date",nullable = false)
-	private LocalDateTime vacation_request_date;
+	private LocalDateTime vacationRequestDate;
 	
 	@Column(name = "vacation_approve_date")
-	private LocalDateTime vacation_approve_date;
+	private LocalDateTime vacationApproveDate;
 	
 	@ManyToOne
 	@JoinColumn(name = "emp_num",nullable = false)

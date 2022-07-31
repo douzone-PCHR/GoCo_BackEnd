@@ -1,12 +1,5 @@
 package com.pchr.dto;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +17,7 @@ public class FileDTO {
 	
 	private String fileName;
 	
+	private BusinessTripDTO businessTrip;
+	
+	private VacationDTO vacation;
 }
