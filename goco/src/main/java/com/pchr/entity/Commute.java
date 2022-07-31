@@ -29,10 +29,10 @@ public class Commute {
 	private Long commuteId;
 	
 	@Column(name = "clock_in")
-	private LocalDateTime clock_in;
+	private LocalDateTime clockIn;
 	
 	@Column(name = "clock_out")
-	private LocalDateTime clock_out;
+	private LocalDateTime clockOut;
 	
 	@Column(name = "commute_status")
 	private String commuteStatus;

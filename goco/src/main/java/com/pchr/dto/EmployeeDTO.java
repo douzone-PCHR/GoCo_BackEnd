@@ -1,17 +1,12 @@
 package com.pchr.dto;
 
 
-import java.time.LocalDateTime;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @Builder
@@ -31,16 +26,27 @@ public class EmployeeDTO {
 	
 	private String phoneNumber;
 	
-	private boolean delete_yn;
+	private boolean deleteYn;
 	
-	private Date update_datetime;
+	private Date updateDatetime;
 	
 	private Date hiredate;
 	
 	private int authority;
 	
-	private int vacation_count;
+	private int vacationCount;
 	
+	//팀장에 대한 필드 
+	private EmployeeDTO manager;
+	
+	//직위에 대한 필드
+	private JobTitleDTO jobTitle;
+	
+	//팀에 속한 위치에 대한 필드
+	private TeamPositionDTO teamPosition;
+	
+	// 어느 팀에 소속된지에 대한 필드
+	private UnitDTO unit;
 }
 
 

@@ -20,28 +20,19 @@ import lombok.ToString;
 @ToString
 public class WorkDTO {
 	
-	private Long empNum;
+	private int workId;
 	
-	private String empId;
+	private String workTitle;
 	
-	private String password;
+	private String workContent;
 	
-	private String email;
+	private LocalDateTime workStartDate;
 	
-	private String name;
+	private LocalDateTime workEndDate;
 	
-	private String phoneNumber;
+	private boolean workType;
 	
-	private boolean delete_yn;
-	
-	private Date update_datetime;
-	
-	private Date hiredate;
-	
-	private int authority;
-	
-	private int vacation_count;
-	
+	private EmployeeDTO employee;
 }
 
 

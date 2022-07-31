@@ -20,11 +20,11 @@ public class CommuteDTO {
 	
 	private Long commuteId;
 	
-	private LocalDateTime clock_in;
+	private LocalDateTime clockIn;
 	
-	private LocalDateTime clock_out;
+	private LocalDateTime clockOut;
 	
 	private String commuteStatus;
 	
-	
+	private EmployeeDTO employee;
 }

@@ -26,7 +26,7 @@ public class BusinessTrip {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "business_trip_id")
-	private Long business_tripId;
+	private Long businessTripId;
 	
 	@Column(name = "business_trip_start_date",nullable = false)
 	private Date businessTripStartDate; 
@@ -35,7 +35,7 @@ public class BusinessTrip {
 	private Date businessTripEndDate; 
 	
 	@Column(name = "approve_yn")
-	private boolean approveYN;
+	private boolean approveYn;
 	
 	@Column(name = "business_trip_content")
 	private String businessTripContent;
