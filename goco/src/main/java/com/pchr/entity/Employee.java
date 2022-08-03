@@ -71,9 +71,9 @@ public class Employee {
 
 	@Column(name = "vacation_count")
 	private int vacationCount;
-// --------------------------------------
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE,
-			CascadeType.MERGE })
+
+
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE, CascadeType.MERGE })
 	@JoinColumn(name = "mgr_id", referencedColumnName = "emp_num")
 	@JsonIgnore
 	private Employee mgrId;
@@ -96,14 +96,31 @@ public class Employee {
 	public void setPassword(String password) { // Entity는 setter 지양 => 변경사항
 		this.password = password;
 	}
+	// ----------------- FK 걸린 테이블에 대한 toDTO ----------------- //
+  // Vacation , Board, Comment 등 Entity -> EmpDto
+	// 매니저 제외 한 사원에 대한 ToDTO
+	public EmployeeDTO toFKDTO(Employee employee) {
+		if (employee.getMgrId() != null) {
 
-	// Vacation , Board, Comment 등 Entity -> EmpDto
-	public EmployeeDTO toFKDto(Employee employee) {
-		EmployeeDTO empDto = EmployeeDTO.builder().empNum(employee.getEmpNum())
-//				.teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))	// 나중에 추가해줘야함
-//				.unit(employee.getUnit().toDTO(employee.getUnit()))	// 나중에 추가해줘야함
-				.vacationCount(employee.getVacationCount())
-				.name(employee.getName()).build();
-		return empDto;
+			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
+        //.teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))	// 나중에 추가해줘야함
+        //.unit(employee.getUnit().toDTO(employee.getUnit()))	// 나중에 추가해줘야함
+					.manager(toManagerDTO(employee.getMgrId())).name(employee.getName())
+					.vacationCount(employee.getVacationCount()).build();
+			return employeeDTO;
+		}
+		return toManagerDTO(employee);
 	}
+
+	// 사원이 매니저일때 매니저에 대한 ToDTO
+	public EmployeeDTO toManagerDTO(Employee manager) {
+		EmployeeDTO managerDTO = EmployeeDTO.builder().empNum(manager.getEmpNum()).empId(manager.getEmpId())
+      //.teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))	// 나중에 추가해줘야함
+      //.unit(employee.getUnit().toDTO(employee.getUnit()))	// 나중에 추가해줘야함
+				.name(manager.getName()).vacationCount(manager.getVacationCount()).build();
+		return managerDTO;
+	}
+
+	// ------------------------------------------------------------ //
+
 }

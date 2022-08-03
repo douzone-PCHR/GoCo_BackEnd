@@ -3,6 +3,7 @@ package com.pchr.dto;
 import java.util.Date;
 
 import com.pchr.entity.Authority;
+
 import com.pchr.entity.Employee;
 
 import lombok.AllArgsConstructor;
@@ -68,5 +69,4 @@ public class EmployeeDTO {
 				
 				.build();
 		return null;
-	}
 }
