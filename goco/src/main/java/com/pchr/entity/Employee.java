@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,36 +34,39 @@ public class Employee {
 	
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "emp_num",nullable = false)
+	@Column(name = "emp_num")
 	private Long empNum;
 	
-	@Column(name = "emp_id",nullable = false)
+	@Column(name = "emp_id")
 	private String empId;
 	
-	@Column(name = "password",nullable = false)
+	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "email",nullable = false)
+	@Column(name = "email")
 	private String email;
 	
-	@Column(name = "name",nullable = false)
+	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "phone_number",nullable = false)
+	@Column(name = "phone_number")
 	private String phoneNumber;
 	
-	@Column(name = "delete_yn",nullable = false)
+	@Column(name = "delete_yn")
 	private boolean deleteYn;
 	
-	@Column(name = "update_datetime",nullable = false)
+	@Column(name = "update_datetime")
 	private Date updateDatetime;
 	
 	@CreatedDate
-	@Column(name = "hiredate",nullable = false)
+	@Column(name = "hiredate")
 	private Date hiredate;
 	
-	@Column(name = "authority",nullable = false)
-	private int authority;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "authority")
+    private Authority authority;
+//	@Column(name = "authority",nullable = false)
+//	private int authority;
 	
 	@Column(name = "vacation_count")
 	private int vacationCount;
@@ -75,15 +80,16 @@ public class Employee {
 	private List<Employee> child;
 	
 	@ManyToOne
-	@JoinColumn(name = "job_title_id",nullable = false)
+	@JoinColumn(name = "job_title_id")
 	private JobTitle jobTitle;
 	
 	@ManyToOne
-	@JoinColumn(name = "team_position_id",nullable = false)
+	@JoinColumn(name = "team_position_id")
 	private TeamPosition teamPosition;
 	
 	@ManyToOne
-	@JoinColumn(name = "unit_id",nullable = false)
+	@JoinColumn(name = "unit_id")
 	private Unit unit; 
 	
+	public void setPassword(String password) { this.password = password; }
 }
