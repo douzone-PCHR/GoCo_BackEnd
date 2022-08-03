@@ -1,7 +1,7 @@
 package com.pchr.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+	import java.util.ArrayList;
 import java.util.List;
 
 import com.pchr.entity.Board;
