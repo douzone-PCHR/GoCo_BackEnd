@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.pchr.dto.CommentDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,28 +23,38 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
-	
-	@Id 
+
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "comment_id")
 	private Long commentId;
-	
+
 	@Column(name = "comment_content")
 	private String commentContent;
-	
+
 	@Column(name = "registered_date")
 	private LocalDateTime registeredDate;
-	
+
 	@Column(name = "modified_date")
 	private LocalDateTime modifiedDate;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "emp_num",nullable = false)
-	private Employee emp;	
-	
+	@JoinColumn(name = "emp_num", nullable = false)
+	private Employee emp;
+
 	@ManyToOne
-	@JoinColumn(name = "board_id",nullable = false)
+	@JoinColumn(name = "board_id", nullable = false)
 	private Board board;
-	
-	
+
+	public CommentDTO toCommentDto(Comment comment) {
+		CommentDTO commentDto = CommentDTO.builder()
+				.commentId(comment.getCommentId())
+				.commentContent(comment.getCommentContent())
+				.registeredDate(comment.getRegisteredDate())
+				.modifiedDate(comment.getModifiedDate())
+//				.boardDto(comment.getBoard().toDTO(comment.getBoard()))
+//				.employeeDto(comment.getEmp().toEmpDto(comment.getEmp()))
+				.build();
+		return commentDto;
+	}
 }

@@ -2,6 +2,8 @@ package com.pchr.dto;
 
 import java.util.Date;
 
+import com.pchr.entity.Authority;
+
 import com.pchr.entity.Employee;
 
 import lombok.AllArgsConstructor;
@@ -33,7 +35,7 @@ public class EmployeeDTO {
 
 	private Date hiredate;
 
-	private int authority;
+	private Authority authority;
 
 	private int vacationCount;
 
@@ -49,9 +51,22 @@ public class EmployeeDTO {
 	// 어느 팀에 소속된지에 대한 필드
 	private UnitDTO unit;
 
-	// -------------- to Entity ------------------- //
-	public Employee toEntity(EmployeeDTO employeeDTO) {
-		Employee employee = Employee.builder().empNum(employeeDTO.getEmpNum()).build();
-		return employee;
+	public Employee toFKEmployee(EmployeeDTO empDto) {
+		Employee fkEmp = Employee.builder().empNum(empDto.getEmpNum()).build();
+		return fkEmp;
 	}
+	public Employee toEmployee(EmployeeDTO empDto) {
+		Employee employee = Employee.builder().authority(empDto.getAuthority())
+				.mgrId(empDto.getManager().toManager(empDto.getManager()))
+				.jobTitle(empDto.getJobTitle().toJobTitle(empDto.getJobTitle()))
+				.build();
+		return null;
+	}
+	
+	public Employee toManager(EmployeeDTO empDto) {
+		
+		Employee employee = Employee.builder().authority(empDto.getAuthority())
+				
+				.build();
+		return null;
 }

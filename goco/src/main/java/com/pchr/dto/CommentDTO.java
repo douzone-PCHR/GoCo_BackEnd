@@ -19,17 +19,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentDTO {
-	
-	private Long comment_id;
-	
-	private String comment_content;
-	
+
+	private Long commentId;
+
+	private String commentContent;
+
 	private LocalDateTime registeredDate;
-	
+
 	private LocalDateTime modifiedDate;
-	
-	//https://www.notion.so/b485aa8c64f644af812c9ef8fe2f9cb1 정리
-	private BoardDTO board;
-	
-	private EmployeeDTO employee;
+
+	private BoardDTO boardDto;
+
+	private EmployeeDTO employeeDto;
 }

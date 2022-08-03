@@ -1,12 +1,6 @@
 package com.pchr.dto;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.pchr.entity.JobTitle;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +17,10 @@ public class JobTitleDTO {
 	
 	private String jobTitleName;
 	
+	public JobTitle toJobTitle(JobTitleDTO jobTitleDto) {
+		JobTitle jobTitle = JobTitle.builder()
+				.jobTitleId(jobTitleDto.getJobTitleId())
+				.build();
+		return jobTitle;
+	}
 }
