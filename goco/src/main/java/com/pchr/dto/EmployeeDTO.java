@@ -55,6 +55,7 @@ public class EmployeeDTO {
 		Employee fkEmp = Employee.builder().empNum(empDto.getEmpNum()).build();
 		return fkEmp;
 	}
+
 	public Employee toEmployee(EmployeeDTO empDto) {
 		Employee employee = Employee.builder().authority(empDto.getAuthority())
 				.mgrId(empDto.getManager().toManager(empDto.getManager()))
@@ -62,11 +63,12 @@ public class EmployeeDTO {
 				.build();
 		return null;
 	}
-	
+
 	public Employee toManager(EmployeeDTO empDto) {
-		
+
 		Employee employee = Employee.builder().authority(empDto.getAuthority())
-				
+
 				.build();
 		return null;
+	}
 }

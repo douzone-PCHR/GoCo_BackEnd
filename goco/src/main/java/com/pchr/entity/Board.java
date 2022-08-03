@@ -85,7 +85,7 @@ public class Board {
 				.boardTitle(board.getBoardTitle())
 				.count(board.getCount())
 				.boardContent(board.getBoardContent())
-				.employee(board.getEmployee().toFKDto(board.getEmployee()))
+				.employee(board.getEmployee().toFKDTO(board.getEmployee()))
 				.registeredDate(board.getRegisteredDate())
 				.comments(commentsDto)
 				.modifiedDate(board.getModifiedDate()).build();
