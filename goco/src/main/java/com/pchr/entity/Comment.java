@@ -10,18 +10,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pchr.dto.CommentDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude
+@ToString
 public class Comment {
 
 	@Id
@@ -52,8 +56,7 @@ public class Comment {
 				.commentContent(comment.getCommentContent())
 				.registeredDate(comment.getRegisteredDate())
 				.modifiedDate(comment.getModifiedDate())
-//				.boardDto(comment.getBoard().toDTO(comment.getBoard()))
-//				.employeeDto(comment.getEmp().toEmpDto(comment.getEmp()))
+				.employeeDto(comment.getEmp().toFKDTO(comment.getEmp()))
 				.build();
 		return commentDto;
 	}

@@ -2,22 +2,20 @@ package com.pchr.dto;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import com.pchr.entity.Board;
+import com.pchr.entity.Comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class CommentDTO {
 
 	private Long commentId;
@@ -31,4 +29,13 @@ public class CommentDTO {
 	private BoardDTO boardDto;
 
 	private EmployeeDTO employeeDto;
+	
+	public Comment toComment(CommentDTO commentDto) {
+		Comment comment = Comment.builder()
+				.commentContent(commentDto.getCommentContent())
+				.emp(commentDto.getEmployeeDto().toFKEmployee(commentDto.getEmployeeDto()))
+				.board(commentDto.getBoardDto().toFKBoard(commentDto.getBoardDto()))
+				.build();
+		return comment;
+	}
 }
