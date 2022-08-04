@@ -21,6 +21,7 @@ public class JobTitleDTO {
 		JobTitle jobTitle = JobTitle.builder()
 							.jobTitleId(jobTitleDTO.getJobTitleId())
 							.build();
+
 		return jobTitle;
 	}
 }

@@ -6,14 +6,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.VacationDTO;
-import com.pchr.dto.VacationEnum;
 import com.pchr.entity.Vacation;
 import com.pchr.repository.VacationRepository;
 import com.pchr.service.VacationService;
 
 @Service
 public class VacationServiceImpl implements VacationService {
+
 	@Autowired
 	private VacationRepository vacationRepository;
 
@@ -70,7 +71,7 @@ public class VacationServiceImpl implements VacationService {
 	// 휴가 수정
 	@Override
 	public void updateVacation(VacationDTO vacationDTO) {
-		if (vacationDTO.getApproveYn() == VacationEnum.APPROVE_WAITTING) {
+		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 			vacationRepository.save(vacationDTO.toEntity(vacationDTO));
 		}
 
@@ -101,15 +102,15 @@ public class VacationServiceImpl implements VacationService {
 	// 휴가 결재 (팀장) front에서 처리
 	@Override
 	public void approveVacation(VacationDTO vacationDTO) {
-		if (vacationDTO.getApproveYn() == VacationEnum.APPROVE_WAITTING) {
+		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 			vacationRepository.save(vacationDTO.toEntity(vacationDTO));
 		}
 	}
 
 	// 휴가 삭제
 	@Override
-	public void deleteVacation(Long vacationId, VacationEnum approveYn) {
-		if (approveYn == VacationEnum.APPROVE_WAITTING) {
+	public void deleteVacation(Long vacationId, ApproveEnum approveYn) {
+		if (approveYn == ApproveEnum.APPROVE_WAITTING) {
 
 			vacationRepository.deleteById(vacationId);
 		}

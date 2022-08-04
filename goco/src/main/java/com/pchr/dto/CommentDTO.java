@@ -2,34 +2,40 @@ package com.pchr.dto;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import com.pchr.entity.Board;
+import com.pchr.entity.Comment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class CommentDTO {
-	
-	private Long comment_id;
-	
-	private String comment_content;
-	
+
+	private Long commentId;
+
+	private String commentContent;
+
 	private LocalDateTime registeredDate;
-	
+
 	private LocalDateTime modifiedDate;
+
+	private BoardDTO boardDto;
+
+	private EmployeeDTO employeeDto;
 	
-	//https://www.notion.so/b485aa8c64f644af812c9ef8fe2f9cb1 정리
-	private BoardDTO board;
-	
-	private EmployeeDTO employee;
+	public Comment toComment(CommentDTO commentDto) {
+		Comment comment = Comment.builder()
+				.commentContent(commentDto.getCommentContent())
+				.emp(commentDto.getEmployeeDto().toFKEmployee(commentDto.getEmployeeDto()))
+				.board(commentDto.getBoardDto().toFKBoard(commentDto.getBoardDto()))
+				.build();
+		return comment;
+	}
 }

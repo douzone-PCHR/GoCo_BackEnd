@@ -22,7 +22,7 @@ public class VacationDTO {
 
 	private Date vacationEndDate;
 
-	private VacationEnum approveYn;
+	private ApproveEnum approveYn;
 
 	private String vacationType;
 
@@ -38,11 +38,11 @@ public class VacationDTO {
 	public Vacation toEntity(VacationDTO vacationDTO) {
 		Vacation vacationEntity = Vacation.builder().vacationId(vacationDTO.getVacationId())
 				.vacationStartDate(vacationDTO.getVacationStartDate()).vacationEndDate(vacationDTO.getVacationEndDate())
-				.approveYn(VacationEnum.APPROVE_WAITTING).vacationType(vacationDTO.getVacationType())
+				.approveYn(vacationDTO.getApproveYn()).vacationType(vacationDTO.getVacationType())
 				.vacationContent(vacationDTO.getVacationContent())
 				.vacationRequestDate(vacationDTO.getVacationRequestDate())
 				.vacationApproveDate(vacationDTO.getVacationApproveDate())
-				.employee(vacationDTO.getEmployee().toEntity(vacationDTO.getEmployee())).build();
+				.employee(vacationDTO.getEmployee().toEmployee(vacationDTO.getEmployee())).build();
 		return vacationEntity;
 	}
 

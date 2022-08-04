@@ -13,8 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.VacationDTO;
-import com.pchr.dto.VacationEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,9 +39,9 @@ public class Vacation {
 	@Column(name = "vacation_end_date")
 	private Date vacationEndDate;
 
-	@Column(name = "approve_yn", insertable = false)
+	@Column(name = "approve_yn")
 	@Enumerated(EnumType.STRING)
-	private VacationEnum approveYn;
+	private ApproveEnum approveYn;
 
 	@Column(name = "vacation_type")
 	private String vacationType;

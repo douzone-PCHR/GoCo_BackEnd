@@ -90,5 +90,25 @@ public class EmployeeDTO {
 										//.unit 넣어야함
 										.build();	
 		return employee;
+
+	public Employee toFKEmployee(EmployeeDTO empDto) {
+		Employee fkEmp = Employee.builder().empNum(empDto.getEmpNum()).build();
+		return fkEmp;
+	}
+
+	public Employee toEmployee(EmployeeDTO empDto) {
+		Employee employee = Employee.builder().authority(empDto.getAuthority())
+				.mgrId(empDto.getManager().toManager(empDto.getManager()))
+				.jobTitle(empDto.getJobTitle().toJobTitle(empDto.getJobTitle()))
+				.build();
+		return null;
+	}
+
+	public Employee toManager(EmployeeDTO empDto) {
+
+		Employee employee = Employee.builder().authority(empDto.getAuthority())
+
+				.build();
+		return null;
 	}
 }
