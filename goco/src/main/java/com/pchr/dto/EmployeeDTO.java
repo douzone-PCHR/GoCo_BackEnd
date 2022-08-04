@@ -71,26 +71,28 @@ public class EmployeeDTO {
 							.build();
 		return employee;
 	}
-	public Employee toManager(EmployeeDTO employeeDTO) {
-		Employee employee = Employee.builder()
-										.empNum(employeeDTO.getEmpNum())
-										.empId(employeeDTO.getEmpId())
-										.password(employeeDTO.getPassword())
-										.email(employeeDTO.getEmail())
-										.name(employeeDTO.getName())
-										.phoneNumber(employeeDTO.getPhoneNumber())
-										.deleteYn(employeeDTO.getDeleteYn())
-										.updateDatetime(employeeDTO.getUpdateDatetime())
-										.hiredate(employeeDTO.getHiredate())
-										.authority(employeeDTO.getAuthority())
-										.vacationCount(employeeDTO.getVacationCount())
-										//.manager(toManager(employeeDTO.getManager()))
-										.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
-										.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
-										//.unit 넣어야함
-										.build();	
-		return employee;
-
+	
+// /*Insert || Update 과정에서는 매니저에 대한 ID값만 넘겨주면 됨*/
+//	public Employee toManager(EmployeeDTO employeeDTO) {
+//		Employee employee = Employee.builder()
+//										.empNum(employeeDTO.getEmpNum())
+//										.empId(employeeDTO.getEmpId())
+//										.password(employeeDTO.getPassword())
+//										.email(employeeDTO.getEmail())
+//										.name(employeeDTO.getName())
+//										.phoneNumber(employeeDTO.getPhoneNumber())
+//										.deleteYn(employeeDTO.getDeleteYn())
+//										.updateDatetime(employeeDTO.getUpdateDatetime())
+//										.hiredate(employeeDTO.getHiredate())
+//										.authority(employeeDTO.getAuthority())
+//										.vacationCount(employeeDTO.getVacationCount())
+//										//.manager(toManager(employeeDTO.getManager()))
+//										.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
+//										.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
+//										//.unit 넣어야함
+//										.build();	
+//		return employee;
+//	}
 	public Employee toFKEmployee(EmployeeDTO empDto) {
 		Employee fkEmp = Employee.builder().empNum(empDto.getEmpNum()).build();
 		return fkEmp;
@@ -98,8 +100,8 @@ public class EmployeeDTO {
 
 	public Employee toEmployee(EmployeeDTO empDto) {
 		Employee employee = Employee.builder().authority(empDto.getAuthority())
-				.mgrId(empDto.getManager().toManager(empDto.getManager()))
-				.jobTitle(empDto.getJobTitle().toJobTitle(empDto.getJobTitle()))
+				.manager(empDto.getManager().toManager(empDto.getManager()))
+				.jobTitle(empDto.getJobTitle().toEntity(empDto.getJobTitle()))
 				.build();
 		return null;
 	}

@@ -117,17 +117,20 @@ public class Employee {
 									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
 									//.unit 넣어야함
 									.build();
+			return employeeDTO;
+		}
+		return toManagerDTO(employee);
+		}
   // Vacation , Board, Comment 등 Entity -> EmpDto
 	// 매니저 제외 한 사원에 대한 ToDTO
-  
   // ----------------- FK 걸린 테이블에 대한 toDTO ----------------- //
 	public EmployeeDTO toFKDTO(Employee employee) {
-		if (employee.getMgrId() != null) {
+		if (employee.getManager() != null) {
 
 			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
         //.teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))	// 나중에 추가해줘야함
         //.unit(employee.getUnit().toDTO(employee.getUnit()))	// 나중에 추가해줘야함
-					.manager(toManagerDTO(employee.getMgrId())).name(employee.getName())
+					.manager(toManagerDTO(employee.getManager())).name(employee.getName())
 					.vacationCount(employee.getVacationCount()).build();
 			return employeeDTO;
 		}
@@ -153,6 +156,8 @@ public class Employee {
 									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
 									//.unit 넣어야함
 									.build();
+		return managerDTO;
+	}
                   
 	// 사원이 매니저일때 매니저에 대한 ToDTO
 //	public EmployeeDTO toManagerDTO(Employee manager) {

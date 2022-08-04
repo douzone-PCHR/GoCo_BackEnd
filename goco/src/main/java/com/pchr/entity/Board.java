@@ -62,6 +62,7 @@ public class Board {
 	private LocalDateTime modifiedDate;
 
 	@Column(name = "count",insertable = false)
+	@ColumnDefault("0")
 	private int count;
 
 	@ManyToOne
