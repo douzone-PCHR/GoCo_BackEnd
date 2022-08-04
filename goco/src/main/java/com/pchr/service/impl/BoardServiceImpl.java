@@ -71,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
 	public void updateBoard(long boardId, BoardDTO updateBoardDto) {
 		Board board = boardRepo.findById(boardId).get(); // board에 Entity 가져오기
 		BoardDTO boardDto = board.toBoardDto(board); // board DTO 변환
-		
+
 		if (updateBoardDto.getBoardContent() != null) {
 			boardDto.setBoardContent(updateBoardDto.getBoardContent());
 		}
@@ -81,7 +81,7 @@ public class BoardServiceImpl implements BoardService {
 		boardRepo.save(boardDto.toUpdateBoard(boardDto));
 	}
 
-	// 추가 Clear 
+	// 추가 Clear
 	// (EmpNum에 대한 값도 받아야함. - Front : {empNum:n})
 	@Override
 	public void insertBoard(BoardDTO boardDto) {
@@ -94,10 +94,10 @@ public class BoardServiceImpl implements BoardService {
 	public BoardDTO getBoard(Long boardId) {
 		// DB에서 데이터 가져옴. Entity 상태
 		Board board = boardRepo.findById(boardId).get();
-
 		BoardDTO boardDto = board.toBoardDto(board); // Entity -> Dto 변환
 		boardDto.setCount(boardDto.getCount() + 1); // 조회수(Count) 1증가
-		boardRepo.save(boardDto.toBoard(boardDto));
+		Board updateBoard = boardDto.toBoard(boardDto);
+		boardRepo.save(updateBoard);
 		return boardDto;
 	}
 }

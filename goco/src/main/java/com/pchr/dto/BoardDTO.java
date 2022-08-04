@@ -12,11 +12,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class BoardDTO {
 
 	private Long boardId;
@@ -37,10 +39,14 @@ public class BoardDTO {
 
 	// DTO -> Entity 빌더 (Insert)
 	public Board toBoard(BoardDTO boardDto) {
-		Board board = Board.builder().boardTitle(boardDto.getBoardTitle())
+		Board board = Board.builder()
+				.boardId(boardDto.getBoardId())
+				.boardTitle(boardDto.getBoardTitle())
 				.boardContent(boardDto.getBoardContent())
+				.count(boardDto.getCount())
 				.employee(boardDto.getEmployee().toFKEmployee(boardDto.getEmployee()))
 				.build();
+		System.out.println(board.getCount());
 		return board;
 	}
 
@@ -54,6 +60,13 @@ public class BoardDTO {
 				.count(boardDto.getCount()).employee(boardDto.getEmployee()
 						.toFKEmployee(boardDto.getEmployee()))
 				.build();
+		return board;
+	}
+	
+	//댓글에 대한 Board 빌더
+	public Board toFKBoard(BoardDTO boardDto) {
+		Board board = Board.builder().boardId(boardDto.getBoardId()).build();
+		
 		return board;
 	}
 }
