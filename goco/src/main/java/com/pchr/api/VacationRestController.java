@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.VacationDTO;
-import com.pchr.dto.VacationEnum;
 import com.pchr.service.impl.VacationServiceImpl;
 
 @RestController
@@ -25,7 +25,7 @@ public class VacationRestController {
 
 	// 휴가신청리스트 (사원)
 	@GetMapping(value = "/vacation/{empNum}")
-	public List<VacationDTO> findVacationByEmployeeEmpId(@PathVariable Long empNum) {
+	public List<VacationDTO> findVacationByEmployeeEmpNum(@PathVariable Long empNum) {
 
 		List<VacationDTO> vacations = vacationService.getAllVacation(empNum);
 		System.out.println(vacations);
@@ -35,7 +35,7 @@ public class VacationRestController {
 	// 휴가신청리스트 (팀장)
 	@GetMapping(value = "/vacation/approve/{unitId}")
 	public List<VacationDTO> findVacationByEmployeeUnitId(@PathVariable Long unitId) {
-		List<VacationDTO> vacations = vacationService.getAllVacation(unitId);
+		List<VacationDTO> vacations = vacationService.getAllTeamVacation(unitId);
 
 		return vacations;
 	}
@@ -79,7 +79,7 @@ public class VacationRestController {
 
 	// 휴가 요청 삭제 (사원)
 	@DeleteMapping(value = "/vacation/{vacationId}")
-	public void deleteVacation(@PathVariable Long vacationId, VacationEnum approveYn) {
+	public void deleteVacation(@PathVariable Long vacationId, ApproveEnum approveYn) {
 		vacationService.deleteVacation(vacationId, approveYn);
 	}
 
