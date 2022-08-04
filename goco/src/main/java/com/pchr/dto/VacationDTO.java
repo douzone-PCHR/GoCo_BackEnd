@@ -42,7 +42,7 @@ public class VacationDTO {
 				.vacationContent(vacationDTO.getVacationContent())
 				.vacationRequestDate(vacationDTO.getVacationRequestDate())
 				.vacationApproveDate(vacationDTO.getVacationApproveDate())
-				.employee(vacationDTO.getEmployee().toEntity(vacationDTO.getEmployee())).build();
+				.employee(vacationDTO.getEmployee().toEmployee(vacationDTO.getEmployee())).build();
 		return vacationEntity;
 	}
 
