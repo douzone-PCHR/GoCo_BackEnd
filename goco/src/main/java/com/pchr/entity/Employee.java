@@ -26,6 +26,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Getter
 @Entity
 @Builder
@@ -107,8 +108,8 @@ public class Employee {
 									.email(employee.getEmail())
 									.name(employee.getName())
 									.phoneNumber(employee.getPhoneNumber())
-									.deleteYn(employee.getDeleteYn())
-									.updateDatetime(employee.getUpdateDatetime())
+//									.deleteYn(employee.getDeleteYn())
+//									.updateDatetime(employee.getUpdateDatetime())
 									.hiredate(employee.getHiredate())
 									.authority(employee.getAuthority())
 									.vacationCount(employee.getVacationCount())
@@ -146,8 +147,8 @@ public class Employee {
 									.email(employee.getEmail())
 									.name(employee.getName())
 									.phoneNumber(employee.getPhoneNumber())
-									.deleteYn(employee.getDeleteYn())
-									.updateDatetime(employee.getUpdateDatetime())
+//									.deleteYn(employee.getDeleteYn())
+//									.updateDatetime(employee.getUpdateDatetime())
 									.hiredate(employee.getHiredate())
 									.authority(employee.getAuthority())
 									.vacationCount(employee.getVacationCount())
@@ -158,6 +159,7 @@ public class Employee {
 									.build();
 		return managerDTO;
 	}
+
                   
 	// 사원이 매니저일때 매니저에 대한 ToDTO
 //	public EmployeeDTO toManagerDTO(Employee manager) {
