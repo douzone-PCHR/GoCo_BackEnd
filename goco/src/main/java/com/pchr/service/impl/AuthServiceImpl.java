@@ -10,8 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pchr.config.SecurityUtil;
 import com.pchr.dto.EmployeeDTO;
-import com.pchr.dto.EmployeeRequestDTO;
+
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.entity.EmailAuth;
@@ -22,7 +23,7 @@ import com.pchr.repository.EmailAuthRepository;
 import com.pchr.repository.JobTitleRepository;
 import com.pchr.repository.TeamPositionRepository;
 import com.pchr.service.AuthService;
-import com.pchr.service.EmailAuthService;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,23 +41,24 @@ public class AuthServiceImpl implements AuthService{
     private final TokenProvider tokenProvider;
     private final EmailAuthServiceImpl emailAuthService; // 메일보내는 함수
 	
+
+  @Override
+  public EmployeeResponseDTO signup(EmployeeDTO employeeDTO) {
+	// id와 이메일이 이미 있으면 가입된 유저 반환
+    if (empolyServiceImpl.existsByEmail(employeeDTO.getEmail()) | empolyServiceImpl.existsByEmpId(employeeDTO.getEmpId())  ) {
+        throw new RuntimeException("이미 가입되어 있는 유저입니다");
+    }
+    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
+    // employee 저장 전에 jobtitle과 teamposition 테이블에 데이터를 먼저 저장한다
+    jobTitleRepository.save(employee.getJobTitle());
+    teamPositionRepository.save(employee.getTeamPosition());
+    return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
+}	
+	
 	@Override
-    //signup 메소드는 평범하게 회원가입을 하는 메소드로, Spring Data JPA의 주요 로직으로 구성된다.
-    public EmployeeResponseDTO signup(EmployeeRequestDTO requestDto) {
-    	// id와 이메일이 이미 있으면 가입된 유저 반환
-        if (empolyServiceImpl.existsByEmail(requestDto.getEmail()) | empolyServiceImpl.existsByEmpId(requestDto.getEmpId())  ) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
-        }
-        Employee employee = requestDto.toEmployee(passwordEncoder);
-        // employee 저장 전에 jobtitle과 teamposition 테이블에 데이터를 먼저 저장한다
-        jobTitleRepository.save(employee.getJobTitle());
-        teamPositionRepository.save(employee.getTeamPosition());
-        return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
-    }	
-	@Override
-    public TokenDTO login(EmployeeRequestDTO requestDto) {
+    public TokenDTO login(EmployeeDTO employeeDTO) {
 //1) login 메소드는EmployeeRequestDTO에 있는 메소드 toAuthentication를 통해 생긴 UsernamePasswordAuthenticationToken 타입의 데이터를 가지게된다.
-        UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+        UsernamePasswordAuthenticationToken authenticationToken = employeeDTO.toAuthentication();
         
 //2) 주입받은 Builder를 통해 AuthenticationManager를 구현한 ProviderManager를 생성한다.
 //3) 이후 ProviderManager는 데이터를 AbstractUserDetailsAuthenticationProvider 의 자식 클래스인 DaoAuthenticationProvider 를 주입받아서 호출한다.
@@ -67,6 +69,15 @@ public class AuthServiceImpl implements AuthService{
         
         return tokenProvider.generateTokenDto(authentication);
     }	
+	
+	// 내정보 반환 하는 메소드
+    public EmployeeResponseDTO getMyInfoBySecurity() {
+        return empolyServiceImpl.findByEmpId(SecurityUtil.getCurrentMemberId())
+                .map(EmployeeResponseDTO::of)
+                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
+    }
+
+	
 	
 	@Override
     // 아이디 찾기위해 메일 보내는 함수 
@@ -136,5 +147,24 @@ public class AuthServiceImpl implements AuthService{
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
 		return "사용 가능합니다";
+	}
+	// 회원탈퇴
+	@Override	
+	public int delete(String email) {
+		if(empolyServiceImpl.existsByEmail(email)) {
+			return empolyServiceImpl.deleteByEmail(email);
+		}
+		return 0;
+	}
+	// 비번 변경
+	public int pwdChange(String email, String password) {
+		Employee employee = empolyServiceImpl.findByEmail(email).get();
+		if(employee==null) {
+			return 0;
+		}
+		EmployeeDTO employeeDTO = employee.toDTO(employee);
+		employeeDTO.setPassword(passwordEncoder.encode((password)));
+		empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
+		return 1;
 	}
 }

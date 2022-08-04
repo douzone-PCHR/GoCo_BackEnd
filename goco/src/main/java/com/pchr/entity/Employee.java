@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,6 +33,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicInsert// emplyee 신규로 컬럼 생성하면서 값 넣을 때 null인건 default로 적용시키기 위한 것 
 public class Employee {
 
 	@Id
@@ -54,10 +56,10 @@ public class Employee {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	@Column(name = "delete_yn")
+	@Column(name = "delete_yn",columnDefinition = "boolean default '0'")
 	private Boolean deleteYn;
 
-	@Column(name = "update_datetime")
+	@Column(name = "update_datetime",columnDefinition = "datetime default NOW()")
 	private Date updateDatetime;
 
 	@CreatedDate
@@ -108,8 +110,8 @@ public class Employee {
 									.email(employee.getEmail())
 									.name(employee.getName())
 									.phoneNumber(employee.getPhoneNumber())
-//									.deleteYn(employee.getDeleteYn())
-//									.updateDatetime(employee.getUpdateDatetime())
+									.deleteYn(employee.getDeleteYn())
+									.updateDatetime(employee.getUpdateDatetime())
 									.hiredate(employee.getHiredate())
 									.authority(employee.getAuthority())
 									.vacationCount(employee.getVacationCount())
@@ -147,8 +149,8 @@ public class Employee {
 									.email(employee.getEmail())
 									.name(employee.getName())
 									.phoneNumber(employee.getPhoneNumber())
-//									.deleteYn(employee.getDeleteYn())
-//									.updateDatetime(employee.getUpdateDatetime())
+									.deleteYn(employee.getDeleteYn())
+									.updateDatetime(employee.getUpdateDatetime())
 									.hiredate(employee.getHiredate())
 									.authority(employee.getAuthority())
 									.vacationCount(employee.getVacationCount())

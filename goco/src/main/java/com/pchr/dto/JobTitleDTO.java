@@ -20,6 +20,7 @@ public class JobTitleDTO {
 	public JobTitle toEntity(JobTitleDTO jobTitleDTO) {
 		JobTitle jobTitle = JobTitle.builder()
 							.jobTitleId(jobTitleDTO.getJobTitleId())
+							.jobTitleName(jobTitleDTO.getJobTitleName())
 							.build();
 
 		return jobTitle;
