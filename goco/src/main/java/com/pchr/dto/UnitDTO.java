@@ -39,6 +39,16 @@ public class UnitDTO {
 					.parentUnit(parentUnit).build();
 		return unit;
 	}
+
+	
+	
+	//ToEntity 과정에서는 Unit에 대한 Insert Update만 이뤄지기 때문에 UnitId값만 받으면 됨
+	public Unit toFKUnit(UnitDTO unitDto) {
+		Unit unit = Unit.builder()
+				.unitId(unitDto.getUnitId())
+				.build();
+		return unit;
+	}
 	
 }
 
