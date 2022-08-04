@@ -35,14 +35,14 @@ public class VacationDTO {
 	private EmployeeDTO employee;
 
 	// toEntity
-	public Vacation toEntity(VacationDTO vacationDTO) {
+	public Vacation toVacationEntity(VacationDTO vacationDTO) {
 		Vacation vacationEntity = Vacation.builder().vacationId(vacationDTO.getVacationId())
 				.vacationStartDate(vacationDTO.getVacationStartDate()).vacationEndDate(vacationDTO.getVacationEndDate())
 				.approveYn(vacationDTO.getApproveYn()).vacationType(vacationDTO.getVacationType())
 				.vacationContent(vacationDTO.getVacationContent())
 				.vacationRequestDate(vacationDTO.getVacationRequestDate())
 				.vacationApproveDate(vacationDTO.getVacationApproveDate())
-				.employee(vacationDTO.getEmployee().toEmployee(vacationDTO.getEmployee())).build();
+				.employee(vacationDTO.getEmployee().toFKEmployee(vacationDTO.getEmployee())).build();
 		return vacationEntity;
 	}
 
