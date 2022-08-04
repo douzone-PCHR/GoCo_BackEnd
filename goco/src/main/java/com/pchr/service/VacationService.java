@@ -3,7 +3,7 @@ package com.pchr.service;
 import java.util.List;
 
 import com.pchr.dto.VacationDTO;
-import com.pchr.dto.VacationEnum;
+import com.pchr.dto.ApproveEnum;
 
 public interface VacationService {
 	// 휴가 신청 리스트 (사원)
@@ -24,6 +24,6 @@ public interface VacationService {
 	public void approveVacation(VacationDTO vacationDTO);
 
 	// 휴가 삭제
-	void deleteVacation(Long vacationId, VacationEnum approveYn);
+	void deleteVacation(Long vacationId, ApproveEnum approveYn);
 
 }
