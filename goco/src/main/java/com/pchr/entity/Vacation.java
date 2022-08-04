@@ -60,14 +60,14 @@ public class Vacation {
 	private Employee employee;
 
 	// toDTO
-	public VacationDTO toDTO(Vacation vacationEntity) {
+	public VacationDTO toVacationDTO(Vacation vacationEntity) {
 		VacationDTO vacationDTO = VacationDTO.builder().vacationId(vacationEntity.getVacationId())
 				.vacationStartDate(vacationEntity.getVacationStartDate())
 				.vacationEndDate(vacationEntity.getVacationEndDate()).approveYn(vacationEntity.getApproveYn())
 				.vacationType(vacationEntity.getVacationType()).vacationContent(vacationEntity.getVacationContent())
 				.vacationRequestDate(vacationEntity.getVacationRequestDate())
 				.vacationApproveDate(vacationEntity.getVacationApproveDate())
-				.employee(vacationEntity.getEmployee().toDTO(vacationEntity.getEmployee())).build();
+				.employee(vacationEntity.getEmployee().toFKDTO(vacationEntity.getEmployee())).build();
 		return vacationDTO;
 	}
 
