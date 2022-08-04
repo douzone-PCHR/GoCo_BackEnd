@@ -7,8 +7,9 @@ import com.pchr.dto.UnitDTO;
 public interface UnitService {
 	
 	public List<UnitDTO> unitAll();
-	public void unitInsert(UnitDTO unitDTO);
-	public void unitUpdate(UnitDTO unitDTO);
-	public List<UnitDTO> deptUnit(UnitDTO unit);
+	public UnitDTO unitInsert(UnitDTO unitDTO);
 	public void unitDelete(UnitDTO unitDTO);
+	public List<UnitDTO> deptUnit(Long id);
+	UnitDTO getOneUnit(UnitDTO unitDto);
+	public void unitUpdate(Long unitId, UnitDTO newUnitDTO);
 }
