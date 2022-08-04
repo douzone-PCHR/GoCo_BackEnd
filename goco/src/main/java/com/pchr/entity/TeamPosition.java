@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.pchr.dto.TeamPositionDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,4 +28,11 @@ public class TeamPosition {
 	@Column(name = "team_position_name")
 	private String teampPositionName;
 	
+	public TeamPositionDTO toDTO(TeamPosition teamPosition) {
+		TeamPositionDTO teamPositionDTO=TeamPositionDTO.builder()
+										.teamPositionId(teamPosition.getTeamPositionId())
+										.teampPositionName(teamPosition.getTeampPositionName())
+										.build();
+		return teamPositionDTO;
+	}
 }
