@@ -54,7 +54,7 @@ public class Employee {
 	private String phoneNumber;
 
 	@Column(name = "delete_yn")
-	private boolean deleteYn;
+	private Boolean deleteYn;
 
 	@Column(name = "update_datetime")
 	private Date updateDatetime;
@@ -74,11 +74,11 @@ public class Employee {
 
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE, CascadeType.MERGE })
-	@JoinColumn(name = "mgr_id", referencedColumnName = "emp_num")
+	@JoinColumn(name = "manager", referencedColumnName = "emp_num")
 	@JsonIgnore
-	private Employee mgrId;
+	private Employee manager;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mgrId")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "manager")
 	private List<Employee> child;
 
 	@ManyToOne
@@ -96,9 +96,31 @@ public class Employee {
 	public void setPassword(String password) { // Entity는 setter 지양 => 변경사항
 		this.password = password;
 	}
-	// ----------------- FK 걸린 테이블에 대한 toDTO ----------------- //
+	
+	// 매니저가 아닌 사원에 대한 ToDTO
+	public EmployeeDTO toDTO(Employee employee) {
+		if (employee.getManager() != null) {
+
+			EmployeeDTO employeeDTO = EmployeeDTO.builder()
+									.empNum(employee.getEmpNum())
+									.empId(employee.getEmpId())
+									.email(employee.getEmail())
+									.name(employee.getName())
+									.phoneNumber(employee.getPhoneNumber())
+									.deleteYn(employee.getDeleteYn())
+									.updateDatetime(employee.getUpdateDatetime())
+									.hiredate(employee.getHiredate())
+									.authority(employee.getAuthority())
+									.vacationCount(employee.getVacationCount())
+									.manager(toManagerDTO(employee.getManager()))
+									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+									//.unit 넣어야함
+									.build();
   // Vacation , Board, Comment 등 Entity -> EmpDto
 	// 매니저 제외 한 사원에 대한 ToDTO
+  
+  // ----------------- FK 걸린 테이블에 대한 toDTO ----------------- //
 	public EmployeeDTO toFKDTO(Employee employee) {
 		if (employee.getMgrId() != null) {
 
@@ -112,14 +134,34 @@ public class Employee {
 		return toManagerDTO(employee);
 	}
 
+	// 사원 이면서 매니저일때  ToDTO
+	public EmployeeDTO toManagerDTO(Employee employee) {
+		EmployeeDTO managerDTO = EmployeeDTO.builder()
+									.empNum(employee.getEmpNum())
+									.empId(employee.getEmpId())
+									.password(employee.getPassword())
+									.email(employee.getEmail())
+									.name(employee.getName())
+									.phoneNumber(employee.getPhoneNumber())
+									.deleteYn(employee.getDeleteYn())
+									.updateDatetime(employee.getUpdateDatetime())
+									.hiredate(employee.getHiredate())
+									.authority(employee.getAuthority())
+									.vacationCount(employee.getVacationCount())
+									//.manager(toManagerDTO(employee.getManager()))
+									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+									//.unit 넣어야함
+									.build();
+                  
 	// 사원이 매니저일때 매니저에 대한 ToDTO
-	public EmployeeDTO toManagerDTO(Employee manager) {
-		EmployeeDTO managerDTO = EmployeeDTO.builder().empNum(manager.getEmpNum()).empId(manager.getEmpId())
+//	public EmployeeDTO toManagerDTO(Employee manager) {
+//		EmployeeDTO managerDTO = EmployeeDTO.builder().empNum(manager.getEmpNum()).empId(manager.getEmpId())
       //.teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))	// 나중에 추가해줘야함
       //.unit(employee.getUnit().toDTO(employee.getUnit()))	// 나중에 추가해줘야함
-				.name(manager.getName()).vacationCount(manager.getVacationCount()).build();
-		return managerDTO;
-	}
+//				.name(manager.getName()).vacationCount(manager.getVacationCount()).build();
+//		return managerDTO;
+//	}
 
 	// ------------------------------------------------------------ //
 

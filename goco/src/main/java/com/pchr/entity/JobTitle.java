@@ -1,13 +1,12 @@
 package com.pchr.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+
+import com.pchr.dto.JobTitleDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,4 +28,11 @@ public class JobTitle {
 	@Column(name = "job_title_name",nullable = false)
 	private String jobTitleName;
 
+	public JobTitleDTO toDTO(JobTitle jobTitle) {
+		JobTitleDTO jobTitleDTO = JobTitleDTO.builder()
+								  .jobTitleId(jobTitle.getJobTitleId())
+								  .jobTitleName(jobTitle.getJobTitleName())
+								  .build();
+		return jobTitleDTO;
+	}
 }

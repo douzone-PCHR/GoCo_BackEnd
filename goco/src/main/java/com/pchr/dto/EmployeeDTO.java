@@ -3,7 +3,6 @@ package com.pchr.dto;
 import java.util.Date;
 
 import com.pchr.entity.Authority;
-
 import com.pchr.entity.Employee;
 
 import lombok.AllArgsConstructor;
@@ -29,7 +28,7 @@ public class EmployeeDTO {
 
 	private String phoneNumber;
 
-	private boolean deleteYn;
+	private Boolean deleteYn;
 
 	private Date updateDatetime;
 
@@ -50,6 +49,47 @@ public class EmployeeDTO {
 
 	// 어느 팀에 소속된지에 대한 필드
 	private UnitDTO unit;
+
+	// -------------- to Entity ------------------- //
+	public Employee toEntity(EmployeeDTO employeeDTO) {
+		Employee employee = Employee.builder()
+							.empNum(employeeDTO.getEmpNum())
+							.empId(employeeDTO.getEmpId())
+							.password(employeeDTO.getPassword())
+							.email(employeeDTO.getEmail())
+							.name(employeeDTO.getName())
+							.phoneNumber(employeeDTO.getPhoneNumber())
+							.deleteYn(employeeDTO.getDeleteYn())
+							.updateDatetime(employeeDTO.getUpdateDatetime())
+							.hiredate(employeeDTO.getHiredate())
+							.authority(employeeDTO.getAuthority())
+							.vacationCount(employeeDTO.getVacationCount())
+							.manager(toManager(employeeDTO.getManager()))
+							.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
+							.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
+							//.unit 넣어야함
+							.build();
+		return employee;
+	}
+	public Employee toManager(EmployeeDTO employeeDTO) {
+		Employee employee = Employee.builder()
+										.empNum(employeeDTO.getEmpNum())
+										.empId(employeeDTO.getEmpId())
+										.password(employeeDTO.getPassword())
+										.email(employeeDTO.getEmail())
+										.name(employeeDTO.getName())
+										.phoneNumber(employeeDTO.getPhoneNumber())
+										.deleteYn(employeeDTO.getDeleteYn())
+										.updateDatetime(employeeDTO.getUpdateDatetime())
+										.hiredate(employeeDTO.getHiredate())
+										.authority(employeeDTO.getAuthority())
+										.vacationCount(employeeDTO.getVacationCount())
+										//.manager(toManager(employeeDTO.getManager()))
+										.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
+										.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
+										//.unit 넣어야함
+										.build();	
+		return employee;
 
 	public Employee toFKEmployee(EmployeeDTO empDto) {
 		Employee fkEmp = Employee.builder().empNum(empDto.getEmpNum()).build();

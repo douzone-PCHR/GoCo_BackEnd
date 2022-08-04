@@ -17,10 +17,11 @@ public class JobTitleDTO {
 	
 	private String jobTitleName;
 	
-	public JobTitle toJobTitle(JobTitleDTO jobTitleDto) {
+	public JobTitle toEntity(JobTitleDTO jobTitleDTO) {
 		JobTitle jobTitle = JobTitle.builder()
-				.jobTitleId(jobTitleDto.getJobTitleId())
-				.build();
+							.jobTitleId(jobTitleDTO.getJobTitleId())
+							.build();
+
 		return jobTitle;
 	}
 }

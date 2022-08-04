@@ -1,9 +1,7 @@
 package com.pchr.dto;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+
+import com.pchr.entity.TeamPosition;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +17,10 @@ public class TeamPositionDTO {
 	private Long teamPositionId;
 	
 	private String teampPositionName;
+	public TeamPosition toEntity(TeamPositionDTO teamPositionDTO) {
+		TeamPosition teamPosition=TeamPosition.builder()
+										.teamPositionId(teamPositionDTO.getTeamPositionId())
+										.build();
+		return teamPosition;
+	}
 }

@@ -73,5 +73,10 @@ public class AuthController {
     	return authService.sendEmailForPwd(id,email);
     }
     //http://localhost:8080/auth/sendEmailForPwd?id=KYJempId&email=yongj326@naver.com
- 
+    
+    @GetMapping("/findPwd")
+    public String findPassword(@RequestParam String authenticationNumber) {
+    	return authService.findPassword(authenticationNumber);
+    }
+//	http://localhost:8080/auth/findPwd?authenticationNumber=인증번호입력
 }

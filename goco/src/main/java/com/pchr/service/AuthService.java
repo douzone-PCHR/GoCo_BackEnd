@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeRequestDTO;
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.TokenDTO;
@@ -74,7 +75,7 @@ public class AuthService {
 		return emailAuthService.save(email);
 	}
 	
-	// 아이디 찾기 인증 번호 확인하는 것
+	// 아이디 찾기 과정 중 인증 번호 확인하는 것
 	public String findAuth(String authenticationNumber) {
 		EmailAuth emailAuth = emailAuthRepository.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
 		if(emailAuth==null) {
@@ -99,4 +100,35 @@ public class AuthService {
 		}
 		return emailAuthService.save(email);
 	}
+	
+	// 비밀번호 찾기 과정 중 인증 번호가 올바른지 확인하고 맞다면 임시 비밀번호 고객에게 전송 + db에 임시 비번 저장 
+	public String findPassword(String authenticationNumber) {
+		EmailAuth emailAuth = emailAuthRepository.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
+		if(emailAuth==null) {
+			return "올바른 인증번호를 입력하세요";
+		}
+		else if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){	
+			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {// 시간 비교해서 유효할 경우 실행됨
+				Optional<Employee> employee = employeeRepository.findByEmail(emailAuth.getEmail());
+				// 1) 랜덤 함수로 임시 비번을 생성하고 고객에게 임시 비번을 전송한다.
+				String password = emailAuthService.passwordText(emailAuth.getEmail());//임시 패스워드 문자열 발행
+				// 2) employee를 employeeDto로 바꾸고  employeeDto에 임시비번 저장하고 이걸다시 employee로 바꾸고, 이걸 레포를써서 저장한다.
+				EmployeeDTO employeeDTO = employee.get().toDTO(employee.get());
+				employeeDTO.setPassword(password);
+				System.out.println("employee.get() : "+employee.get());
+				System.out.println("employee.get().getManager() : "+employee.get().getManager());
+				System.out.println("employeeDTO.getpas :: "+employeeDTO.getPassword());
+				System.out.println("employeeDTO.getManager :: "+employeeDTO.getManager());
+			//	Employee employeeEntity = employeeDTO.toEntity(employeeDTO);
+			//	employeeRepository.save(employeeEntity);
+
+				return "1";
+			}else {
+				return "시간 초과 다시 인증 바랍니다.";
+			}
+		}else {
+			return "-1";
+		}
+	}
+	
 }
