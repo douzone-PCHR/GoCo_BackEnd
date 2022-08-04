@@ -1,6 +1,6 @@
 package com.pchr.api;
 
-import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pchr.dto.CommuteDTO;
-import com.pchr.repository.EmployeeRepository;
-import com.pchr.service.CommuteService;
-import com.pchr.service.MemberService;
+
+
 import com.pchr.service.impl.CommuteServiceImpl;
 
 import lombok.RequiredArgsConstructor;

@@ -14,4 +14,5 @@ public interface EmployeeService {
     Employee findByEmpIdAndEmail(String empId,String email);
     List<Employee> findAll();
     Employee save(Employee employee);
+    int deleteByEmail(String email);
 }

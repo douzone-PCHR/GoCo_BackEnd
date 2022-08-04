@@ -62,4 +62,10 @@ public class EmpolyServiceImpl implements EmployeeService{
 		
 	}
 
+	@Override
+	public int deleteByEmail(String email) {
+		return employeeRepository.deleteByEmail(email);
+	}
+	
+
 }
