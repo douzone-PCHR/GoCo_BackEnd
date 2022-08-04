@@ -60,7 +60,7 @@ public class EmployeeDTO {
 							.name(employeeDTO.getName())
 							.phoneNumber(employeeDTO.getPhoneNumber())
 							.deleteYn(employeeDTO.getDeleteYn())
-							.updateDatetime(employeeDTO.getUpdateDatetime())
+//							.updateDatetime(employeeDTO.getUpdateDatetime())
 							.hiredate(employeeDTO.getHiredate())
 							.authority(employeeDTO.getAuthority())
 							.vacationCount(employeeDTO.getVacationCount())
@@ -106,11 +106,25 @@ public class EmployeeDTO {
 		return null;
 	}
 
-	public Employee toManager(EmployeeDTO empDto) {
-
-		Employee employee = Employee.builder().authority(empDto.getAuthority())
-
-				.build();
-		return null;
+	public Employee toManager(EmployeeDTO employeeDTO) {
+		Employee employee = Employee.builder()
+				.authority(employeeDTO.getAuthority())
+							.empNum(employeeDTO.getEmpNum())
+							.empId(employeeDTO.getEmpId())
+							.password(employeeDTO.getPassword())
+							.email(employeeDTO.getEmail())
+							.name(employeeDTO.getName())
+							.phoneNumber(employeeDTO.getPhoneNumber())
+							.deleteYn(employeeDTO.getDeleteYn())
+//							.updateDatetime(employeeDTO.getUpdateDatetime())
+							.hiredate(employeeDTO.getHiredate())
+							.authority(employeeDTO.getAuthority())
+							.vacationCount(employeeDTO.getVacationCount())
+							//.manager(toManager(employeeDTO.getManager()))
+							.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
+							.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
+							//.unit 넣어야함
+							.build();	
+		return employee;
 	}
 }
