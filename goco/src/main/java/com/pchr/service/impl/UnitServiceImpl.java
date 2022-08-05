@@ -74,7 +74,6 @@ public class UnitServiceImpl implements UnitService {
 			unitDto.setParentUnit(newUnitDTO.getParentUnit());
 		}
 		unitRepo.save(unitDto.toUnit(unitDto));
-		
 	}
 
 	// 부서 및 팀 삭제 (부서 삭제시 cascade 걸려있어서 자동으로 팀 삭제됨)

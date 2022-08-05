@@ -139,23 +139,31 @@ public class Employee {
 
 	// 사원 이면서 매니저일때  ToDTO
 	public EmployeeDTO toManagerDTO(Employee employee) {
-		EmployeeDTO managerDTO = EmployeeDTO.builder()
-									.empNum(employee.getEmpNum())
-									.empId(employee.getEmpId())
-									.password(employee.getPassword())
-									.email(employee.getEmail())
-									.name(employee.getName())
-									.phoneNumber(employee.getPhoneNumber())
-									.updateDatetime(employee.getUpdateDatetime())
-									.hiredate(employee.getHiredate())
-									.authority(employee.getAuthority())
-									.vacationCount(employee.getVacationCount())
-									//.manager(toManagerDTO(employee.getManager()))
-									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
-									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-									.unit(employee.getUnit().toUnitDTO(unit))
-									.build();
-		return managerDTO;
+		return EmployeeDTO.builder()
+				.empNum(employee.getEmpNum())
+				.empId(employee.getEmpId())
+				.password(employee.getPassword())
+				.email(employee.getEmail())
+				.name(employee.getName())
+				.phoneNumber(employee.getPhoneNumber())
+				.updateDatetime(employee.getUpdateDatetime())
+				.hiredate(employee.getHiredate())
+				.authority(employee.getAuthority())
+				.vacationCount(employee.getVacationCount())
+				//.manager(toManagerDTO(employee.getManager()))
+				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+				.unit(employee.getUnit().toUnitDTO(unit))
+				.build();
+	}
+
+	public Resignation toResignation(Employee employee) {
+		return Resignation.builder()
+				.email(employee.getEmail())
+				.name(employee.getName())
+				.phoneNumber(employee.getPhoneNumber())
+				.hiredate(employee.getHiredate())
+				.build();
 	}
 
 }
