@@ -32,7 +32,7 @@ public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";//토큰 생성, 검증할 때 쓰이는 값
     private static final String BEARER_TYPE = "bearer"; //토큰 생성, 검증할 때 쓰이는 값
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;// 토큰 만료시간
+    private static final long ACCESS_TOKEN_EXPIRE_TIME =30 * 60 * 1000L;// 토큰 만료시간 30분
     private final Key key; //JWT를 만들 때 사용하는 암호화 키값을 사용학 ㅣ위해 security에서 불러옴
 
 
@@ -65,7 +65,7 @@ public class TokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .setExpiration(tokenExpiresIn)
+                .setExpiration(tokenExpiresIn)//토큰 유효시간설정
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
@@ -78,6 +78,7 @@ public class TokenProvider {
 
     //getAuthentication메소드는 토큰을 받았을 때 토큰의 인증을 꺼내는 메소드이다. 아래 서술할 parseClaims 메소드로
     //String 형태의 토큰을 claims 형태로 생성한다. 다음 auth가 없으면 exception을 반환한다.
+    // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
 

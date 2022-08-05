@@ -3,6 +3,7 @@ package com.pchr.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.pchr.dto.EmployeeDTO;
 import com.pchr.entity.Employee;
 
 public interface EmployeeService {
@@ -12,7 +13,9 @@ public interface EmployeeService {
     Optional<Employee> findByEmpId(String empId);
     Employee findByNameAndEmail(String name,String email);
     Employee findByEmpIdAndEmail(String empId,String email);
-    List<Employee> findAll();
+    List<EmployeeDTO> findAll();
     Employee save(Employee employee);
     int deleteByEmail(String email);
+	int deleteByEmpId(String empId);
+	public List<Employee> findByManager(Long empNum);
 }

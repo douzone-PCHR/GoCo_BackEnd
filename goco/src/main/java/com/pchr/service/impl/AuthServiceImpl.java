@@ -15,6 +15,7 @@ import com.pchr.dto.EmployeeDTO;
 
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.TokenDTO;
+import com.pchr.entity.Authority;
 import com.pchr.entity.EmailAuth;
 import com.pchr.entity.Employee;
 import com.pchr.jwt.TokenProvider;
@@ -49,12 +50,8 @@ public class AuthServiceImpl implements AuthService{
         throw new RuntimeException("이미 가입되어 있는 유저입니다");
     }
     Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
-    // employee 저장 전에 jobtitle과 teamposition 테이블에 데이터를 먼저 저장한다
-    jobTitleRepository.save(employee.getJobTitle());
-    teamPositionRepository.save(employee.getTeamPosition());
     return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
 }	
-	
 	@Override
     public TokenDTO login(EmployeeDTO employeeDTO) {
 //1) login 메소드는EmployeeRequestDTO에 있는 메소드 toAuthentication를 통해 생긴 UsernamePasswordAuthenticationToken 타입의 데이터를 가지게된다.
@@ -69,16 +66,7 @@ public class AuthServiceImpl implements AuthService{
         
         return tokenProvider.generateTokenDto(authentication);
     }	
-	
-	// 내정보 반환 하는 메소드
-    public EmployeeResponseDTO getMyInfoBySecurity() {
-        return empolyServiceImpl.findByEmpId(SecurityUtil.getCurrentMemberId())
-                .map(EmployeeResponseDTO::of)
-                .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
-    }
-
-	
-	
+		
 	@Override
     // 아이디 찾기위해 메일 보내는 함수 
 	public String sendEmailForId(String name, String email) {
@@ -141,30 +129,6 @@ public class AuthServiceImpl implements AuthService{
 			return "-1";
 		}
 	}
-	@Override
-	public String idCheck(String info) {
-        if (empolyServiceImpl.existsByEmail(info) | empolyServiceImpl.existsByEmpId(info)  ) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
-        }
-		return "사용 가능합니다";
-	}
-	// 회원탈퇴
-	@Override	
-	public int delete(String email) {
-		if(empolyServiceImpl.existsByEmail(email)) {
-			return empolyServiceImpl.deleteByEmail(email);
-		}
-		return 0;
-	}
-	// 비번 변경
-	public int pwdChange(String email, String password) {
-		Employee employee = empolyServiceImpl.findByEmail(email).get();
-		if(employee==null) {
-			return 0;
-		}
-		EmployeeDTO employeeDTO = employee.toDTO(employee);
-		employeeDTO.setPassword(passwordEncoder.encode((password)));
-		empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
-		return 1;
-	}
+
+
 }
