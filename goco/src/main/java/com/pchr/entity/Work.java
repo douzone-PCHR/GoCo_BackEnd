@@ -14,6 +14,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.pchr.dto.CommuteDTO;
+import com.pchr.dto.WorkDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,7 +53,24 @@ public class Work {
 	@ManyToOne
 	@JoinColumn(name = "emp_num",nullable = false)
 	private Employee emp;
-
+	
+	
+	//Entity -> DTO 빌더 (Select 시)
+	public WorkDTO toWorkDto(Work work) {
+		
+		WorkDTO workDTO = WorkDTO.builder()
+				.workId(work.getWorkId())
+				.workTitle(work.getWorkTitle())
+				.workContent(work.getWorkContent())
+				.workStartDate(work.getWorkStartDate())
+				.workEndDate(work.getWorkEndDate())
+				.workType(work.isWorkType())
+				.employee(work.getEmp().toFKDTO(work.getEmp()))
+				.build();
+		
+		return workDTO;
+	}
+	
 	
 	
 }
