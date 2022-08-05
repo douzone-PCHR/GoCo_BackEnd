@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pchr.entity.Commute;
 
 import lombok.AllArgsConstructor;
@@ -30,10 +31,17 @@ public class CommuteDTO {
 	
 	private EmployeeDTO employee;
 	
-//	public Commute toCommute() {
-//		return Commute.builder()
-//				.commuteId(commuteId);
-//		
-//	}
+	private int check;
+	// DTO -> Entity 빌더 (Update)
+	public Commute toUpdateCommute(CommuteDTO commuteDTO) {
+		Commute commute = Commute.builder()
+				.commuteId(commuteDTO.getCommuteId())
+				.clockIn(commuteDTO.getClockIn())
+				.clockOut(commuteDTO.getClockOut())
+				.commuteStatus(commuteDTO.getCommuteStatus())
+				.employee(commuteDTO.getEmployee().toFKEmployee(commuteDTO.getEmployee()))
+				.build();
+		return commute;
+	}
 	
 }

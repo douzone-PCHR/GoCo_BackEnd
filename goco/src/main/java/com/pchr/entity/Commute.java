@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.pchr.dto.BoardDTO;
+import com.pchr.dto.CommuteDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,6 +42,20 @@ public class Commute {
 	
 	@ManyToOne
 	@JoinColumn(name = "emp_num",nullable = false)
-	private Employee emp;
+	private Employee employee;
+	
+	//Entity -> DTO 빌더 (Select 시)
+		public CommuteDTO toCommuteDto(Commute commute) {
+			
+			CommuteDTO commuteDTO = CommuteDTO.builder()
+					.commuteId(commute.getCommuteId())
+					.clockIn(commute.getClockIn())
+					.clockOut(commute.getClockOut())
+					.commuteStatus(commute.getCommuteStatus())
+					.employee(commute.getEmployee().toFKDTO(commute.getEmployee()))
+					.build();
+			
+			return commuteDTO;
+		}
 	
 }
