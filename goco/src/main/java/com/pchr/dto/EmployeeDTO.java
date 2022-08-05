@@ -2,6 +2,9 @@ package com.pchr.dto;
 
 import java.util.Date;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.pchr.entity.Authority;
 import com.pchr.entity.Employee;
 
@@ -28,8 +31,6 @@ public class EmployeeDTO {
 
 	private String phoneNumber;
 
-	private Boolean deleteYn;
-
 	private Date updateDatetime;
 
 	private Date hiredate;
@@ -52,47 +53,29 @@ public class EmployeeDTO {
 
 	// -------------- to Entity ------------------- //
 	public Employee toEntity(EmployeeDTO employeeDTO) {
-		Employee employee = Employee.builder()
-							.empNum(employeeDTO.getEmpNum())
-							.empId(employeeDTO.getEmpId())
-							.password(employeeDTO.getPassword())
-							.email(employeeDTO.getEmail())
-							.name(employeeDTO.getName())
-							.phoneNumber(employeeDTO.getPhoneNumber())
-							.deleteYn(employeeDTO.getDeleteYn())
-							.updateDatetime(employeeDTO.getUpdateDatetime())
-							.hiredate(employeeDTO.getHiredate())
-							.authority(employeeDTO.getAuthority())
-							.vacationCount(employeeDTO.getVacationCount())
-							.manager(toManager(employeeDTO.getManager()))
-							.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
-							.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
-							//.unit 넣어야함
-							.build();
-		return employee;
+
+		if(employeeDTO.getManager() != null) {// 매니저가 있으면 아래 실행
+			Employee employee = Employee.builder()
+					.empNum(employeeDTO.getEmpNum())
+					.empId(employeeDTO.getEmpId())
+					.password(employeeDTO.getPassword())
+					.email(employeeDTO.getEmail())
+					.name(employeeDTO.getName())
+					.phoneNumber(employeeDTO.getPhoneNumber())
+					.updateDatetime(employeeDTO.getUpdateDatetime())
+					.hiredate(employeeDTO.getHiredate())
+					.authority(employeeDTO.getAuthority())
+					.vacationCount(employeeDTO.getVacationCount())
+					.manager(toManager(employeeDTO.getManager()))
+					.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
+					.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
+					.unit(employeeDTO.getUnit().toFKUnit(unit))
+					.build();
+			return employee;
+		}
+		return toManager(employeeDTO); // 매니저가 없으면 실행 
 	}
-	
-// /*Insert || Update 과정에서는 매니저에 대한 ID값만 넘겨주면 됨*/
-//	public Employee toManager(EmployeeDTO employeeDTO) {
-//		Employee employee = Employee.builder()
-//										.empNum(employeeDTO.getEmpNum())
-//										.empId(employeeDTO.getEmpId())
-//										.password(employeeDTO.getPassword())
-//										.email(employeeDTO.getEmail())
-//										.name(employeeDTO.getName())
-//										.phoneNumber(employeeDTO.getPhoneNumber())
-//										.deleteYn(employeeDTO.getDeleteYn())
-//										.updateDatetime(employeeDTO.getUpdateDatetime())
-//										.hiredate(employeeDTO.getHiredate())
-//										.authority(employeeDTO.getAuthority())
-//										.vacationCount(employeeDTO.getVacationCount())
-//										//.manager(toManager(employeeDTO.getManager()))
-//										.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
-//										.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
-//										//.unit 넣어야함
-//										.build();	
-//		return employee;
-//	}
+
 	public Employee toFKEmployee(EmployeeDTO empDto) {
 		Employee fkEmp = Employee.builder().empNum(empDto.getEmpNum()).build();
 		return fkEmp;
@@ -106,11 +89,46 @@ public class EmployeeDTO {
 		return null;
 	}
 
-	public Employee toManager(EmployeeDTO empDto) {
-
-		Employee employee = Employee.builder().authority(empDto.getAuthority())
-
-				.build();
-		return null;
+	public Employee toManager(EmployeeDTO employeeDTO) {
+		Employee employee = Employee.builder()
+				.authority(employeeDTO.getAuthority())
+							.empNum(employeeDTO.getEmpNum())
+							.empId(employeeDTO.getEmpId())
+							.password(employeeDTO.getPassword())
+							.email(employeeDTO.getEmail())
+							.name(employeeDTO.getName())
+							.phoneNumber(employeeDTO.getPhoneNumber())
+							.updateDatetime(employeeDTO.getUpdateDatetime())
+							.hiredate(employeeDTO.getHiredate())
+							.authority(employeeDTO.getAuthority())
+							.vacationCount(employeeDTO.getVacationCount())
+							//.manager(toManager(employeeDTO.getManager()))
+							.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
+							.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
+							.unit(employeeDTO.getUnit().toFKUnit(unit))
+							.build();	
+		return employee;
 	}
+	
+	//회원 가입할 때 사용 
+    public Employee toEmpSignUp(PasswordEncoder passwordEncoder) {
+
+    	return Employee.builder()
+    			.empId(empId)
+    			.password(passwordEncoder.encode(password))
+    			.name(name)
+    			.phoneNumber(phoneNumber)
+    			.email(email)
+    			.hiredate(hiredate)
+    			.jobTitle(jobTitle.toEntity(jobTitle))
+    			.teamPosition(teamPosition.toEntity(teamPosition))
+    			.authority(Authority.ROLE_USER)
+    			.unit(unit.toFKUnit(unit))
+    			.build();
+    }
+    // UsernamePasswordAuthenticationToken를 반환하여 아이디와 비밀번호가 일치하는지 검증하는 로직을 넣을 수 있게 된다.
+    public UsernamePasswordAuthenticationToken toAuthentication() {
+        return new UsernamePasswordAuthenticationToken(empId, password);
+    }    
+
 }

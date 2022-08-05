@@ -26,7 +26,7 @@ public class VacationServiceImpl implements VacationService {
 		List<VacationDTO> vacationDTO = new ArrayList<VacationDTO>();
 
 		for (Vacation vacationEntity : vacations) {
-			vacationDTO.add(vacationEntity.toDTO(vacationEntity));
+			vacationDTO.add(vacationEntity.toVacationDTO(vacationEntity));
 		}
 
 		return vacationDTO;
@@ -39,7 +39,7 @@ public class VacationServiceImpl implements VacationService {
 		List<VacationDTO> vacationDTO = new ArrayList<VacationDTO>();
 
 		for (Vacation vacationEntity : vacations) {
-			vacationDTO.add(vacationEntity.toDTO(vacationEntity));
+			vacationDTO.add(vacationEntity.toVacationDTO(vacationEntity));
 		}
 
 		return vacationDTO;
@@ -50,14 +50,14 @@ public class VacationServiceImpl implements VacationService {
 	public VacationDTO insertVacation(VacationDTO vacationDTO) {
 		List<VacationDTO> checkVacationsDTO = checkVacation(vacationDTO);
 		if (checkVacationsDTO.size() == 0) {
-			vacationRepository.save(vacationDTO.toEntity(vacationDTO));
+			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 		} else {
 			switch (checkVacationsDTO.get(0).getApproveYn()) {
 			case APPROVE_WAITTING:
 				return checkVacationsDTO.get(0);
 
 			case APPROVE_REFUSE:
-				vacationRepository.save(vacationDTO.toEntity(vacationDTO));
+				vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 				break;
 
 			default:
@@ -72,7 +72,7 @@ public class VacationServiceImpl implements VacationService {
 	@Override
 	public void updateVacation(VacationDTO vacationDTO) {
 		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
-			vacationRepository.save(vacationDTO.toEntity(vacationDTO));
+			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 		}
 
 	}
@@ -103,7 +103,7 @@ public class VacationServiceImpl implements VacationService {
 	@Override
 	public void approveVacation(VacationDTO vacationDTO) {
 		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
-			vacationRepository.save(vacationDTO.toEntity(vacationDTO));
+			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 		}
 	}
 
@@ -123,7 +123,7 @@ public class VacationServiceImpl implements VacationService {
 				vacationDTO.getVacationStartDate(), vacationDTO.getVacationEndDate());
 
 		for (Vacation vacation : vacations) {
-			vacationsDTO.add(vacation.toDTO(vacation));
+			vacationsDTO.add(vacation.toVacationDTO(vacation));
 		}
 		System.out.println(vacationsDTO);
 		return vacationsDTO;

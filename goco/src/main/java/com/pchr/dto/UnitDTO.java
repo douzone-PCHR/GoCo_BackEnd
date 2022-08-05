@@ -19,36 +19,48 @@ public class UnitDTO {
 
 	private boolean unitType;
 
-	private UnitDTO parentUnit; 	
+	private UnitDTO parentUnit;
 
-	public Unit toEntity(UnitDTO unitDTO, Unit parentUnit) {
-		//새로운 값이 들어온 경우 (Insert)
-		if(unitDTO.getUnitId() == null) {
-			Unit unit = Unit.builder()
-//				.unitId(unitDTO.getUnitId()) // A.I로 줄 예정이라 예외
-					.unitName(unitDTO.getUnitName()).unitType(unitDTO.isUnitType())
-					.parentUnit(parentUnit).build();
-			return unit;			
+	public Unit toUnit(UnitDTO unitDto) {
+		Unit unit = null;
+		// 업데이트 시 unitId를 필요로 하기 때문에 새로운 build 생성
+		if(unitDto.getUnitId() != null) {
+			unit = Unit.builder()
+					.unitId(unitDto.getUnitId())
+					.unitName(unitDto.getUnitName())
+					.unitType(true)
+					.parentUnit(unitDto.getParentUnit()
+							.toParentUnit(unitDto.getParentUnit()))
+					.build();
+			return unit;
 		}
-		// 기존 값을 수정할 경우(Id가 있는 경우)
-		System.out.println(unitDTO.isUnitType());
-		Unit unit = Unit.builder()
-					.unitId(unitDTO.getUnitId())
-					.unitName(unitDTO.getUnitName())
-					.unitType(unitDTO.isUnitType())
-					.parentUnit(parentUnit).build();
+		// 팀 일 경우
+		if (unitDto.getParentUnit() != null) {
+			unit = Unit.builder().unitName(unitDto.getUnitName())
+					.unitType(true)
+					.parentUnit(unitDto.getParentUnit()
+						.toParentUnit(unitDto.getParentUnit()))
+					.build();
+		}
+		// 부서 일 경우
+		else {
+			unit = toParentUnit(unitDto);
+		}
 		return unit;
 	}
 
-	
-	
-	//ToEntity 과정에서는 Unit에 대한 Insert Update만 이뤄지기 때문에 UnitId값만 받으면 됨
+	// 부모에 대한 값 추가 시
+	private Unit toParentUnit(UnitDTO parentUnit) {
+		Unit Parentunit = Unit.builder().unitId(parentUnit.getUnitId())
+				.unitName(parentUnit.getUnitName()).unitType(false).build();
+
+		return Parentunit;
+	}
+
+	// ToEntity 과정에서는 Unit에 대한 Insert Update만 이뤄지기 때문에 UnitId값만 받으면 됨
 	public Unit toFKUnit(UnitDTO unitDto) {
-		Unit unit = Unit.builder()
-				.unitId(unitDto.getUnitId())
-				.build();
+		Unit unit = Unit.builder().unitId(unitDto.getUnitId()).build();
 		return unit;
 	}
-	
-}
 
+}

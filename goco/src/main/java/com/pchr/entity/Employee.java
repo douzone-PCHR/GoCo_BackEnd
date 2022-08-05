@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,11 +27,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 @Getter
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicInsert// emplyee 신규로 컬럼 생성하면서 값 넣을 때 null인건 default로 적용시키기 위한 것 
 public class Employee {
 
 	@Id
@@ -53,10 +56,7 @@ public class Employee {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	@Column(name = "delete_yn")
-	private Boolean deleteYn;
-
-	@Column(name = "update_datetime")
+	@Column(name = "update_datetime",columnDefinition = "datetime default NOW()")
 	private Date updateDatetime;
 
 	@CreatedDate
@@ -73,7 +73,7 @@ public class Employee {
 	private int vacationCount;
 
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE, CascadeType.MERGE })
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "manager", referencedColumnName = "emp_num")
 	@JsonIgnore
 	private Employee manager;
@@ -104,10 +104,10 @@ public class Employee {
 			EmployeeDTO employeeDTO = EmployeeDTO.builder()
 									.empNum(employee.getEmpNum())
 									.empId(employee.getEmpId())
+									.password(employee.getPassword())
 									.email(employee.getEmail())
 									.name(employee.getName())
 									.phoneNumber(employee.getPhoneNumber())
-									.deleteYn(employee.getDeleteYn())
 									.updateDatetime(employee.getUpdateDatetime())
 									.hiredate(employee.getHiredate())
 									.authority(employee.getAuthority())
@@ -115,7 +115,7 @@ public class Employee {
 									.manager(toManagerDTO(employee.getManager()))
 									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
 									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-									//.unit 넣어야함
+									.unit(employee.getUnit().toUnitDTO(unit))
 									.build();
 			return employeeDTO;
 		}
@@ -146,7 +146,6 @@ public class Employee {
 									.email(employee.getEmail())
 									.name(employee.getName())
 									.phoneNumber(employee.getPhoneNumber())
-									.deleteYn(employee.getDeleteYn())
 									.updateDatetime(employee.getUpdateDatetime())
 									.hiredate(employee.getHiredate())
 									.authority(employee.getAuthority())
@@ -154,20 +153,9 @@ public class Employee {
 									//.manager(toManagerDTO(employee.getManager()))
 									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
 									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-									//.unit 넣어야함
+									.unit(employee.getUnit().toUnitDTO(unit))
 									.build();
 		return managerDTO;
 	}
-                  
-	// 사원이 매니저일때 매니저에 대한 ToDTO
-//	public EmployeeDTO toManagerDTO(Employee manager) {
-//		EmployeeDTO managerDTO = EmployeeDTO.builder().empNum(manager.getEmpNum()).empId(manager.getEmpId())
-      //.teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))	// 나중에 추가해줘야함
-      //.unit(employee.getUnit().toDTO(employee.getUnit()))	// 나중에 추가해줘야함
-//				.name(manager.getName()).vacationCount(manager.getVacationCount()).build();
-//		return managerDTO;
-//	}
-
-	// ------------------------------------------------------------ //
 
 }
