@@ -3,7 +3,10 @@ package com.pchr.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.catalina.Manager;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.pchr.entity.Employee;
@@ -20,4 +23,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
     List<Employee> findAll();
     Employee save(Employee employee);
     int deleteByEmail(String email);
+	int deleteByempId(String empId);
+	
+	@Query(value = "select * from employee where manager = :empNum",nativeQuery = true)
+	List<Employee> findByManager(@Param("empNum") Long empNum);
 }
