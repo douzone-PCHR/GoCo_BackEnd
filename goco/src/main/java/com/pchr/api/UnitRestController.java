@@ -20,7 +20,7 @@ import com.pchr.service.impl.UnitServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(value = "/unit")
+@RequestMapping(value = "/admin/unit")
 @RequiredArgsConstructor
 public class UnitRestController {
 	private final UnitServiceImpl unitImpl;

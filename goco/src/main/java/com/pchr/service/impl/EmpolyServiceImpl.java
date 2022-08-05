@@ -13,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
+import com.pchr.dto.UnitDTO;
 import com.pchr.entity.Authority;
 import com.pchr.entity.Employee;
-
+import com.pchr.entity.Resignation;
+import com.pchr.entity.Unit;
 import com.pchr.repository.EmployeeRepository;
-
+import com.pchr.repository.ResignationRepository;
 import com.pchr.service.EmployeeService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,12 @@ public class EmpolyServiceImpl implements EmployeeService{
 	private final PasswordEncoder passwordEncoder;
 	@Autowired
 	private EmployeeRepository employeeRepository;
-
+	@Autowired
+	private ResignationServiceImpl resignationServiceImpl;
+	@Autowired
+	private UnitServiceImpl unitServiceImpl;
+	
+	
 	@Override
 	public Optional<Employee> findByEmail(String email) {
 		return employeeRepository.findByEmail(email);
@@ -92,6 +99,8 @@ public class EmpolyServiceImpl implements EmployeeService{
 		String empId = SecurityUtil.getCurrentMemberId();
 		if(existsByEmpId(empId)) { // 탈퇴할 회원이 있는지 먼저 확인
 			Employee employee = findByEmpId(empId).get();
+			Resignation r = employee.toResignation(employee);//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
+			resignationServiceImpl.save(r);
 			List<Employee> empManager = findByManager(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
 			empManager.forEach((e)->{
 				EmployeeDTO dto = e.toDTO(e);
@@ -171,5 +180,9 @@ public class EmpolyServiceImpl implements EmployeeService{
 		save(employeeDTO.toEntity(employeeDTO));			
 		return 1;
 	}
+	public List<Resignation> ResignationAll() {
+		return resignationServiceImpl.findAll();
+	}
+
 
 }

@@ -6,13 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
+import com.pchr.dto.UnitDTO;
 import com.pchr.entity.Authority;
 import com.pchr.entity.Employee;
+import com.pchr.entity.Resignation;
 import com.pchr.service.impl.EmpolyServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EmpRestController {
 	 private final EmpolyServiceImpl empolyServiceImpl;
-    /////////////////////////////////// 이하 회원 정보 수정 //////////////////////////////
+    ///////////////////////////////////유저 권한 이하 회원 정보 수정 //////////////////////////////
     @DeleteMapping("/user/delete") // 아이디 삭제
     public int delete() {
     	return empolyServiceImpl.delete();
@@ -41,16 +44,12 @@ public class EmpRestController {
       return empolyServiceImpl.setPhone(phoneNumber);
     } //http://localhost:8080/user/changePhone?phoneNumber=kyjdummy@gmail.com   
     
-    @PutMapping("/user/changeVacation")//휴가변경
-    public int changeVacation(@RequestParam int vacationCount) {
-      return empolyServiceImpl.changeVacation(vacationCount);
-    } //http://localhost:8080/user/changeVacation?vacationCount=10
-    
     @GetMapping("/user/me") //  메일, id, unit 반환 해줌
     public ResponseEntity<EmployeeResponseDTO> getMyMemberInfo() {
     	EmployeeResponseDTO myInfoBySecurity = empolyServiceImpl.getMyInfoBySecurity();
         return ResponseEntity.ok((myInfoBySecurity));
     } // http://localhost:8080/user/me
+    ///////////////////////////////// 메니저 권한 ////////////////////////////////////   
     
    
     ///////////////////////////////// 어드민 권한 ////////////////////////////////////
@@ -59,8 +58,20 @@ public class EmpRestController {
       return empolyServiceImpl.changeRole(authority,empId);
     } //http://localhost:8080/admin/role?authority=ROLE_MANAGER&empId=kyj
     
-    @GetMapping("/admin/findAll")
+    @GetMapping("/admin/findAll")//직원전체조회
     public List<EmployeeDTO> findAll() {
         return empolyServiceImpl.findAll();
     } //http://localhost:8080/admin/findAll
+    
+    @GetMapping("/admin/ResignationAll") // 퇴사자 전체 조회
+    public List<Resignation> ResignationAll() {
+        return empolyServiceImpl.ResignationAll();
+    }    //http://localhost:8080/admin/ResignationAll
+    
+    @PutMapping("/admin/changeVacation")//휴가변경
+    public int changeVacation(@RequestParam int vacationCount) {
+      return empolyServiceImpl.changeVacation(vacationCount);
+    } //http://localhost:8080/admin/changeVacation?vacationCount=10
+     
+    
 }
