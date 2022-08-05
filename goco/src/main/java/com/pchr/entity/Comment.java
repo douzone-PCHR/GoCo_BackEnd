@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pchr.dto.CommentDTO;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,4 +61,5 @@ public class Comment {
 				.build();
 		return commentDto;
 	}
+
 }
