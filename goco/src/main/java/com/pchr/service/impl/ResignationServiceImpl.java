@@ -1,7 +1,7 @@
 package com.pchr.service.impl;
 
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -44,8 +44,7 @@ public class ResignationServiceImpl implements ResignationService {
 //    @Scheduled(fixedDelay = 1000)// 1초에한번실행 이전 작업이 종료되고 다시 실행되는 시간이 1초
     public void deleteData() {
 		Date base = java.sql.Timestamp.valueOf(LocalDateTime.now().minusYears(3));// 기준시간을 3년 전으로하여 db데이터 
-    	List<Resignation> resignation = resignationRepository.findAll();
-    	resignation.forEach(r->{
+    	resignationRepository.findAll().forEach(r->{
     		if(base.compareTo(r.getResignationDate())>0) {// 퇴사일이 3년 후일 때 데이터 삭제
     			deleteByEmpNum(r.getEmpNum());
     		}

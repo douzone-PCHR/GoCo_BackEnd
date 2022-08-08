@@ -122,7 +122,10 @@ public class EmpolyServiceImpl implements EmployeeService{
 	}
 	
 	// 내정보 비번 변경
-	public int setPassword(String password) {
+	public int setPassword(String password,String password2) {
+			if(!password.equals(password2)) {
+				return -1;
+			}
 			String EmpId = SecurityUtil.getCurrentMemberId();
 			EmployeeDTO employeeDTO = findByEmpId(EmpId)
 									.map(emp -> emp.toDTO(emp))
@@ -131,7 +134,6 @@ public class EmpolyServiceImpl implements EmployeeService{
 			save(employeeDTO.toEntity(employeeDTO));
 			return 1;
 	}
-	
 	
 	// 내정보 반환 하는 메소드
 	public EmployeeResponseDTO getMyInfoBySecurity() {

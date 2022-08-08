@@ -31,9 +31,9 @@ public class EmpRestController {
     }    // http://localhost:8080/user/delete 
 
     @PutMapping("/user/changePwd")//비번변경
-    public int setPassword(@RequestParam String password) {
-      return empolyServiceImpl.setPassword(password);
-    } //http://localhost:8080/user/changePwd?password=1234
+    public int setPassword(@RequestParam String password,@RequestParam String password2) {
+      return empolyServiceImpl.setPassword(password,password2);
+    } //http://localhost:8080/user/changePwd?password=1234&password2=1234
     
     @PutMapping("/user/changeEmail")//메일변경
     public int setEmail(@RequestParam String email) {
@@ -78,5 +78,7 @@ public class EmpRestController {
     public int delete(@RequestParam Long empNum) {
     	return empolyServiceImpl.adminDelete(empNum);
     }    // http://localhost:8080/admin/delete?empNum=14
+    
+    
     
 }
