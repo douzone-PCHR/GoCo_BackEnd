@@ -44,7 +44,16 @@ public class UnitRestController {
 	public void insertUnit(@RequestBody UnitDTO unitDTO){
 		unitImpl.unitInsert(unitDTO);
 	}
-	
+//	팀추가 { 
+//	     "unitName":"인사3팀",
+//	     "unitType":1,
+//	     "parentUnit":{"unitId":"4"}
+//	 }  
+//	부서추가 {
+//	     "unitName":"회계팀"
+//	 }  
+	 
+	 
 	//Unit 업데이트
 	@PutMapping(value = "/{unitid}")
 	public void updateUnit(@PathVariable(name = "unitid") Long unitId,@RequestBody UnitDTO unitDTO) {

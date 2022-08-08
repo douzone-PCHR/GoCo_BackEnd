@@ -20,10 +20,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
     Optional<Employee> findByEmpId(String empId);
     Employee findByNameAndEmail(String name,String email);
     Employee findByEmpIdAndEmail(String empId,String email);
+    Optional<Employee> findByEmpNum(Long empNum);
     List<Employee> findAll();
     Employee save(Employee employee);
     int deleteByEmail(String email);
 	int deleteByempId(String empId);
+	int deleteByEmpNum(Long empNum);
 	
 	@Query(value = "select * from employee where manager = :empNum",nativeQuery = true)
 	List<Employee> findByManager(@Param("empNum") Long empNum);
