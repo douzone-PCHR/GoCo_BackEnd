@@ -51,7 +51,7 @@ public class VacationRestController {
 	// 휴가 추가, (사원) 검색 front에서 처리
 	@Transactional
 	@PostMapping(value = "/vacation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public List<VacationDTO> updateVacation(@RequestPart("vacationDTO") VacationDTO vacationDTO,
+	public List<VacationDTO> insertVacation(@RequestPart("vacationDTO") VacationDTO vacationDTO,
 			@RequestPart("file") MultipartFile multipartFile) {
 		System.out.println(vacationDTO);
 //		vacationDTO.setVacationId(vacationId);
