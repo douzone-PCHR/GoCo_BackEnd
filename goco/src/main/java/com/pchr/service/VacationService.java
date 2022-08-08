@@ -1,6 +1,7 @@
 package com.pchr.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,7 +18,7 @@ public interface VacationService {
 	public VacationDTO getVacation(Long vacationId);
 
 	// 휴가 추가
-	public List<VacationDTO> insertVacation(VacationDTO vacationDTO, MultipartFile multipartFile);
+	public Map<String, List<VacationDTO>> insertVacation(VacationDTO vacationDTO, MultipartFile multipartFile);
 
 	// 휴가 결재
 	public void approveVacation(VacationDTO vacationDTO);
