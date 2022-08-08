@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService{
     private final EmailAuthServiceImpl emailAuthService; // 메일보내는 함수
 	
     
-//회원 가입시 오류 있으면 반환해주는 것
+    //회원 가입시 유효성 검사 중 오류 있으면 반환해주는 것
 	public static Map<String, String> validateHandling(Errors errors) {
         Map<String, String> validatorResult = new HashMap<>();
         /* 유효성 검사에 실패한 필드 목록을 받음 */
@@ -55,15 +55,15 @@ public class AuthServiceImpl implements AuthService{
         return validatorResult;
 	}
     
-  @Override
-  public EmployeeResponseDTO signup(EmployeeDTO employeeDTO) {
-	// id와 이메일이 이미 있으면 가입된 유저 반환
-    if (empolyServiceImpl.existsByEmail(employeeDTO.getEmail()) | empolyServiceImpl.existsByEmpId(employeeDTO.getEmpId())  ) {
-        throw new RuntimeException("이미 가입되어 있는 유저입니다");
-    }
-    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
-    return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
-}	
+	@Override
+	public EmployeeResponseDTO signup(EmployeeDTO employeeDTO) {
+		// id와 이메일이 이미 있으면 가입된 유저 반환
+	    if (empolyServiceImpl.existsByEmail(employeeDTO.getEmail()) | empolyServiceImpl.existsByEmpId(employeeDTO.getEmpId())  ) {
+	        throw new RuntimeException("이미 가입되어 있는 유저입니다");
+	    }
+	    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
+	    return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
+	}	
 	@Override
     public TokenDTO login(EmployeeDTO employeeDTO) {
 //1) login 메소드는EmployeeRequestDTO에 있는 메소드 toAuthentication를 통해 생긴 UsernamePasswordAuthenticationToken 타입의 데이터를 가지게된다.
@@ -75,7 +75,6 @@ public class AuthServiceImpl implements AuthService{
 // 4) DaoAuthenticationProvider 내부에 있는 authenticate에서 retrieveUser을 통해 DB에서의 User의 비밀번호가 실제 비밀번호가 맞는지 비교한다.
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
 //5) retrieveUser에서는 DB에서의 User를 꺼내기 위해, CustomUserDetailService에 있는 loadUserByUsername을 가져와 사용한다.
-        
         return tokenProvider.generateTokenDto(authentication);
     }	
 
@@ -138,6 +137,26 @@ public class AuthServiceImpl implements AuthService{
 			}
 		}else {
 			return "에러";
+		}
+	}
+	@Override
+	public String sendEmailForEmail(String email) {
+		return emailAuthService.save(email);
+	}
+	@Override
+	public String checkEmail(String authenticationNumber) {
+		EmailAuth emailAuth = emailAuthRepository.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
+		if(emailAuth==null) {
+			return "올바른 인증번호를 입력하세요";
+		}
+		else if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){// 사용자가 보낸 인증번호와 데이터에 있는 인증 번호가 같으면 실행	
+			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {//현재시간과 만료 시간 비교 
+				return  authenticationNumber;
+			}else {
+				return "시간 초과 다시 인증 바랍니다.";
+			}
+		}else {
+			return "-1"; // -1이면 에러인것임
 		}
 	}
 

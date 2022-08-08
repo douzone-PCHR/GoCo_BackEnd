@@ -1,6 +1,7 @@
 package com.pchr.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 import javax.mail.internet.MimeMessage;
@@ -8,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -101,5 +103,15 @@ public class EmailAuthServiceImpl implements EmailAuthService{
                 "받으신 비밀번호로 로그인 후 비밀번호를 다시 설정해주세요";   
         mailSend(setFrom, toMail, title, content);//실제 메일을 보내는 함수
         return generatedString;
+	}
+	@Override
+    @Scheduled(cron = "0 0 4 * * *")//매일 새벽 4시 실행
+//	@Scheduled(fixedDelay = 5000)// 1초에한번실행 이전 작업이 종료되고 다시 실행되는 시간이 1초
+	public void deleteData() {
+		emailAuthRepository.findAll().forEach(e->{
+			if(LocalDateTime.now().compareTo(e.getValidTime())>0) {// 만료시간이 지난 것들 삭제 
+				emailAuthRepository.deleteByEmail(e.getEmail());
+			}
+		});
 	}
 }

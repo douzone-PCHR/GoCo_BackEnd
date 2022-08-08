@@ -1,11 +1,6 @@
 package com.pchr.service;
 
-import java.util.Map;
-
-import org.springframework.validation.Errors;
-
 import com.pchr.dto.EmployeeDTO;
-
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.TokenDTO;
 
@@ -14,6 +9,10 @@ import com.pchr.dto.TokenDTO;
 public interface AuthService {    
 	// 회원가입
 	public EmployeeResponseDTO signup(EmployeeDTO employeeDTO);
+	// 회원가입시 이메일 인증번호 보내는 것
+	public String sendEmailForEmail(String email);
+	// 회원가입시 이메일 인증번호 확인하는 것
+	public String checkEmail(String authenticationNumber);
 	//로그인
 	public TokenDTO login(EmployeeDTO employeeDTO);
     // 아이디 찾기위해 메일 보내는 함수 

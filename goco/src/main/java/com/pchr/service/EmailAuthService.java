@@ -12,4 +12,6 @@ public interface EmailAuthService {
 	public String save(String email);
 	// 임시 비번 생성 및 고객에게 전송
 	public String passwordText(String email);
+	// 새벽 4시마다 인증 테이블 최적화
+	public void deleteData();
 }
