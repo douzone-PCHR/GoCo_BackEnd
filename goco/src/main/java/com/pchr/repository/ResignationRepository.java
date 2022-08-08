@@ -9,4 +9,5 @@ import com.pchr.entity.Resignation;
 
 @Repository
 public interface ResignationRepository extends JpaRepository<Resignation, Long>{
+	public int deleteByEmpNum(Long empNum);
 }

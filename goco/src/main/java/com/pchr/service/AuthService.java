@@ -1,5 +1,9 @@
 package com.pchr.service;
 
+import java.util.Map;
+
+import org.springframework.validation.Errors;
+
 import com.pchr.dto.EmployeeDTO;
 
 import com.pchr.dto.EmployeeResponseDTO;
@@ -20,6 +24,4 @@ public interface AuthService {
 	public String sendEmailForPwd(String id, String email);
 	// 비밀번호 찾기 과정 중 인증 번호가 올바른지 확인하고 맞다면 임시 비밀번호 고객에게 전송 + db에 임시 비번 저장 
 	public String findPassword(String authenticationNumber);
-
-
 }

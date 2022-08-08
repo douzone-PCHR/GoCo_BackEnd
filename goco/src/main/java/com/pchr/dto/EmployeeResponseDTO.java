@@ -16,12 +16,14 @@ import lombok.NoArgsConstructor;
 public class EmployeeResponseDTO {
     private String email;
     private String empId;
+    private String phoneNumber;
     private Unit unit;
     public static EmployeeResponseDTO of(Employee employee) {
     	return EmployeeResponseDTO.builder()
     			.email(employee.getEmail())
     			.empId(employee.getEmpId())
     			.unit(employee.getUnit())
+    			.phoneNumber(employee.getPhoneNumber())
     			.build();
     }
 }
