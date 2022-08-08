@@ -3,10 +3,13 @@ package com.pchr.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.pchr.dto.UnitDTO;
 import com.pchr.entity.Unit;
+import com.pchr.repository.EmployeeRepository;
 import com.pchr.repository.UnitRepository;
 import com.pchr.service.UnitService;
 
@@ -17,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class UnitServiceImpl implements UnitService {
 
 	private final UnitRepository unitRepo;
-
+	private final EmployeeRepository empRepo;
 	@Override
 	public List<UnitDTO> unitAll() {
 		List<UnitDTO> unitListDto = new ArrayList<UnitDTO>();
@@ -78,8 +81,10 @@ public class UnitServiceImpl implements UnitService {
 
 	// 부서 및 팀 삭제 (부서 삭제시 cascade 걸려있어서 자동으로 팀 삭제됨)
 	@Override
-	public void unitDelete(UnitDTO unitDTO) {
-		unitRepo.deleteById(unitDTO.getUnitId());
+	@Transactional
+	public void unitDelete(Long unitId) {
+		empRepo.deleteEmployeeUnitId(unitId);
+		unitRepo.deleteById(unitId); 
 	}
 
 }

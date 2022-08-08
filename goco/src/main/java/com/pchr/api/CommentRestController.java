@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,10 +25,10 @@ public class CommentRestController {
 	
 	// 조회
 	// boardId를 같이 받아야함.
-	@GetMapping("/{id}")
-	public  PageResultDTO<CommentDTO,Comment> getAllComment(@PathVariable Long id,@RequestBody PageRequestDTO prDto){
+	@GetMapping("/{boardid}")
+	public  PageResultDTO<CommentDTO,Comment> getAllComment(@PathVariable(name = "boardid") Long boardId,@RequestBody PageRequestDTO prDto){
 		prDto.setSize(5); // 댓글 기본 갯수 5개 설정
-		return commentService.getCommentList(prDto,id);
+		return commentService.getCommentList(prDto,boardId);
 	}
 	
 	//추가
@@ -38,9 +39,13 @@ public class CommentRestController {
 	}
 	
 	//삭제
-	@DeleteMapping("/{commentId}")
-	public void deleteComment(@PathVariable("commentId") Long commentId) {
+	@DeleteMapping("/{commentid}")
+	public void deleteComment(@PathVariable("commentid") Long commentId) {
 		commentService.deleteComment(commentId);
 	}
 	
+	@PutMapping("/{commentid}")
+	public void updateComment(@PathVariable("commentid") Long commentId,@RequestBody CommentDTO commentDto) {
+		commentService.updateComment(commentId,commentDto);
+	}
 }

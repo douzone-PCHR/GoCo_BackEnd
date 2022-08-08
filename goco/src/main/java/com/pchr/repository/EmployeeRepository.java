@@ -29,4 +29,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 	
 	@Query(value = "select * from employee where manager = :empNum",nativeQuery = true)
 	List<Employee> findByManager(@Param("empNum") Long empNum);
+	
+	@Query(value = "update employee set unit_id = NULL where unit_id = :unitId",nativeQuery = true)
+	void deleteEmployeeUnitId(@Param("unitId") Long unitId);
 }

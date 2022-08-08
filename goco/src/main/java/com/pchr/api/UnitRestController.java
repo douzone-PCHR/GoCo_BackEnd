@@ -24,26 +24,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UnitRestController {
 	private final UnitServiceImpl unitImpl;
-	
-	//모든 데이터 출력 Clear
+
+	// 모든 데이터 출력 Clear
 	@GetMapping
 	public List<UnitDTO> allUnit() {
 		return unitImpl.unitAll();
 	}
-	
-	// 부서에 대한 팀 조회  Clear
-	// 모든 데이터를 조회 시 데이터를 다 넘기기 때문에 굳이 필요한지 잘 모르겠음 . 
+
+	// 부서에 대한 팀 조회 Clear
+	// 모든 데이터를 조회 시 데이터를 다 넘기기 때문에 굳이 필요한지 잘 모르겠음 .
 	// 일단 만들어 두긴함.
 	@GetMapping(value = "/{unitid}")
-	public List<UnitDTO> deptUnit(@PathVariable(name = "unitid") Long unitId){
+	public List<UnitDTO> deptUnit(@PathVariable(name = "unitid") Long unitId) {
 		return unitImpl.deptUnit(unitId);
 	}
-	
-	//부서 및 팀 추가 Clear
+
+	// 부서 및 팀 추가 Clear
 	@PostMapping
-	public void insertUnit(@RequestBody UnitDTO unitDTO){
+	public void insertUnit(@RequestBody UnitDTO unitDTO) {
 		unitImpl.unitInsert(unitDTO);
 	}
+
 //	팀추가 { 
 //	     "unitName":"인사3팀",
 //	     "unitType":1,
@@ -53,18 +54,16 @@ public class UnitRestController {
 //	     "unitName":"회계팀"
 //	 }  
 	 
-	 
 	//Unit 업데이트
 	@PutMapping(value = "/{unitid}")
-	public void updateUnit(@PathVariable(name = "unitid") Long unitId,@RequestBody UnitDTO unitDTO) {
+	public void updateUnit(@PathVariable(name = "unitid") Long unitId, @RequestBody UnitDTO unitDTO) {
 		// 부서,팀 이름 변경 및 팀에 대한 부서이동
-		unitImpl.unitUpdate(unitId,unitDTO);
+		unitImpl.unitUpdate(unitId, unitDTO);
 	}
-	
-	
-	//Unit(부서 및 팀) 삭제 
-	@DeleteMapping
-	public void deleteUnit(UnitDTO unitDTO) {
-		unitImpl.unitDelete(unitDTO);
+
+	// Unit(부서 및 팀) 삭제
+	@DeleteMapping(value = "/{unitid}")
+	public void deleteUnit(@PathVariable(name = "unitid") Long unitId) {
+		unitImpl.unitDelete(unitId);
 	}
 }

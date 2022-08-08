@@ -31,34 +31,33 @@ public class BoardRestController {
 
 	// 특정 Title / Content 입력 시 검색
 	@GetMapping(value = "/search")
-	public PageResultDTO<BoardDTO, Board> getOneBoard(
-			@RequestBody BoardDTO boardDto) {
+	public PageResultDTO<BoardDTO, Board> getOneBoard(@RequestBody BoardDTO boardDto) {
 
 		return boardService.getSearch(boardDto);
-	}
-
-	// 삭제
-	@DeleteMapping(value = "/{id}")
-	public void removeBoard(@PathVariable long id) {
-		boardService.removeBoard(id);
-	}
-
-	// 수정
-	@PutMapping(value = "/{id}")
-	public void updateBoard(@PathVariable long id,
-			@RequestBody BoardDTO updateBoardDto) {
-		boardService.updateBoard(id, updateBoardDto);
-	}
-
-	// 추가 (empNum에 대한 값 같이 받아야함)
-	@PostMapping
-	public void insertBoard(@RequestBody BoardDTO boardDto) {
-		boardService.insertBoard(boardDto);
 	}
 
 	// 상세조회
 	@GetMapping(value = "/{boardid}")
 	public BoardDTO selectBoard(@PathVariable(name = "boardid") Long id) {
 		return boardService.getBoard(id);
+	}
+
+	// 삭제
+	@DeleteMapping(value = "/{boardid}")
+	public void removeBoard(@PathVariable(name = "boardid") Long id) {
+		boardService.removeBoard(id);
+	}
+
+	// 수정
+	@PutMapping(value = "/{boardid}")
+	public void updateBoard(@PathVariable(name = "boardid") Long id, @RequestBody BoardDTO updateBoardDto) {
+		boardService.updateBoard(id, updateBoardDto);
+	}
+
+	// 추가 (empNum에 대한 값 같이 받아야함)
+	@PostMapping
+	public void insertBoard(@RequestBody BoardDTO boardDto) {
+		System.out.println(boardDto);
+		boardService.insertBoard(boardDto);
 	}
 }
