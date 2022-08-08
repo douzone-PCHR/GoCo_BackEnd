@@ -21,10 +21,6 @@ public class FileDTO {
 
 	private String originalName;
 
-//	private VacationDTO vacationDTO;
-//
-//	private BusinessTripDTO businessTripDTO;
-
 	// toEntity
 	public File toFileEntity(FileDTO fileDTO) {
 		File fileEntity = File.builder().fileId(fileDTO.getFileId()).fileName(fileDTO.getFileName())

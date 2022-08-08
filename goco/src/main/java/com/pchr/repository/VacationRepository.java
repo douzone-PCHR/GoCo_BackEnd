@@ -23,8 +23,6 @@ public interface VacationRepository extends JpaRepository<Vacation, Long> {
 	public Vacation findVacationByVacationId(Long vacationId);
 
 	// startdate, enddate로 중복날짜 처리
-	// select * from vaction where empno = 직원번호 and startdate <= 2022-07-11 and
-	// enddate >= 2022-07-08
 	// checkVacation
 	@Query(value = "select * from vacation where emp_num = :empNum and vacation_start_date <= :endDate and vacation_end_date >= :startDate", nativeQuery = true)
 	public List<Vacation> checkVacation(@Param("empNum") Long empNum, @Param("startDate") Date startDate,
