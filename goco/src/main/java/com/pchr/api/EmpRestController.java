@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +51,7 @@ public class EmpRestController {
         return ResponseEntity.ok((myInfoBySecurity));
     } // http://localhost:8080/user/me
     ///////////////////////////////// 메니저 권한 ////////////////////////////////////   
-    
+    // 내가 팀장이면 내 팀원
    
     ///////////////////////////////// 어드민 권한 ////////////////////////////////////
     @PutMapping("/admin/role")//권한변경
@@ -68,10 +69,14 @@ public class EmpRestController {
         return empolyServiceImpl.ResignationAll();
     }    //http://localhost:8080/admin/ResignationAll
     
-    @PutMapping("/admin/changeVacation")//휴가변경
-    public int changeVacation(@RequestParam int vacationCount) {
-      return empolyServiceImpl.changeVacation(vacationCount);
-    } //http://localhost:8080/admin/changeVacation?vacationCount=10
-     
+    @PutMapping("/admin/changeData")//1휴가 , 2메일 , 3아이디, 4입사일, 5이름 , 6핸드폰 번호 변경
+    public int changeVacation(@RequestParam int number,@RequestParam Long empNum,@RequestParam String data) {
+      return empolyServiceImpl.changeVacation(number,empNum,data);
+    } //http://localhost:8080/admin/changeData?number=1&empNum=14&data=10
+    
+    @DeleteMapping("/admin/delete") // 아이디 삭제
+    public int delete(@RequestParam Long empNum) {
+    	return empolyServiceImpl.adminDelete(empNum);
+    }    // http://localhost:8080/admin/delete?empNum=14
     
 }

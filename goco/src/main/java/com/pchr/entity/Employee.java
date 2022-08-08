@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -18,6 +19,8 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pchr.dto.EmployeeDTO;
@@ -34,6 +37,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert// emplyee 신규로 컬럼 생성하면서 값 넣을 때 null인건 default로 적용시키기 위한 것 
+@EntityListeners(AuditingEntityListener.class)
 public class Employee {
 
 	@Id
@@ -56,6 +60,7 @@ public class Employee {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
+	@LastModifiedDate
 	@Column(name = "update_datetime",columnDefinition = "datetime default NOW()")
 	private Date updateDatetime;
 

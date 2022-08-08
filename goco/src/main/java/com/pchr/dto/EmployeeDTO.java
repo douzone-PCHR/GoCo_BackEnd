@@ -2,6 +2,9 @@ package com.pchr.dto;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -20,15 +23,25 @@ import lombok.NoArgsConstructor;
 public class EmployeeDTO {
 
 	private Long empNum;
-
+	
+	@NotBlank(message = "아이디는 필수 입력 값입니다.")
+	@Pattern(regexp = "^[a-zA-Z0-9]{3,10}",message = "아이디는 영어 또는 숫자를 사용해 3 ~ 10자 내외로 입력해주세요.")
 	private String empId;
-
+	
+	@NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+	@Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
 	private String password;
-
+	
+	@NotBlank(message = "이메일은 필수 입력 값입니다.")
+    @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
 	private String email;
-
+	
+	@NotBlank(message = "이름은 필수 입력 값입니다.")
+	@Pattern(regexp = "(?=\\S+$).{2,30}", message = "이름은 공백을 제외하고 2글자 이상 입력해야 합니다.")
 	private String name;
-
+	
+	@NotBlank(message = "핸드폰 번호는 필수 입력 값입니다.")
+	@Pattern(regexp = "^(01[1|6|7|8|9|0])-(\\d{3,4})-(\\d{4})$", message = "핸드폰 번호 형식이 올바르지 않습니다.")
 	private String phoneNumber;
 
 	private Date updateDatetime;
