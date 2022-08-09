@@ -2,6 +2,7 @@ package com.pchr.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -60,6 +61,11 @@ public class AuthServiceImpl implements AuthService{
 		// id와 이메일이 이미 있으면 가입된 유저 반환
 	    if (empolyServiceImpl.existsByEmail(employeeDTO.getEmail()) | empolyServiceImpl.existsByEmpId(employeeDTO.getEmpId())  ) {
 	        throw new RuntimeException("이미 가입되어 있는 유저입니다");
+	    }
+	    ///////////////////////////////// unit_id로 매니저의 emp_num을 받아와서 employeeDTO에 매니저를 넣어준다.
+	    List<Employee> e = empolyServiceImpl.findByManager(1L, employeeDTO.getUnit().getUnitId());
+	    if(e.size()==1) {
+	    	employeeDTO.setManager2(e.get(0).toDTO(e.get(0)));
 	    }
 	    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
 	    return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));

@@ -44,7 +44,7 @@ public class BoardDTO {
 				.boardTitle(boardDto.getBoardTitle())
 				.boardContent(boardDto.getBoardContent())
 				.count(boardDto.getCount())
-				.employee(boardDto.getEmployee().toFKEmployee(boardDto.getEmployee()))
+				.employee(boardDto.getEmployee().toFKManager(boardDto.getEmployee()))
 				.build();
 		System.out.println(board.getCount());
 		return board;
@@ -58,7 +58,7 @@ public class BoardDTO {
 				.boardTitle(boardDto.getBoardTitle())
 				.boardContent(boardDto.getBoardContent())
 				.count(boardDto.getCount()).employee(boardDto.getEmployee()
-						.toFKEmployee(boardDto.getEmployee()))
+						.toFKManager(boardDto.getEmployee()))
 				.build();
 		return board;
 	}

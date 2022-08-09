@@ -86,9 +86,10 @@ public class EmpolyServiceImpl implements EmployeeService{
 		return employeeRepository.deleteByEmpNum(empNum);
 	}
 	@Override
-	public List<Employee> findByManager2(Long empNum) {
-		return employeeRepository.findByManager2(empNum);
+	public List<Employee> findManagerByEmpNum(Long empNum) {
+		return employeeRepository.findManagerByEmpNum(empNum);
 	}	
+	
 	@Override
 	public Optional<Employee> findByEmpNum(Long empNum) {
 		return employeeRepository.findByEmpNum(empNum);
@@ -111,7 +112,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 				Employee employee = findByEmpId(empId).get();
 				Resignation r = employee.toResignation(employee);//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
 				resignationServiceImpl.save(r);
-				List<Employee> empManager = findByManager2(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
+				List<Employee> empManager = findManagerByEmpNum(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
 				empManager.forEach((e)->{
 					EmployeeDTO dto = e.toDTO(e);
 					dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다. 
@@ -216,7 +217,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 				.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
 		Resignation r = employee.toResignation(employee);//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
 		resignationServiceImpl.save(r);
-		List<Employee> empManager = findByManager2(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
+		List<Employee> empManager = findManagerByEmpNum(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
 		empManager.forEach((e)->{
 				EmployeeDTO dto = e.toDTO(e);
 				dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다. 
@@ -229,7 +230,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 	public List<Resignation> ResignationAll() {
 		return resignationServiceImpl.findAll();
 	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 매니저 변경  함수
 	public int changeManager(Long empNum, UnitDTO unit) {  
 		Employee employee = findByEmpNum(empNum)
@@ -266,7 +267,5 @@ public class EmpolyServiceImpl implements EmployeeService{
 			save(empDTO.toEntity(empDTO));
 		});		
 	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
