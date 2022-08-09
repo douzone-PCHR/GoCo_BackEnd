@@ -96,8 +96,7 @@ public class EmployeeDTO {
 		return manager;
 	}
 		
-	public Employee toManager(EmployeeDTO employeeDTO) {
-
+	public Employee toManager(EmployeeDTO employeeDTO) {// 빌더에 manager를 빼주었다.
 		Employee employee = Employee.builder()
 				.authority(employeeDTO.getAuthority())
 							.empNum(employeeDTO.getEmpNum())
@@ -115,7 +114,6 @@ public class EmployeeDTO {
 							.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
 							.unit(employeeDTO.getUnit().toFKUnit(unit))
 							.build();	
-
 		return employee;
 	}
 		
