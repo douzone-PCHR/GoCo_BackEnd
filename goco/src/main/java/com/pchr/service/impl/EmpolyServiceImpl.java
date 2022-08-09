@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.catalina.Manager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,10 +19,8 @@ import com.pchr.dto.UnitDTO;
 import com.pchr.entity.Authority;
 import com.pchr.entity.Employee;
 import com.pchr.entity.Resignation;
-import com.pchr.entity.TeamPosition;
-import com.pchr.entity.Unit;
+
 import com.pchr.repository.EmployeeRepository;
-import com.pchr.repository.ResignationRepository;
 import com.pchr.service.EmployeeService;
 
 import lombok.RequiredArgsConstructor;
@@ -88,8 +86,8 @@ public class EmpolyServiceImpl implements EmployeeService{
 		return employeeRepository.deleteByEmpNum(empNum);
 	}
 	@Override
-	public List<Employee> findByManager(Long empNum) {
-		return employeeRepository.findByManager(empNum);
+	public List<Employee> findByManager2(Long empNum) {
+		return employeeRepository.findByManager2(empNum);
 	}	
 	@Override
 	public Optional<Employee> findByEmpNum(Long empNum) {
@@ -113,7 +111,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 				Employee employee = findByEmpId(empId).get();
 				Resignation r = employee.toResignation(employee);//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
 				resignationServiceImpl.save(r);
-				List<Employee> empManager = findByManager(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
+				List<Employee> empManager = findByManager2(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
 				empManager.forEach((e)->{
 					EmployeeDTO dto = e.toDTO(e);
 					dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다. 
@@ -218,7 +216,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 				.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
 		Resignation r = employee.toResignation(employee);//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
 		resignationServiceImpl.save(r);
-		List<Employee> empManager = findByManager(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
+		List<Employee> empManager = findByManager2(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
 		empManager.forEach((e)->{
 				EmployeeDTO dto = e.toDTO(e);
 				dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다. 
