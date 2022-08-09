@@ -50,4 +50,13 @@ public class CommentServiceImpl implements CommentService{
 	public void deleteComment(Long commentId) {
 		commentRepo.deleteById(commentId);
 	}
+	
+	//댓글수정
+	@Override
+	public void updateComment(Long commentId,CommentDTO commentDto) {
+		
+		commentDto.setCommentId(commentId);
+		commentRepo.save(commentDto.toComment(commentDto));
+		
+	}
 }

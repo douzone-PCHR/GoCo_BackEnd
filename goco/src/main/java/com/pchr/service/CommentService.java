@@ -10,4 +10,6 @@ public interface CommentService {
 	PageResultDTO<CommentDTO, Comment> getCommentList(PageRequestDTO prDto,
 			Long id);
 
+	void updateComment(Long commentId, CommentDTO commentDto);
+
 }

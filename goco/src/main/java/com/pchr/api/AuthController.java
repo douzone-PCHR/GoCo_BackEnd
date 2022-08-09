@@ -1,28 +1,19 @@
 package com.pchr.api;
 
-
-
+import java.util.Map;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-
 import com.pchr.dto.EmployeeDTO;
-
-import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.TokenDTO;
-import com.pchr.entity.Authority;
-import com.pchr.service.EmployeeService;
 import com.pchr.service.impl.AuthServiceImpl;
 import com.pchr.service.impl.EmpolyServiceImpl;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,39 +23,30 @@ public class AuthController {
     private final AuthServiceImpl authService;
     private final EmpolyServiceImpl empolyServiceImpl;
     
-  @PostMapping("/signup")
-  public ResponseEntity<EmployeeResponseDTO> signup(@RequestBody EmployeeDTO employeeDTO) {
-      return ResponseEntity.ok(authService.signup(employeeDTO));
-  }  
-// http://localhost:8080/auth/signup
-//  {
-//	   	"empId" : "ky",
-//	      "password" : "1111",
-//	  	"name" : "김용주",
-//	      "phoneNumber" : "010-1234-4567",
-//	  	"email" : "kyjdummy1@gmail.com",	
-//	      "hiredate" : "1991-03-26T00:00:00",
-//	      "jobTitle": {
-//	        "jobTitleId" : "1"
-//	       },
-//	      "teamPosition": {
-//	        "teamPositionId" : "1"
-//	       },
-//	       "unit":{
-//	           "unitId" : "3"
-//	       }
-//	  }  
+	@PostMapping("/signup") // 회원가입
+	public ResponseEntity<?> signup(@Valid @RequestBody EmployeeDTO employeeDTO, Errors errors) {
+		if (errors.hasErrors()) {
+			/* 유효성 통과 못한 필드와 메시지를 핸들링 */
+			Map<String, String> validatorResult = AuthServiceImpl.validateHandling(errors);
+			return ResponseEntity.ok(validatorResult);
+		}
+	    return ResponseEntity.ok(authService.signup(employeeDTO));
+	}  
+    @GetMapping("/sendEmailForEmail") // 회원가입시 이메일 인증
+    public String sendEmailForEmail(@RequestParam String email) {
+    	return authService.sendEmailForEmail(email);
+    } //http://localhost:8080/auth/sendEmailForEmail?email=kyjdummy@gmail.com
 
+    @GetMapping("/checkEmail") // 회원가입시 이메일 인증
+    public String checkEmail(@RequestParam String authenticationNumber) {
+    	return authService.checkEmail(authenticationNumber);
+    }  //http://localhost:8080/auth/checkEmail?authenticationNumber=
+    
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO) {
         return ResponseEntity.ok(authService.login(employeeDTO));
     }
-//http://localhost:8080/auth/login    
-//    {
-//     	"empId" : "kyj",
-//        "password" : "1111"
-//    } 
- 
+
     @GetMapping("/sendEmailForId") // id 찾기위해 이메일 보내는함수
     public String sendemail(@RequestParam String name, @RequestParam String email) {
     	return authService.sendEmailForId(name,email);
