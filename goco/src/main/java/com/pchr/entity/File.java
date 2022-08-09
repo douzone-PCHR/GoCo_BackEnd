@@ -1,14 +1,13 @@
 package com.pchr.entity;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import com.pchr.dto.FileDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,24 +20,33 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class File {
-	
-	@Id 
+
+	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "file_id")
 	private Long fileId;
-	
-	@Column(name = "upload_path",nullable = false)
-	private String uploadPath;
-	
-	@Column(name = "file_name",nullable = false)
+
+	@Column(name = "file_path", columnDefinition = "TEXT", nullable = false)
+	private String filePath;
+
+	@Column(name = "file_name", nullable = false)
 	private String fileName;
-	
-	@ManyToOne
-	@JoinColumn(name = "business_trip_id")
-	private BusinessTrip businessTrip;
-	
-	@ManyToOne
-	@JoinColumn(name = "vacation_id")
+
+	@Column(name = "original_name", nullable = false)
+	private String originalName;
+
+	@OneToOne(mappedBy = "file")
 	private Vacation vacation;
-	
+
+	@OneToOne(mappedBy = "file")
+	private BusinessTrip businessTrip;
+
+	// toDTO
+	public FileDTO toFileDTO(File fileEntity) {
+		FileDTO fileDTO = FileDTO.builder().fileId(fileEntity.getFileId()).fileName(fileEntity.getFileName())
+				.filePath(fileEntity.getFilePath()).originalName(fileEntity.getOriginalName()).build();
+		return fileDTO;
+
+	}
+
 }

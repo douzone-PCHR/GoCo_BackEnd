@@ -12,6 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.DynamicInsert;
 
 import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.VacationDTO;
@@ -26,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicInsert
 public class Vacation {
 
 	@Id
@@ -39,7 +43,7 @@ public class Vacation {
 	@Column(name = "vacation_end_date")
 	private Date vacationEndDate;
 
-	@Column(name = "approve_yn")
+	@Column(name = "approve_yn", columnDefinition = "varchar(255) default 'APPROVE_WAITTING'")
 	@Enumerated(EnumType.STRING)
 	private ApproveEnum approveYn;
 
@@ -59,6 +63,10 @@ public class Vacation {
 	@JoinColumn(name = "emp_num", nullable = false)
 	private Employee employee;
 
+	@OneToOne
+	@JoinColumn(name = "file_id", unique = true)
+	private File file;
+
 	// toDTO
 	public VacationDTO toVacationDTO(Vacation vacationEntity) {
 		VacationDTO vacationDTO = VacationDTO.builder().vacationId(vacationEntity.getVacationId())
@@ -67,7 +75,12 @@ public class Vacation {
 				.vacationType(vacationEntity.getVacationType()).vacationContent(vacationEntity.getVacationContent())
 				.vacationRequestDate(vacationEntity.getVacationRequestDate())
 				.vacationApproveDate(vacationEntity.getVacationApproveDate())
-				.employee(vacationEntity.getEmployee().toFKDTO(vacationEntity.getEmployee())).build();
+				.employee(vacationEntity.getEmployee() != null
+						? vacationEntity.getEmployee().toFKDTO(vacationEntity.getEmployee())
+						: null)
+				.file(vacationEntity.getFile() != null ? vacationEntity.getFile().toFileDTO(vacationEntity.getFile())
+						: null)
+				.build();
 		return vacationDTO;
 	}
 
