@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pchr.dto.UnitDTO;
 
@@ -41,7 +44,8 @@ public class Unit {
 	@Column(name = "unit_type", nullable = false)
 	private boolean unitType;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "parent_unit", referencedColumnName = "unit_id")
 	@JsonIgnore
 	private Unit parentUnit;
