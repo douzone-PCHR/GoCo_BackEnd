@@ -88,23 +88,6 @@ public class AuthServiceImpl implements AuthService{
 	}	
 	
 	@Override
-	// 아이디 찾기 과정 중 인증 번호 확인하는 것
-	public String findAuth(String authenticationNumber) {
-		EmailAuth emailAuth = emailAuthRepository.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
-		if(emailAuth==null) {
-			return "올바른 인증번호를 입력하세요";
-		}
-		else if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){// 사용자가 보낸 인증번호와 데이터에 있는 인증 번호가 같으면 실행	
-			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {//현재시간과 만료 시간 비교 
-				return empolyServiceImpl.findByEmail(emailAuth.getEmail()).get().getEmpId(); // id값 반환 
-			}else {
-				return "시간 초과 다시 인증 바랍니다.";
-			}
-		}else {
-			return "-1"; // -1이면 에러인것임
-		}
-	}	
-	@Override
 	// 비밀번호 찾기 위해 메일보내는 함수
 	public String sendEmailForPwd(String id, String email) {
 		if(empolyServiceImpl.findByEmpIdAndEmail(id,email)==null) { // 이름과 이메일로 해당하는 emp테이블을 가져와 사용자가 없다면 null을 반환하므로 조건문을 준다.
@@ -112,52 +95,47 @@ public class AuthServiceImpl implements AuthService{
 		}
 		return emailAuthService.save(email);
 	}	
-	
-	@Override
-	// 비밀번호 찾기 과정 중 인증 번호가 올바른지 확인하고 맞다면 임시 비밀번호 고객에게 전송 + db에 임시 비번 저장 
-	public String findPassword(String authenticationNumber) {
-		EmailAuth emailAuth = emailAuthRepository.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
-		if(emailAuth==null) {
-			return "올바른 인증번호를 입력하세요";
-		}
-		else if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){	
-			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {// 시간 비교해서 유효할 경우 실행됨
-				// 1) 랜덤 함수로 임시 비번을 생성하고 고객에게 임시 비번을 전송한다.
-				String password = emailAuthService.passwordText(emailAuth.getEmail());//임시 패스워드 문자열 발행
-				// 2) employee를 employeeDto로 바꾸고  employeeDto에 임시비번 저장하고 이걸다시 employee로 바꾸고, 이걸 레포를써서 저장한다.
-				EmployeeDTO employeeDTO = empolyServiceImpl.findByEmail(emailAuth.getEmail())
-											.map(emp->emp.toDTO(emp))
-											.orElseThrow(()->new RuntimeException("유저 정보가 없습니다"));
-				
-				employeeDTO.setPassword(passwordEncoder.encode((password)));
-				empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
-				return "이메일 발송";
-			}else {
-				return "시간 초과 다시 인증 바랍니다.";
-			}
-		}else {
-			return "에러";
-		}
-	}
 	@Override
 	public String sendEmailForEmail(String email) {
-		return emailAuthService.save(email);
+		if(!empolyServiceImpl.idCheck(email)) {
+			return emailAuthService.save(email);
+		}
+		return "이미 가입되어 있는 유저입니다";
 	}
-	@Override
-	public String checkEmail(String authenticationNumber) {
+	
+	@Override// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
+	public String find(int number,String authenticationNumber) {
 		EmailAuth emailAuth = emailAuthRepository.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
 		if(emailAuth==null) {
 			return "올바른 인증번호를 입력하세요";
 		}
-		else if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){// 사용자가 보낸 인증번호와 데이터에 있는 인증 번호가 같으면 실행	
-			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {//현재시간과 만료 시간 비교 
-				return  authenticationNumber;
+		if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){	
+			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {// 시간 비교해서 유효할 경우 실행됨
+				switch(number) {
+				case 1:
+					return  authenticationNumber;
+				case 2:
+					return empolyServiceImpl.findByEmail(emailAuth.getEmail()).get().getEmpId(); // id값 반환
+				case 3:
+					// 1) 랜덤 함수로 임시 비번을 생성하고 고객에게 임시 비번을 전송한다.
+					String password = emailAuthService.passwordText(emailAuth.getEmail());//임시 패스워드 문자열 발행
+					// 2) employee를 employeeDto로 바꾸고  employeeDto에 임시비번 저장하고 이걸다시 employee로 바꾸고, 이걸 레포를써서 저장한다.
+					EmployeeDTO employeeDTO = empolyServiceImpl.findByEmail(emailAuth.getEmail())
+												.map(emp->emp.toDTO(emp))
+												.orElseThrow(()->new RuntimeException("유저 정보가 없습니다"));
+					
+					employeeDTO.setPassword(passwordEncoder.encode((password)));
+					empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
+					return "이메일 발송";
+				default :
+					return "잘못된 정보가 입력되었습니다.";
+				}
 			}else {
 				return "시간 초과 다시 인증 바랍니다.";
 			}
-		}else {
-			return "-1"; // -1이면 에러인것임
 		}
+		return "-1";//에러
 	}
-
+	
+	
 }

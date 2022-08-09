@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,45 +33,36 @@ public class AuthController {
 		}
 	    return ResponseEntity.ok(authService.signup(employeeDTO));
 	}  
-    @GetMapping("/sendEmailForEmail") // 회원가입시 이메일 인증
-    public String sendEmailForEmail(@RequestParam String email) {
-    	return authService.sendEmailForEmail(email);
-    } //http://localhost:8080/auth/sendEmailForEmail?email=kyjdummy@gmail.com
-
-    @GetMapping("/checkEmail") // 회원가입시 이메일 인증
-    public String checkEmail(@RequestParam String authenticationNumber) {
-    	return authService.checkEmail(authenticationNumber);
-    }  //http://localhost:8080/auth/checkEmail?authenticationNumber=
-    
+	
     @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO) {
         return ResponseEntity.ok(authService.login(employeeDTO));
     }
-
-    @GetMapping("/sendEmailForId") // id 찾기위해 이메일 보내는함수
-    public String sendemail(@RequestParam String name, @RequestParam String email) {
-    	return authService.sendEmailForId(name,email);
-    }   //http://localhost:8080/auth/sendEmailForId?name=김용주&email=kyjdummy@gmail.com
-    
-    @GetMapping("/findId") // 인증번호를 확인해서 인증번호가 맞다면 id를 반환해줌, 아이디찾기와 비번 찾기 모두 id를 반환해준다.
-    public String findId(@RequestParam String authenticationNumber) {
-    	return authService.findAuth(authenticationNumber);
-    }  //http://localhost:8080/auth/findId?authenticationNumber=인증번호입력
-    
-    @GetMapping("/sendEmailForPwd") // 비번 찾기위해 이메일 보내는 함수 
-    public String findPassword(@RequestParam String id, @RequestParam String email) {
-    	return authService.sendEmailForPwd(id,email);
-    }    //http://localhost:8080/auth/sendEmailForPwd?id=kyj&email=kyjdummy@gmail.com
-    
-    @GetMapping("/findPwd")// 임시 비번 email 발송 
-    public String findPassword(@RequestParam String authenticationNumber) {
-    	return authService.findPassword(authenticationNumber);
-    }//	http://localhost:8080/auth/findPwd?authenticationNumber=인증번호입력
     
     @GetMapping("checkInfo") // 아이디와 이메일 이미 가입되어있는지 확인하는 것
-    public String checkInfo(@RequestParam String info) {
+    public boolean checkInfo(@RequestParam String info) {
     	return empolyServiceImpl.idCheck(info);
     }    // http://localhost:8080/auth/checkInfo?info=kyj
 
 
+    @GetMapping("/sendEmailForEmail") // 회원가입시 이메일 인증을위해 이메일 보내는 부분 
+    public String sendEmailForEmail(@RequestBody EmployeeDTO e) {
+    	return authService.sendEmailForEmail(e.getEmail());
+    } //http://localhost:8080/auth/sendEmailForEmail
+
+    @GetMapping("/sendEmailForId") // id 찾기위해 이메일 보내는함수
+    public String sendemail(@RequestBody EmployeeDTO e) {
+    	return authService.sendEmailForId(e.getName(),e.getEmail());
+    }   //http://localhost:8080/auth/sendEmailForId
+    
+    @GetMapping("/sendEmailForPwd") // 비번 찾기위해 이메일 보내는 함수 
+    public String findPassword(@RequestBody EmployeeDTO e) {
+    	return authService.sendEmailForPwd(e.getEmpId(),e.getEmail());
+    }    //http://localhost:8080/auth/sendEmailForPwd
+
+    @GetMapping("/find/{number}")// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
+    public String find(@PathVariable("number") int number,@RequestParam String authenticationNumber) {
+    	return authService.find(number,authenticationNumber);
+    }    //http://localhost:8080/auth/find/1?authenticationNumber=
+    
 }

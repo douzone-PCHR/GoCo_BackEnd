@@ -11,16 +11,12 @@ public interface AuthService {
 	public EmployeeResponseDTO signup(EmployeeDTO employeeDTO);
 	// 회원가입시 이메일 인증번호 보내는 것
 	public String sendEmailForEmail(String email);
-	// 회원가입시 이메일 인증번호 확인하는 것
-	public String checkEmail(String authenticationNumber);
 	//로그인
 	public TokenDTO login(EmployeeDTO employeeDTO);
     // 아이디 찾기위해 메일 보내는 함수 
 	public String sendEmailForId(String name, String email);
-	// 아이디 찾기 과정 중 인증 번호 확인하는 것
-	public String findAuth(String authenticationNumber);
 	// 비밀번호 찾기 위해 메일보내는 함수
 	public String sendEmailForPwd(String id, String email);
-	// 비밀번호 찾기 과정 중 인증 번호가 올바른지 확인하고 맞다면 임시 비밀번호 고객에게 전송 + db에 임시 비번 저장 
-	public String findPassword(String authenticationNumber);
+	// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
+	public String find(int number,String authenticationNumber);
 }
