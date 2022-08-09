@@ -19,5 +19,6 @@ public interface EmployeeService {
     int deleteByEmail(String email);
 	int deleteByEmpId(String empId);
 	int deleteByEmpNum(Long empNum);
-	public List<Employee> findByManager(Long empNum);
+	public List<Employee> findByManager2(Long empNum);
+	public List<Employee> findByManager(Long teamPositionId,Long unitId);
 }

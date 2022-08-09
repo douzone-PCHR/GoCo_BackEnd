@@ -110,6 +110,7 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	public void deleteData() {
 		emailAuthRepository.findAll().forEach(e->{
 			if(LocalDateTime.now().compareTo(e.getValidTime())>0) {// 만료시간이 지난 것들 삭제 
+				System.out.println("데이터 삭제 시간 : "+LocalDateTime.now());
 				emailAuthRepository.deleteByEmail(e.getEmail());
 			}
 		});

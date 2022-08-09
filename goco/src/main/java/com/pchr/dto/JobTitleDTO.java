@@ -22,7 +22,6 @@ public class JobTitleDTO {
 							.jobTitleId(jobTitleDTO.getJobTitleId())
 							.jobTitleName(jobTitleDTO.getJobTitleName())
 							.build();
-
 		return jobTitle;
 	}
 }
