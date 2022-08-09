@@ -39,7 +39,7 @@ public class CommuteDTO {
 				.clockIn(commuteDTO.getClockIn())
 				.clockOut(commuteDTO.getClockOut())
 				.commuteStatus(commuteDTO.getCommuteStatus())
-				.employee(commuteDTO.getEmployee().toFKEmployee(commuteDTO.getEmployee()))
+				.employee(commuteDTO.getEmployee().toFKManager(commuteDTO.getEmployee()))
 				.build();
 		return commute;
 	}

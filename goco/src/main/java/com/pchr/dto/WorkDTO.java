@@ -48,7 +48,7 @@ public class WorkDTO {
 				.workStartDate(workDTO.getWorkStartDate())
 				.workEndDate(workDTO.getWorkEndDate())
 				.workType(workDTO.isWorkType())
-				.emp(workDTO.getEmployee().toFKEmployee(workDTO.getEmployee()))
+				.emp(workDTO.getEmployee().toFKManager(workDTO.getEmployee()))
 				.build();
 		return work;
 	}

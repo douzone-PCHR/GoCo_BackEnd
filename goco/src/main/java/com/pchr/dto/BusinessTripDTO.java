@@ -45,7 +45,7 @@ public class BusinessTripDTO {
 						? businessTripDTO.getFile().toFileEntity(businessTripDTO.getFile())
 						: null)
 				.employee(businessTripDTO.getEmployee() != null
-						? businessTripDTO.getEmployee().toFKEmployee(businessTripDTO.getEmployee())
+						? businessTripDTO.getEmployee().toFKManager(businessTripDTO.getEmployee())
 						: null)
 				.build();
 		return businessTripEntity;

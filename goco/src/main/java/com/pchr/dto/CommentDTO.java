@@ -33,7 +33,7 @@ public class CommentDTO {
 	public Comment toComment(CommentDTO commentDto) {
 		Comment comment = Comment.builder()
 				.commentContent(commentDto.getCommentContent())
-				.emp(commentDto.getEmployeeDto().toFKEmployee(commentDto.getEmployeeDto()))
+				.emp(commentDto.getEmployeeDto().toFKManager(commentDto.getEmployeeDto()))
 				.board(commentDto.getBoardDto().toFKBoard(commentDto.getBoardDto()))
 				.build();
 		return comment;

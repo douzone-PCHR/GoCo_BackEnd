@@ -89,19 +89,6 @@ public class EmployeeDTO {
 		return toManager(employeeDTO); // 매니저가 없으면 실행 
 	}
 
-	public Employee toFKEmployee(EmployeeDTO empDto) {
-		Employee fkEmp = Employee.builder().empNum(empDto.getEmpNum()).build();
-		return fkEmp;
-	}
-
-//	public Employee toEmployee(EmployeeDTO empDto) {
-//		Employee employee = Employee.builder().authority(empDto.getAuthority())
-//				.manager(empDto.getManager().toManager(empDto.getManager()))
-//				.jobTitle(empDto.getJobTitle().toEntity(empDto.getJobTitle()))
-//				.build();
-//		return null;
-//	}
-	//
 	public Employee toFKManager(EmployeeDTO emp) {
 		Employee manager = Employee.builder()
 							.empNum(emp.getEmpNum())
@@ -134,7 +121,20 @@ public class EmployeeDTO {
 		
 	//회원 가입할 때 사용 
     public Employee toEmpSignUp(PasswordEncoder passwordEncoder) {
-
+    	if(manager==null) {
+    		return Employee.builder()
+        			.empId(empId)
+        			.password(passwordEncoder.encode(password))
+        			.name(name)
+        			.phoneNumber(phoneNumber)
+        			.email(email)
+        			.hiredate(hiredate)
+        			.jobTitle(jobTitle.toEntity(jobTitle))
+        			.teamPosition(teamPosition.toEntity(teamPosition))
+        			.authority(Authority.ROLE_USER)
+        			.unit(unit.toFKUnit(unit))
+        			.build();
+    	}
     	return Employee.builder()
     			.empId(empId)
     			.password(passwordEncoder.encode(password))
@@ -144,10 +144,12 @@ public class EmployeeDTO {
     			.hiredate(hiredate)
     			.jobTitle(jobTitle.toEntity(jobTitle))
     			.teamPosition(teamPosition.toEntity(teamPosition))
+    			.manager(toFKManager(manager))
     			.authority(Authority.ROLE_USER)
     			.unit(unit.toFKUnit(unit))
     			.build();
     }
+    
     // UsernamePasswordAuthenticationToken를 반환하여 아이디와 비밀번호가 일치하는지 검증하는 로직을 넣을 수 있게 된다.
     public UsernamePasswordAuthenticationToken toAuthentication() {
         return new UsernamePasswordAuthenticationToken(empId, password);
