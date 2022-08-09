@@ -90,6 +90,12 @@ public class EmpRestController {
 //               "unitId" : "3"
 //           }
 //    }
+    @PutMapping("/admin/changUnitId") // Unit_id 변경 메소드
+    public int changUnitId(@RequestBody EmployeeDTO e) {
+    	return empolyServiceImpl.changUnitId(e.getEmpNum(),e.getUnit());
+    }//http://localhost:8080/admin/changUnitId
+    
+    
     @DeleteMapping("/admin/delete") // 아이디 삭제
     public int delete(@RequestBody EmployeeDTO e) {
     	return empolyServiceImpl.adminDelete(e.getEmpNum());

@@ -231,6 +231,33 @@ public class EmpolyServiceImpl implements EmployeeService{
 		return resignationServiceImpl.findAll();
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Unit_id 변경
+	public int changUnitId(Long empNum, UnitDTO unit) {
+	//	2) emp_num으로 조회한 employee의 manager를 null로 바꾼다.
+	//	3) emp_num으로 조회한 employee의 unit_id를 변경할 unit_id로 바꾼다
+		Employee employee = findByEmpNum(empNum)
+				.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
+		// 내가 팀장이면 팀장 해제 후 가능하다고 떠야 한다.
+		if(employee.getTeamPosition().getTeamPositionId()==1L) {
+			return -1; // 팀장이기 때문에 팀원으로 변경 후 가능
+		}
+		EmployeeDTO employeeDTO = employee.toDTO(employee);
+		employeeDTO.setManager(null);// 매니저를 null로 바꿔준다.
+		employeeDTO.getTeamPosition().setTeamPositionId(2L);// 팀원으로 변경하는 것
+		employeeDTO.setTeamPosition(employeeDTO.getTeamPosition());// 팀원으로 변경하는 것
+		employeeDTO.setUnit(unit); // 팀 변경 한다. 
+		save(employeeDTO.toEntity(employeeDTO));
+		
+	//	4) 해당 unit_id의 팀장을 찾아 emp_num으로 조회한 employee의 manager로 걸어준다.
+		List<Employee> leader = findByManager(1L, unit.getUnitId());
+		if(leader.size()==1) {
+			setLeader(leader.get(0),unit.getUnitId());
+		}
+		else{
+			return -2; // 매니저가 2명일 때 에러 코드 
+		}
+		return 1;
+	}
 	// 매니저 변경  함수
 	public int changeManager(Long empNum, UnitDTO unit) {  
 		Employee employee = findByEmpNum(empNum)
@@ -251,7 +278,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			save(empDTO.toEntity(empDTO));
 		});
 	}
-	// 전달 받은 empNum을 통해 팀장 지정
+	// 전달 받은 empNum을 통해 해당 empNum의 주체를 팀장으로 지정
 	public void MemberToLeader(Employee employee, UnitDTO unit) {
 		EmployeeDTO employeeDTO = employee.toDTO(employee);
 		employeeDTO.setManager(null);// 팀장이 될거기 때문에 manager는 null
