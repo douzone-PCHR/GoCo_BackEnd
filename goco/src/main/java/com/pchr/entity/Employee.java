@@ -105,14 +105,21 @@ public class Employee {
 	public EmployeeDTO toDTO(Employee employee) {
 		if (employee.getManager() != null) {
 
-			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
-					.password(employee.getPassword()).email(employee.getEmail()).name(employee.getName())
-					.phoneNumber(employee.getPhoneNumber()).updateDatetime(employee.getUpdateDatetime())
-					.hiredate(employee.getHiredate()).authority(employee.getAuthority())
-					.vacationCount(employee.getVacationCount()).manager(toManagerDTO(employee.getManager()))
-					.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
-					.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-					.unit(employee.getUnit().toUnitDTO(unit)).build();
+			EmployeeDTO employeeDTO = EmployeeDTO.builder()
+									.empNum(employee.getEmpNum())
+									.empId(employee.getEmpId())
+									.password(employee.getPassword())
+									.email(employee.getEmail())
+									.name(employee.getName())
+									.phoneNumber(employee.getPhoneNumber())
+									.updateDatetime(employee.getUpdateDatetime())
+									.hiredate(employee.getHiredate())
+									.authority(employee.getAuthority())
+									.vacationCount(employee.getVacationCount())
+									.manager(toManagerDTO(employee.getManager()))
+									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+									.unit(employee.getUnit().toUnitDTO(unit)).build();
 			return employeeDTO;
 		}
 		return toManagerDTO(employee);
@@ -143,9 +150,9 @@ public class Employee {
 				.hiredate(employee.getHiredate()).authority(employee.getAuthority())
 				.vacationCount(employee.getVacationCount())
 				// .manager(toManagerDTO(employee.getManager()))
-//				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
-//				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-//				.unit(employee.getUnit().toUnitDTO(unit))
+				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+				.unit(employee.getUnit().toUnitDTO(unit))
 				.build();
 	}
 
