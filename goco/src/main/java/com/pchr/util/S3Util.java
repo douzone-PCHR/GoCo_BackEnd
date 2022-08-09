@@ -59,17 +59,16 @@ public class S3Util {
 	}
 
 	// S3 업로드 적용
-	public static FileDTO S3Upload(MultipartFile multipart)
+	public static FileDTO S3Upload(MultipartFile multipart, String directory)
 			throws S3Exception, AwsServiceException, SdkClientException, IOException {
 		String originalFileName = multipart.getOriginalFilename();
-
 		// 파일을 같이 업로드하지 않았을 경우 s3에 저장되지 않고 null을 반환
 		if (originalFileName.length() != 0) {
 			String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
 			try {
 
-				S3Util.uploadFile(fileName, multipart.getInputStream()); // S3 File Upload 부분 신경 안써도 됨.
-				String filePath = S3Util.getFileUrl(fileName); // S3 url 값 받아오기
+				S3Util.uploadFile(directory + fileName, multipart.getInputStream()); // S3 File Upload 부분 신경 안써도 됨.
+				String filePath = S3Util.getFileUrl(directory + fileName); // S3 url 값 받아오기
 				FileDTO fileDTO = FileDTO.builder().fileName(fileName).originalName(originalFileName).filePath(filePath)
 						.build();
 				return fileDTO;

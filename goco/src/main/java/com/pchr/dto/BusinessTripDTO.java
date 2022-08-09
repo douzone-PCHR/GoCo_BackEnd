@@ -31,6 +31,8 @@ public class BusinessTripDTO {
 
 	private EmployeeDTO employee;
 
+	private FileDTO file;
+
 	// toEntity
 	public BusinessTrip toBusinessTripEntity(BusinessTripDTO businessTripDTO) {
 		BusinessTrip businessTripEntity = BusinessTrip.builder().businessTripId(businessTripDTO.getBusinessTripId())
@@ -39,7 +41,13 @@ public class BusinessTripDTO {
 				.businessTripContent(businessTripDTO.getBusinessTripContent())
 				.businessTripRequestDate(businessTripDTO.getBusinessTripRequestDate())
 				.businessTripApproveDate(businessTripDTO.getBusinessTripApproveDate())
-				.employee(businessTripDTO.getEmployee().toFKEmployee(businessTripDTO.getEmployee())).build();
+				.file(businessTripDTO.getFile() != null
+						? businessTripDTO.getFile().toFileEntity(businessTripDTO.getFile())
+						: null)
+				.employee(businessTripDTO.getEmployee() != null
+						? businessTripDTO.getEmployee().toFKEmployee(businessTripDTO.getEmployee())
+						: null)
+				.build();
 		return businessTripEntity;
 	}
 }

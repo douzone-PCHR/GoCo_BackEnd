@@ -14,13 +14,17 @@ import com.pchr.entity.BusinessTrip;
 public interface BusinessTripRepository extends JpaRepository<BusinessTrip, Long> {
 
 	// 출장 신청 리스트 (사원)
-	List<BusinessTrip> findAllByEmployeeEmpNum(Long empNum);
+	public List<BusinessTrip> findAllByEmployeeEmpNum(Long empNum);
 
 	// 출장 신청 리스트 (팀장)
-	List<BusinessTrip> findAllByEmployeeUnitUnitId(Long unitId);
+	public List<BusinessTrip> findAllByEmployeeUnitUnitId(Long unitId);
+
+	// 출장 상세
+	public BusinessTrip findBusinessByBusinessTripId(Long businessTripId);
 
 	// checkBusiness
 	@Query(value = "select * from business_trip where emp_num = :empNum and business_trip_start_date <= :endDate and business_trip_end_date >= :startDate", nativeQuery = true)
-	public List<BusinessTrip> checkBusiness(@Param("empNum") Long empNum, @Param("startDate") Date startDate,
+	public List<BusinessTrip> checkBusinessTrip(@Param("empNum") Long empNum, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
+
 }

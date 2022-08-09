@@ -26,7 +26,7 @@ public class VacationRestController {
 	VacationServiceImpl vacationService;
 
 	// 휴가신청리스트 (사원)
-	@GetMapping(value = "/vacation/{empNum}")
+	@GetMapping(value = "/vacations/{empNum}")
 	public List<VacationDTO> findVacationByEmployeeEmpNum(@PathVariable Long empNum) {
 
 		List<VacationDTO> vacations = vacationService.getAllVacation(empNum);
@@ -35,7 +35,7 @@ public class VacationRestController {
 	}
 
 	// 휴가신청리스트 (팀장)
-	@GetMapping(value = "/vacation/approve/{unitId}")
+	@GetMapping(value = "/vacations/approve/{unitId}")
 	public List<VacationDTO> findVacationByEmployeeUnitId(@PathVariable Long unitId) {
 		List<VacationDTO> vacations = vacationService.getAllTeamVacation(unitId);
 
@@ -55,13 +55,12 @@ public class VacationRestController {
 	public Map<String, List<VacationDTO>> insertVacation(@RequestPart("vacationDTO") VacationDTO vacationDTO,
 			@RequestPart("file") MultipartFile multipartFile) {
 		System.out.println(vacationDTO);
-//		vacationDTO.setVacationId(vacationId);
 		return vacationService.insertVacation(vacationDTO, multipartFile);
 	}
 
 	// 휴가 결재 (팀장) 검색 front에서 처리
 	@Transactional
-	@PutMapping(value = "/vacation/approve/{vacationId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/vacation/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void approveVacation(@RequestBody VacationDTO vacationDTO) {
 		vacationService.approveVacation(vacationDTO);
 	}

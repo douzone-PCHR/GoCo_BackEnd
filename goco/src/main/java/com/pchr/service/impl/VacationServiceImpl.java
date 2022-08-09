@@ -78,7 +78,7 @@ public class VacationServiceImpl implements VacationService {
 				try {
 					// fileDTO = S3에 Upload된
 					// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
-					FileDTO fileDTO = S3Util.S3Upload(multipartFile);
+					FileDTO fileDTO = S3Util.S3Upload(multipartFile, "vacation/");
 					// 파일을 넣었을 때
 					if (fileDTO != null) {
 						FileDTO newFileDTO = fileService.insertFile(fileDTO);
@@ -119,7 +119,7 @@ public class VacationServiceImpl implements VacationService {
 	public void deleteVacation(VacationDTO vacationDTO) {
 		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 
-			S3Util.deleteFile(vacationDTO.getFile().getFileName());
+			S3Util.deleteFile("vacation/" + vacationDTO.getFile().getFileName());
 			vacationRepository.deleteById(vacationDTO.getVacationId());
 			fileService.deleteFile(vacationDTO.getFile().getFileId());
 
