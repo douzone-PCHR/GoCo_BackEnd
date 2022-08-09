@@ -12,6 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.DynamicInsert;
 
 import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.BusinessTripDTO;
@@ -26,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@DynamicInsert
 public class BusinessTrip {
 
 	@Id
@@ -39,7 +43,7 @@ public class BusinessTrip {
 	@Column(name = "business_trip_end_date", nullable = false)
 	private Date businessTripEndDate;
 
-	@Column(name = "approve_yn")
+	@Column(name = "approve_yn", columnDefinition = "varchar(255) default 'APPROVE_WAITTING'")
 	@Enumerated(EnumType.STRING)
 	private ApproveEnum approveYn;
 
@@ -56,6 +60,10 @@ public class BusinessTrip {
 	@JoinColumn(name = "emp_num", nullable = false, updatable = false)
 	private Employee employee;
 
+	@OneToOne
+	@JoinColumn(name = "file_id", unique = true)
+	private File file;
+
 	// toDTO
 	public BusinessTripDTO toBusinessTripDTO(BusinessTrip businessTripEntity) {
 		BusinessTripDTO businessTripDTO = BusinessTripDTO.builder()
@@ -66,7 +74,13 @@ public class BusinessTrip {
 				.businessTripContent(businessTripEntity.getBusinessTripContent())
 				.businessTripRequestDate(businessTripEntity.getBusinessTripRequestDate())
 				.businessTripApproveDate(businessTripEntity.getBusinessTripApproveDate())
-				.employee(businessTripEntity.getEmployee().toFKDTO(businessTripEntity.getEmployee())).build();
+				.employee(businessTripEntity.getEmployee() != null
+						? businessTripEntity.getEmployee().toFKDTO(businessTripEntity.getEmployee())
+						: null)
+				.file(businessTripEntity.getFile() != null
+						? businessTripEntity.getFile().toFileDTO(businessTripEntity.getFile())
+						: null)
+				.build();
 		return businessTripDTO;
 	}
 }

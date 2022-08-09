@@ -1,22 +1,35 @@
 package com.pchr.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.BusinessTripDTO;
+import com.pchr.dto.FileDTO;
 import com.pchr.entity.BusinessTrip;
 import com.pchr.repository.BusinessTripRepository;
 import com.pchr.service.BusinessTripService;
+import com.pchr.util.S3Util;
+
+import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.core.exception.SdkClientException;
 
 @Service
+@RequiredArgsConstructor
 public class BusinessTripServiceImpl implements BusinessTripService {
 
-	@Autowired
-	private BusinessTripRepository businessRepository;
+	private final BusinessTripRepository businessRepository;
+
+	private final FileServiceImpl fileService;
 
 	// 출장 신청 리스트 (사원)
 	@Override
@@ -43,60 +56,86 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 		return businessListDTO;
 	}
 
-	// 출장 신청
+	// 출장 상세
 	@Override
-	public BusinessTripDTO insertBusinessTrip(BusinessTripDTO businessTripDTO) {
-		List<BusinessTripDTO> checkBusinessListDTO = checkBusiness(businessTripDTO);
-		if (checkBusinessListDTO.size() == 0) {
-			businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
-			System.out.println("저장완료");
-		} else {
-			switch (checkBusinessListDTO.get(0).getApproveYn()) {
-
-			case APPROVE_WAITTING:
-				return checkBusinessListDTO.get(0);
-
-			case APPROVE_SUCCESS:
-				break;
-
-			default:
-				businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
-				System.out.println("저장완료");
-				break;
-			}
-		}
-		return null;
+	public BusinessTripDTO getBusinessTrip(Long businessTripId) {
+		BusinessTrip businessEntity = businessRepository.findBusinessByBusinessTripId(businessTripId);
+		return businessEntity == null ? null : businessEntity.toBusinessTripDTO(businessEntity);
 	}
 
-	// 출장 수정 (사원)
+	// 출장 신청
 	@Override
-	public void updateBusiness(BusinessTripDTO businessTripDTO) {
-		if (businessTripDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
-			businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
-		}
+	@Transactional
+	public Map<String, List<BusinessTripDTO>> insertBusinessTrip(BusinessTripDTO businessTripDTO,
+			MultipartFile multipartFile) {
+		Map<String, List<BusinessTripDTO>> checkBusinessTripsDTO = checkBusiness(businessTripDTO);
+		if (checkBusinessTripsDTO.get("success").size() == 0) {
+			if (checkBusinessTripsDTO.get("waitting").size() == 0) {
+				try {
+					// fileDTO = S3에 Upload된
+					// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
+					FileDTO fileDTO = S3Util.S3Upload(multipartFile, "business/");
+					// 파일을 넣었을 때
+					if (fileDTO != null) {
+						FileDTO newFileDTO = fileService.insertFile(fileDTO);
+						System.out.println(newFileDTO.getFileId());
+						businessTripDTO.setFile(newFileDTO);
+					}
+					businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
 
+				} catch (AwsServiceException | SdkClientException | IOException e) {
+					e.printStackTrace();
+				}
+
+				// 겹치는 날짜가 존재 할 때
+
+			}
+		}
+		return checkBusinessTripsDTO;
 	}
 
 	// 출장 결재 (팀장)
 	@Override
 	public void approveBusiness(BusinessTripDTO businessTripDTO) {
-		if (businessTripDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
-			businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
+		businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
 
+	}
+
+	// 출장 삭제
+	@Override
+	@Transactional
+	public void deleteBusinessTrip(BusinessTripDTO businessTripDTO) {
+		if (businessTripDTO.getFile() != null) {
+			S3Util.deleteFile("business/" + businessTripDTO.getFile().getFileName());
+			fileService.deleteFile(businessTripDTO.getFile().getFileId());
 		}
+		businessRepository.deleteById(businessTripDTO.getBusinessTripId());
+
 	}
 
 	// check date
-	public List<BusinessTripDTO> checkBusiness(BusinessTripDTO businessTripDTO) {
-		List<BusinessTripDTO> businessListDTO = new ArrayList<BusinessTripDTO>();
-		List<BusinessTrip> businessTrips = businessRepository.checkBusiness(businessTripDTO.getEmployee().getEmpNum(),
-				businessTripDTO.getBusinessTripStartDate(), businessTripDTO.getBusinessTripEndDate());
+	@Override
+	public Map<String, List<BusinessTripDTO>> checkBusiness(BusinessTripDTO businessTripDTO) {
+		List<BusinessTripDTO> waittingDTO = new ArrayList<BusinessTripDTO>();
+		List<BusinessTripDTO> successDTO = new ArrayList<BusinessTripDTO>();
+
+		Map<String, List<BusinessTripDTO>> approveMap = new HashMap<String, List<BusinessTripDTO>>();
+		List<BusinessTrip> businessTrips = businessRepository.checkBusinessTrip(
+				businessTripDTO.getEmployee().getEmpNum(), businessTripDTO.getBusinessTripStartDate(),
+				businessTripDTO.getBusinessTripEndDate());
 
 		for (BusinessTrip businessTrip : businessTrips) {
-			businessListDTO.add(businessTrip.toBusinessTripDTO(businessTrip));
+			if (businessTrip.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
+				waittingDTO.add(businessTrip.toBusinessTripDTO(businessTrip));
+			} else if (businessTrip.getApproveYn() == ApproveEnum.APPROVE_SUCCESS) {
+				successDTO.add(businessTrip.toBusinessTripDTO(businessTrip));
+			}
+
 		}
-		System.out.println(businessListDTO);
-		return businessListDTO;
+		approveMap.put("waitting", waittingDTO);
+		approveMap.put("success", successDTO);
+
+		return approveMap;
 	}
 
 }

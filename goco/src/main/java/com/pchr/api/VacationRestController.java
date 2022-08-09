@@ -1,6 +1,7 @@
 package com.pchr.api;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -12,9 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.VacationDTO;
 import com.pchr.service.impl.VacationServiceImpl;
 
@@ -24,44 +26,44 @@ public class VacationRestController {
 	VacationServiceImpl vacationService;
 
 	// 휴가신청리스트 (사원)
-	@GetMapping(value = "/vacation/{empNum}")
+	@GetMapping(value = "/vacations/{empNum}")
 	public List<VacationDTO> findVacationByEmployeeEmpNum(@PathVariable Long empNum) {
 
 		List<VacationDTO> vacations = vacationService.getAllVacation(empNum);
-		System.out.println(vacations);
+//		System.out.println(vacations);
 		return vacations;
 	}
 
 	// 휴가신청리스트 (팀장)
-	@GetMapping(value = "/vacation/approve/{unitId}")
+	@GetMapping(value = "/vacations/approve/{unitId}")
 	public List<VacationDTO> findVacationByEmployeeUnitId(@PathVariable Long unitId) {
 		List<VacationDTO> vacations = vacationService.getAllTeamVacation(unitId);
 
 		return vacations;
 	}
 
-	// 휴가 추가
-	@PostMapping(value = "/vacation", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void insertVacation(@RequestBody VacationDTO vacationDTO) {
-		System.out.println(vacationDTO);
+	// 휴가 상세
+	@GetMapping(value = "/vacation/{vacationId}")
+	public VacationDTO findVacationByVacationId(@PathVariable Long vacationId) {
+		return vacationService.getVacation(vacationId);
 
-		vacationService.insertVacation(vacationDTO);
 	}
 
-	// 휴가 수정 (사원) 검색 front에서 처리
+	// 휴가 추가, (사원) 검색 front에서 처리
 	@Transactional
-	@PutMapping(value = "/vacation/{vacationId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void updateVacation(@RequestBody VacationDTO vacationDTO) {
+	@PostMapping(value = "/vacation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public Map<String, List<VacationDTO>> insertVacation(@RequestPart("vacationDTO") VacationDTO vacationDTO,
+			@RequestPart("file") MultipartFile multipartFile) {
 		System.out.println(vacationDTO);
-		vacationService.updateVacation(vacationDTO);
+		return vacationService.insertVacation(vacationDTO, multipartFile);
 	}
 
-//	// 휴가 수정 (사원) 검색 back에서 처리
-//	@Transactional
-//	@PutMapping(value = "/vacation/{vacationId", consumes = MediaType.APPLICATION_JSON_VALUE)
-//	public void updateVacation(@PathVariable Long vacationId, @RequestBody VacationDTO vacationDTO) {
-//		vacationService.updateVacation(vacationDTO);
-//	}
+	// 휴가 결재 (팀장) 검색 front에서 처리
+	@Transactional
+	@PutMapping(value = "/vacation/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void approveVacation(@RequestBody VacationDTO vacationDTO) {
+		vacationService.approveVacation(vacationDTO);
+	}
 
 //	// 휴가 결재 (팀장) 검색 back에서 처리 
 //	@Transactional
@@ -70,24 +72,19 @@ public class VacationRestController {
 //		vacationService.approveVacation(vacationId, approveYn);
 //	}
 
-	// 휴가 결재 (팀장) 검색 front에서 처리
-	@Transactional
-	@PutMapping(value = "/vacation/approve/{vacationId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void approveVacation(@RequestBody VacationDTO vacationDTO) {
-		vacationService.approveVacation(vacationDTO);
-	}
-
 	// 휴가 요청 삭제 (사원)
-	@DeleteMapping(value = "/vacation/{vacationId}")
-	public void deleteVacation(@PathVariable Long vacationId, ApproveEnum approveYn) {
-		vacationService.deleteVacation(vacationId, approveYn);
+	@DeleteMapping(value = "/vacation")
+//	public void deleteVacation(@PathVariable Long vacationId, FileDTO fileDTO, ApproveEnum approveYn) {
+	public void deleteVacation(@RequestBody VacationDTO vacationDTO) {
+		System.out.println(vacationDTO.getVacationId());
+//		vacationService.deleteVacation(vacationId, fileDTO, approveYn);
+		vacationService.deleteVacation(vacationDTO);
 	}
 
 	// check date
 	@GetMapping(value = "/vacation/check")
-	public List<VacationDTO> checkVacation(@RequestBody VacationDTO vacationDTO) {
+	public Map<String, List<VacationDTO>> checkVacation(@RequestBody VacationDTO vacationDTO) {
 
 		return vacationService.checkVacation(vacationDTO);
 	}
-
 }

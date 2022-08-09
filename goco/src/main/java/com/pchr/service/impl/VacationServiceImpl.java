@@ -1,22 +1,38 @@
 package com.pchr.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.dto.ApproveEnum;
+import com.pchr.dto.FileDTO;
 import com.pchr.dto.VacationDTO;
 import com.pchr.entity.Vacation;
+import com.pchr.repository.EmployeeRepository;
 import com.pchr.repository.VacationRepository;
 import com.pchr.service.VacationService;
+import com.pchr.util.S3Util;
 
+import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.awscore.exception.AwsServiceException;
+import software.amazon.awssdk.core.exception.SdkClientException;
+
+@RequiredArgsConstructor
 @Service
 public class VacationServiceImpl implements VacationService {
 
-	@Autowired
-	private VacationRepository vacationRepository;
+	private final VacationRepository vacationRepository;
+
+	private final FileServiceImpl fileService;
+
+	private final EmployeeRepository employeeRepository;
 
 	// 휴가신청리스트(사원)
 	@Override
@@ -45,87 +61,91 @@ public class VacationServiceImpl implements VacationService {
 		return vacationDTO;
 	}
 
+	// 휴가 상세
+	@Override
+	public VacationDTO getVacation(Long vacationId) {
+		Vacation vacationEntity = vacationRepository.findVacationByVacationId(vacationId);
+		return vacationEntity == null ? null : vacationEntity.toVacationDTO(vacationEntity);
+	}
+
 	// 휴가 추가
 	@Override
-	public VacationDTO insertVacation(VacationDTO vacationDTO) {
-		List<VacationDTO> checkVacationsDTO = checkVacation(vacationDTO);
-		if (checkVacationsDTO.size() == 0) {
-			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
-		} else {
-			switch (checkVacationsDTO.get(0).getApproveYn()) {
-			case APPROVE_WAITTING:
-				return checkVacationsDTO.get(0);
+	@Transactional
+	public Map<String, List<VacationDTO>> insertVacation(VacationDTO vacationDTO, MultipartFile multipartFile) {
+		Map<String, List<VacationDTO>> checkVacationsDTO = checkVacation(vacationDTO);
+		if (checkVacationsDTO.get("success").size() == 0) {
+			if (checkVacationsDTO.get("waitting").size() == 0) {
+				try {
+					// fileDTO = S3에 Upload된
+					// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
+					FileDTO fileDTO = S3Util.S3Upload(multipartFile, "vacation/");
+					// 파일을 넣었을 때
+					if (fileDTO != null) {
+						FileDTO newFileDTO = fileService.insertFile(fileDTO);
+						System.out.println(newFileDTO.getFileId());
+						vacationDTO.setFile(newFileDTO);
+					}
+					vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 
-			case APPROVE_REFUSE:
-				vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
-				break;
+				} catch (AwsServiceException | SdkClientException | IOException e) {
+					e.printStackTrace();
+				}
 
-			default:
-
-				break;
 			}
 		}
-		return null;
+		// 겹치는 날짜가 존재 할 때
+		return checkVacationsDTO;
 	}
-
-	// 휴가 수정
-	@Override
-	public void updateVacation(VacationDTO vacationDTO) {
-		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
-			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
-		}
-
-	}
-//	// 휴가 수정 back에서 처리
-//	@Override
-//	public void updateVacation(Long vacationId, VacationDTO vacationDTO) {
-//		Vacation vacationFind = vacationRepository.findVacationByVacationId(vacationId);
-//		if(!vacationDTO.isApproveYn()) {
-//			vacationRepository.save(vacationDTO.toEntity(vacationDTO));
-//		}
-//	}
-
-	// 휴가 결재 (팀장) back에서 처리
-//	@Override
-//	public void approveVacation(Long vacationId, boolean approveYn) {
-//		Vacation vacationFind = vacationRepository.findVacationByVacationId(vacationId);
-//
-//		if (vacationFind != null) {
-//			VacationDTO vacationDTO = vacationFind.toDTO(vacationFind);
-//			vacationDTO.setApproveYn(approveYn);
-//
-//			vacationRepository.save(vacationDTO.toEntity(vacationDTO));
-//		}
-//
-//	}
 
 	// 휴가 결재 (팀장) front에서 처리
 	@Override
+	@Transactional
 	public void approveVacation(VacationDTO vacationDTO) {
-		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
+		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_SUCCESS) {
+
+			Long count = ((vacationDTO.getVacationEndDate().getTime() - vacationDTO.getVacationStartDate().getTime()))
+					/ (60 * 60 * 24 * 1000);
+
+			employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
 			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
+
 		}
 	}
 
 	// 휴가 삭제
 	@Override
-	public void deleteVacation(Long vacationId, ApproveEnum approveYn) {
-		if (approveYn == ApproveEnum.APPROVE_WAITTING) {
+	@Transactional
+//	public void deleteVacation(Long vacationId, FileDTO fileDTO, ApproveEnum approveYn) {
+	public void deleteVacation(VacationDTO vacationDTO) {
+		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 
-			vacationRepository.deleteById(vacationId);
+			S3Util.deleteFile("vacation/" + vacationDTO.getFile().getFileName());
+			vacationRepository.deleteById(vacationDTO.getVacationId());
+			fileService.deleteFile(vacationDTO.getFile().getFileId());
+
 		}
 	}
 
 	// check date
-	public List<VacationDTO> checkVacation(VacationDTO vacationDTO) {
-		List<VacationDTO> vacationsDTO = new ArrayList<VacationDTO>();
+	public Map<String, List<VacationDTO>> checkVacation(VacationDTO vacationDTO) {
+		List<VacationDTO> waittingDTO = new ArrayList<VacationDTO>();
+		List<VacationDTO> successDTO = new ArrayList<VacationDTO>();
+
+		Map<String, List<VacationDTO>> approveMap = new HashMap<String, List<VacationDTO>>();
 		List<Vacation> vacations = vacationRepository.checkVacation(vacationDTO.getEmployee().getEmpNum(),
 				vacationDTO.getVacationStartDate(), vacationDTO.getVacationEndDate());
 
 		for (Vacation vacation : vacations) {
-			vacationsDTO.add(vacation.toVacationDTO(vacation));
+			if (vacation.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
+				waittingDTO.add(vacation.toVacationDTO(vacation));
+			} else if (vacation.getApproveYn() == ApproveEnum.APPROVE_SUCCESS) {
+				successDTO.add(vacation.toVacationDTO(vacation));
+			}
 		}
-		System.out.println(vacationsDTO);
-		return vacationsDTO;
+		approveMap.put("waitting", waittingDTO);
+		approveMap.put("success", successDTO);
+//			System.out.println(vacationsDTO);
+		return approveMap;
 	}
+
 }

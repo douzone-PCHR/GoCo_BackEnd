@@ -34,6 +34,8 @@ public class VacationDTO {
 
 	private EmployeeDTO employee;
 
+	private FileDTO file;
+
 	// toEntity
 	public Vacation toVacationEntity(VacationDTO vacationDTO) {
 		Vacation vacationEntity = Vacation.builder().vacationId(vacationDTO.getVacationId())
@@ -42,6 +44,7 @@ public class VacationDTO {
 				.vacationContent(vacationDTO.getVacationContent())
 				.vacationRequestDate(vacationDTO.getVacationRequestDate())
 				.vacationApproveDate(vacationDTO.getVacationApproveDate())
+				.file(vacationDTO.getFile() != null ? vacationDTO.getFile().toFileEntity(vacationDTO.getFile()) : null)
 				.employee(vacationDTO.getEmployee().toFKEmployee(vacationDTO.getEmployee())).build();
 		return vacationEntity;
 	}

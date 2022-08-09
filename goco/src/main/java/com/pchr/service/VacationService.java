@@ -1,9 +1,11 @@
 package com.pchr.service;
 
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.dto.VacationDTO;
-import com.pchr.dto.ApproveEnum;
 
 public interface VacationService {
 	// 휴가 신청 리스트 (사원)
@@ -12,18 +14,17 @@ public interface VacationService {
 	// 휴가 신청 리스트 (팀장)
 	public List<VacationDTO> getAllTeamVacation(Long unitId);
 
-	// 휴가 추가
-	public VacationDTO insertVacation(VacationDTO vacationDTO);
+	// 휴가 상세
+	public VacationDTO getVacation(Long vacationId);
 
-	// 휴가 수정
-//		public void updateVacation(Long vacationId, VacationDTO vacationDTO);
-	public void updateVacation(VacationDTO vacationDTO);
+	// 휴가 추가
+	public Map<String, List<VacationDTO>> insertVacation(VacationDTO vacationDTO, MultipartFile multipartFile);
 
 	// 휴가 결재
-//		public void approveVacation(Long vacationId, boolean approveYn);
 	public void approveVacation(VacationDTO vacationDTO);
 
 	// 휴가 삭제
-	void deleteVacation(Long vacationId, ApproveEnum approveYn);
+//		public void deleteVacation(Long vacationId, FileDTO fileDTO, ApproveEnum approveYn);
+	public void deleteVacation(VacationDTO vacationDTO);
 
 }

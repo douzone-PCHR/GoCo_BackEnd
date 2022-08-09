@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,8 +15,10 @@ import com.pchr.entity.Unit;
 
 @Repository
 //email로 Employee를 찾는 로직과, email이 존재하는가 판별하는 로직
-public interface EmployeeRepository extends JpaRepository<Employee, Long>{
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	Optional<Employee> findByEmail(String email);
+
+
     boolean existsByEmail(String email);
     boolean existsByEmpId(String empId);
     Optional<Employee> findByEmpId(String empId);
@@ -36,4 +39,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>{
 	
 	@Query(value = "select * from employee where team_position_id = :teamPositionId and unit_id = :unitId",nativeQuery = true)
 	List<Employee> findByManager(@Param("teamPositionId") Long teamPositionId,@Param("unitId") Long unitId);
+
+  	// 휴가 결재 vacationCount 차감
+	@Modifying
+	@Query(value = "update employee set vacation_count =vacation_count -:count where emp_num = :empNum", nativeQuery = true)
+	public void updateVacationCount(@Param("empNum") Long empNum, @Param("count") Long count);
+
+
 }
