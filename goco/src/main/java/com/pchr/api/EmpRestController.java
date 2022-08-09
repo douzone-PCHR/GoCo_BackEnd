@@ -3,7 +3,6 @@ package com.pchr.api;
 import java.util.HashMap;
 import java.util.List;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -99,5 +98,13 @@ public class EmpRestController {
 //        "empNum":"22"
 //    }   
     
+    @PutMapping("/admin/changejobtitle")
+    public void updateJobTitle(@RequestBody EmployeeDTO e) {
+		// 넘겨 받아야하는 것 : 사원 ID, 직책
+    	// repo에 접근을 하여 employee에 대한 정보 받아와야함,
+    	// password와 다른 정보들은 front에 없기 때문에 null 처리가 안되기 위해선 db에 접근해야함. 
+    	empolyServiceImpl.updateJobTitle(e);
+    	
+    }
     
 }

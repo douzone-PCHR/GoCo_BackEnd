@@ -267,5 +267,18 @@ public class EmpolyServiceImpl implements EmployeeService{
 			save(empDTO.toEntity(empDTO));
 		});		
 	}
+	
+	@Override
+	public void updateJobTitle(EmployeeDTO emp) {
+		// emp에 대한 정보를 받아온다.
+		Employee employee = employeeRepository.findByEmpId(emp.getEmpId()).get();
+		// DTO로 변환
+		EmployeeDTO empDto = employee.toDTO(employee);
+		// JobTitle 변경
+		empDto.setJobTitle(emp.getJobTitle());
+//		 저장
+		employeeRepository.save(empDto.toEntity(empDto));
+		
+	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

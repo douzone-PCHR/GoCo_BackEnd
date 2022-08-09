@@ -143,9 +143,9 @@ public class Employee {
 				.hiredate(employee.getHiredate()).authority(employee.getAuthority())
 				.vacationCount(employee.getVacationCount())
 				// .manager(toManagerDTO(employee.getManager()))
-//				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
-//				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-//				.unit(employee.getUnit().toUnitDTO(unit))
+				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+				.unit(employee.getUnit().toUnitDTO(employee.getUnit()))
 				.build();
 	}
 
