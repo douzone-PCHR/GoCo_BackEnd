@@ -21,4 +21,5 @@ public interface EmployeeService {
 	int deleteByEmpNum(Long empNum);
 	public List<Employee> findManagerByEmpNum(Long empNum);
 	public List<Employee> findByManager(Long teamPositionId,Long unitId);
+	void updateJobTitle(EmployeeDTO emp);
 }

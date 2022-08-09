@@ -152,7 +152,8 @@ public class Employee {
 				// .manager(toManagerDTO(employee.getManager()))
 				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
 				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-				.unit(employee.getUnit().toUnitDTO(unit))
+				.unit(employee.getUnit().toUnitDTO(employee.getUnit()))
+				// .unit(employee.getUnit().toUnitDTO(unit))
 				.build();
 	}
 
