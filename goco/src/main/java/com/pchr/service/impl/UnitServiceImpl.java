@@ -3,6 +3,7 @@ package com.pchr.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -83,7 +84,6 @@ public class UnitServiceImpl implements UnitService {
 	@Override
 	@Transactional
 	public void unitDelete(Long unitId) {
-		empRepo.deleteEmployeeUnitId(unitId);
 		unitRepo.deleteById(unitId); 
 	}
 
