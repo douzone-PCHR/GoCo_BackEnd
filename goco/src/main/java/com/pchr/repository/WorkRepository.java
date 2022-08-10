@@ -15,11 +15,20 @@ import com.pchr.entity.Work;
 @Repository
 public interface WorkRepository extends JpaRepository<Work, Long>{
 	
-	public List<Work> findAllByEmpEmpNum(Long empno);
+	public List<Work> findAllByEmpEmpId(String empId);
 	
 	@Query(value = "select * "
 			+ "from work "
-			+ "where work_start_date  >= :startDay  and  work_start_date <= :endDay and emp_num = :empno " ,
+			+ "where work_start_date  >= :startDay  and  work_start_date <= :endDay and emp_num = (select emp_num from employee where emp_id = :empId ) " ,
 			nativeQuery = true)
-	public List<Work> findAllByDay(@Param("startDay") LocalDateTime startDay , @Param("endDay") LocalDateTime endDay , @Param("empno") Long empno);
+	public List<Work> findAllByDay(@Param("startDay") LocalDateTime startDay , @Param("endDay") LocalDateTime endDay , @Param("empId") String empId);
+	
+	@Query(value = "select * "
+			+ "from work "
+			+ "where work_start_date is null  and  work_end_date is null and emp_num = (select emp_num from employee where emp_id = :empId) " ,
+			nativeQuery = true)
+	public List<Work> findAllWithoutDate(@Param("empId") String empId);
+	
+	
+
 }
