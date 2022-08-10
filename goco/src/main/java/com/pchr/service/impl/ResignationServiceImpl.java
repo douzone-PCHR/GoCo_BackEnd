@@ -41,7 +41,6 @@ public class ResignationServiceImpl implements ResignationService {
 	
 	@Override
     @Scheduled(cron = "0 0 4 * * *")//매일 새벽 4시 실행
-//    @Scheduled(fixedDelay = 1000)// 1초에한번실행 이전 작업이 종료되고 다시 실행되는 시간이 1초
     public void deleteData() {
 		Date base = java.sql.Timestamp.valueOf(LocalDateTime.now().minusYears(3));// 기준시간을 3년 전으로하여 db데이터 
     	resignationRepository.findAll().forEach(r->{

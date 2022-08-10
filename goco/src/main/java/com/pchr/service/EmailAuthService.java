@@ -1,6 +1,8 @@
 package com.pchr.service;
 
+import java.util.List;
 
+import com.pchr.entity.EmailAuth;
 
 public interface EmailAuthService {
 	
@@ -14,4 +16,11 @@ public interface EmailAuthService {
 	public String passwordText(String email);
 	// 새벽 4시마다 인증 테이블 최적화
 	public void deleteData();
+
+	public List<EmailAuth> findAll();
+	public EmailAuth findByAuthenticationNumber(String authenticationNumber);
+	public boolean existsByAuthenticationNumber(String authenticationNumber);
+	public int deleteByEmail(String email);
+	public int deleteByAuthenticationNumber(String authenticationNumber);
+	public EmailAuth save(EmailAuth emailAuth);
 }

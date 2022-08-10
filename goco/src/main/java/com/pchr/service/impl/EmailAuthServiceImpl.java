@@ -29,7 +29,31 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	private final EmailAuthRepository emailAuthRepository;
 	
 	@Override
-	public void makeRandomNumber() { // 랜덤 번호를 생성해주면서 생성된 랜덤번호가 테이블에 있다면 지운다.
+	public List<EmailAuth> findAll(){
+		return emailAuthRepository.findAll();
+	}
+	@Override
+	public EmailAuth findByAuthenticationNumber(String authenticationNumber){
+		return emailAuthRepository.findByAuthenticationNumber(authenticationNumber);
+	}
+	@Override
+	public boolean existsByAuthenticationNumber(String authenticationNumber) {
+		return emailAuthRepository.existsByAuthenticationNumber(authenticationNumber);
+	}
+	@Override
+	public int deleteByEmail(String email) {
+		return emailAuthRepository.deleteByEmail(email);
+	}
+	@Override
+	public int deleteByAuthenticationNumber(String authenticationNumber) {
+		return emailAuthRepository.deleteByAuthenticationNumber(authenticationNumber);
+	}
+	@Override
+	public EmailAuth save(EmailAuth emailAuth) {
+		return emailAuthRepository.save(emailAuth);
+	}	
+	@Override
+	public void makeRandomNumber() {
 		Random random = new Random();
 		authNum = String.valueOf(random.nextInt(999999));
 	}
@@ -70,11 +94,10 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	@Override	
 	public String save(String email) {
 		String authNum = mailText(email);// 메일보내는 부분, 메일을 보낸 후 인증 번호인 authNum 를 반환 받는다.
-		if(emailAuthRepository.existsByAuthenticationNumber(authNum)) {// 반환받은 인증번호가 이미 테이블에 있는 경우 그 테이블을 지워준다.
-			emailAuthRepository.deleteByAuthenticationNumber(authNum);
+		if(existsByAuthenticationNumber(authNum)) {// 반환받은 인증번호가 이미 테이블에 있는 경우 그 테이블을 지워준다.
+			deleteByAuthenticationNumber(authNum);
 		}
-		EmailAuth e = new EmailAuth(email,authNum,LocalDateTime.now().plusMinutes(5));// 인증 데이터를 저장하기 위해 EmailAuth겍체 생성, 유효시간은 현재보다 5분 앞으로함
-		emailAuthRepository.save(e);
+		save(new EmailAuth(email,authNum,LocalDateTime.now().plusMinutes(5)));// 인증 데이터를 저장하기 위해 EmailAuth겍체 생성, 유효시간은 현재보다 5분 앞으로함
 		return "메일이 전송 되었습니다.";
 	}
 	// 임시 비번 생성 및 고객에게 전송
@@ -106,12 +129,10 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	}
 	@Override
     @Scheduled(cron = "0 0 4 * * *")//매일 새벽 4시 실행
-//	@Scheduled(fixedDelay = 5000)// 1초에한번실행 이전 작업이 종료되고 다시 실행되는 시간이 1초
 	public void deleteData() {
-		emailAuthRepository.findAll().forEach(e->{
+		findAll().forEach(e->{
 			if(LocalDateTime.now().compareTo(e.getValidTime())>0) {// 만료시간이 지난 것들 삭제 
-				System.out.println("데이터 삭제 시간 : "+LocalDateTime.now());
-				emailAuthRepository.deleteByEmail(e.getEmail());
+				deleteByEmail(e.getEmail());
 			}
 		});
 	}

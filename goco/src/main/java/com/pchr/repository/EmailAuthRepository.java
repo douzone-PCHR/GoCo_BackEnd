@@ -10,8 +10,9 @@ import com.pchr.entity.EmailAuth;
 @Repository
 public interface EmailAuthRepository extends JpaRepository<EmailAuth, String> {
 	public List<EmailAuth> findAll();
-	EmailAuth findByAuthenticationNumber(String authenticationNumber);
-	boolean existsByAuthenticationNumber(String authenticationNumber);
+	public EmailAuth findByAuthenticationNumber(String authenticationNumber);
+	public boolean existsByAuthenticationNumber(String authenticationNumber);
 	public int deleteByEmail(String email);
 	public int deleteByAuthenticationNumber(String authenticationNumber);
+	public EmailAuth save(EmailAuth emailAuth);
 }
