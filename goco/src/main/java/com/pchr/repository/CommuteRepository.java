@@ -37,7 +37,4 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 			@Param("PARAM_end_date") LocalDateTime paramEndDate, @Param("PARAM_emp_id") String paramEmpId);
 	
 
-	@Query(value = "CALL insert_commute_date()", nativeQuery = true)
-	public void autoInsertCommute();
-
 }

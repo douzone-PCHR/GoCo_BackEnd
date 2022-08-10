@@ -86,7 +86,7 @@ public class CommuteRestController {
 	}
 	
 	/**
-	 * 실제 근로 시간 Select 
+	 * 실제 근로 시간 검색 
 	 * 
 	 * @return List<CommuteDTO>
 	 */
