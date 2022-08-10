@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EntityScan(basePackages = {"com.pchr.entity"})
 @EnableJpaRepositories(basePackages = {"com.pchr.repository"})
 @EnableJpaAuditing
-@EnableScheduling
 public class GocoApplication {
 
 	public static void main(String[] args) {
