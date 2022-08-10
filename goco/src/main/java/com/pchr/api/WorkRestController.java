@@ -24,23 +24,22 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class WorkRestController {
-	
-	
+
 	private final WorkServiceImpl workService;
-	
+
 	/**
 	 * 사원 별 업무 불러오기
+	 * 
 	 * @return List<WorkDTO>
 	 */
 
 	@GetMapping(value = "/work")
-	public List<WorkDTO> findAll(){
-		// empno는 spring security 값을 받아온다 
-		Long empno = 4L;
+	public List<WorkDTO> findAll() {
 		List<WorkDTO> result = null;
+		
 		try {
-			result = workService.findAllByEmpNo(empno);
-			if(result.isEmpty()) {
+			result = workService.findAllByEmpNo();
+			if (result.isEmpty()) {
 				new Exception("일정이 없습니다.");
 			}
 		} catch (Exception e) {
@@ -48,21 +47,21 @@ public class WorkRestController {
 		}
 		return result;
 	}
-	
-	
+
+
+
 	/**
-	 * 날짜 클릭 후  이벤트 상세 보기
+	 * 날짜 클릭 후 날짜 별 이벤트 리스트 출력
+	 * 
 	 * @return List<WorkDTO>
 	 */
 
 	@PostMapping(value = "/work/detail")
-	public List<WorkDTO> detailFind(@RequestBody LocalDateTime day){
-		System.out.println(day);
-		Long empno = 4L;
+	public List<WorkDTO> detailFind(@RequestBody LocalDateTime day) {
 		List<WorkDTO> result = null;
 		try {
-			result = workService.findAllByDay(day,empno);
-			if(result.isEmpty()) {
+			result = workService.findAllByDay(day);
+			if (result.isEmpty()) {
 				System.out.println("일정이 없습니다.");
 			}
 		} catch (Exception e) {
@@ -70,73 +69,97 @@ public class WorkRestController {
 		}
 		return result;
 	}
-	
-	
-	
+
 	/**
 	 * 업무 추가
+	 * 
+	 * @return boolean
+	 */
+
+	@PostMapping(value = "/work")
+	public boolean workAdd(@RequestBody WorkDTO workDTO) {
+		try {
+			workService.workSave(workDTO);
+			return true;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * 날짜 클릭 후 이벤트 리스트 상세보기
+	 * 
 	 * @return List<WorkDTO>
 	 */
 
-	@PostMapping(value = "/work/{id}")
-	public List<WorkDTO> workAdd(Long unitId){
-		// unitId는 spring security 값을 받아온다 
-		unitId = 2L;
+	@GetMapping(value = "/work/{id}")
+	public WorkDTO findDetailList(@PathVariable Long id) {
+
+		WorkDTO workDTO = null;
+
+		try {
+			workDTO = workService.findByDayAndId(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return workDTO;
+	}
+
+	/**
+	 * 날짜 값 없는 업무 리스트 값 출력
+	 * 
+	 * @return List<WorkDTO>
+	 */
+
+	@GetMapping(value = "/work/list")
+	public List<WorkDTO> findAllWithoutDate() {
 		List<WorkDTO> result = null;
 		try {
-//			result = workService.findAll(unitId);
-			if(result.isEmpty()) {
-				new Exception("소속 된 직원이 없습니다.");
+			result = workService.findAllWithoutDate();
+			if (result.isEmpty()) {
+				new Exception("일정이 없습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
-	
-	
+
 	/**
 	 * 업무 수정
-	 * @return List<WorkDTO>
+	 * 
+	 * @return boolean
 	 */
 
-	@PutMapping(value = "/work/{id}")
-	public List<WorkDTO> workUpdate(Long unitId){
-		// unitId는 spring security 값을 받아온다 
-		unitId = 2L;
-		List<WorkDTO> result = null;
+	@PutMapping(value = "/work")
+	public boolean updateWork(@RequestBody WorkDTO workDTO) {
+
 		try {
-//			result = workService.findAll(unitId);
-			if(result.isEmpty()) {
-				new Exception("소속 된 직원이 없습니다.");
-			}
+			workService.updateWork(workDTO);
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return false;
 	}
-	
-	
+
 	/**
 	 * 업무 삭제
+	 * 
 	 * @return List<WorkDTO>
 	 */
 
 	@DeleteMapping(value = "/work/{id}")
-	public List<WorkDTO> workDelete(Long unitId){
-		// unitId는 spring security 값을 받아온다 
-		unitId = 2L;
-		List<WorkDTO> result = null;
+	public boolean workDelete(@PathVariable Long id) {
 		try {
-//			result = workService.findAll(unitId);
-			if(result.isEmpty()) {
-				new Exception("소속 된 직원이 없습니다.");
-			}
+			workService.deleteWork(id);
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return false;
 	}
-	
-	
+
 }

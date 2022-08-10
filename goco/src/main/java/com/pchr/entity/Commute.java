@@ -10,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
 
 import com.pchr.dto.BoardDTO;
 import com.pchr.dto.CommuteDTO;
@@ -27,7 +30,7 @@ import lombok.NoArgsConstructor;
 public class Commute {
 	
 	@Id 
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "commute_id")
 	private Long commuteId;
 	

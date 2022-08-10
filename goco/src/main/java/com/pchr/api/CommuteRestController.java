@@ -2,12 +2,15 @@ package com.pchr.api;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,12 +21,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pchr.config.SecurityUtil;
 import com.pchr.dto.CommuteDTO;
+import com.pchr.dto.EmployeeDTO;
+import com.pchr.dto.WorkDTO;
+import com.pchr.dto.WorkTimeVO;
 import com.pchr.entity.Commute;
 import com.pchr.entity.Employee;
 import com.pchr.repository.CommuteRepository;
 import com.pchr.repository.EmployeeRepository;
-
+import com.pchr.service.EmployeeService;
 import com.pchr.service.impl.CommuteServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +44,7 @@ public class CommuteRestController {
 	
 	private final CommuteServiceImpl commuteService;
 	
+
 	/**
 	 * 모든 사원 근태 불러오기
 	 	(매니저 페이지)
@@ -44,12 +52,10 @@ public class CommuteRestController {
 	 */
 
 	@GetMapping(value = "/commute")
-	public List<CommuteDTO> findAll(Long unitId){
-		// unitId는 spring security 값을 받아온다 
-		unitId = 2L;
+	public List<CommuteDTO> findAll(){
 		List<CommuteDTO> result = null;
 		try {
-			result = commuteService.findAll(unitId);
+			result = commuteService.findAll();
 			if(result.isEmpty()) {
 				new Exception("소속 된 직원이 없습니다.");
 			}
@@ -59,7 +65,7 @@ public class CommuteRestController {
 		return result;
 	}
 	
-	
+
 	/**
 	 * 사원 별 근태 불러오기
 	 * @return CommuteDTO
@@ -79,21 +85,39 @@ public class CommuteRestController {
 		return findbyComment;
 	}
 	
+	/**
+	 * 실제 근로 시간 Select 
+	 * 
+	 * @return List<CommuteDTO>
+	 */
+
+	@GetMapping(value = "/commute/time")
+	public Integer workTime(@RequestBody WorkTimeVO workTimeVO){
+		Integer result = null;
+		try {
+			result = commuteService.findWorkTime(workTimeVO.getStartDate(),workTimeVO.getEndDate());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	
 //	/**
 //	 * 근태 업데이트
 //	 * @return boolean
 //	 */
-//	@PutMapping(value = "/commute")
-//	public boolean update(@RequestBody CommuteDTO commuteDTO){
-//		
-//		try {
-////			commuteService.updateCommute(commuteDTO);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return false;
-//	}
+	@PutMapping(value = "/commute")
+	public boolean update(@RequestBody CommuteDTO commuteDTO){
+		
+		try {
+			commuteService.updateCommute(commuteDTO);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 //	
 	
 	/**
