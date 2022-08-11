@@ -119,7 +119,7 @@ public class Employee {
 									.manager(toManagerDTO(employee.getManager()))
 									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
 									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-									.unit(employee.getUnit().toUnitDTO(unit)).build();
+									.unit(employee.getUnit().toUnitDTO(employee.getUnit())).build();
 			return employeeDTO;
 		}
 		return toManagerDTO(employee);
@@ -134,7 +134,7 @@ public class Employee {
 			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
 					// .teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))
 					// // 나중에 추가해줘야함
-					// .unit(employee.getUnit().toDTO(employee.getUnit())) // 나중에 추가해줘야함
+					 .unit(employee.getUnit().toUnitDTO(employee.getUnit())) // 나중에 추가해줘야함
 					.manager(toManagerDTO(employee.getManager())).name(employee.getName())
 					.vacationCount(employee.getVacationCount()).build();
 			return employeeDTO;
@@ -153,7 +153,6 @@ public class Employee {
 				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
 				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
 				.unit(employee.getUnit().toUnitDTO(employee.getUnit()))
-				// .unit(employee.getUnit().toUnitDTO(unit))
 				.build();
 	}
 
