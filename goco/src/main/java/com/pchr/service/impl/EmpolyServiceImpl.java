@@ -213,10 +213,8 @@ public class EmpolyServiceImpl implements EmployeeService{
 	public int adminDelete(Long empNum) {
 			Employee employee = findByEmpNum(empNum)
 					.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
-			Resignation r = employee.toResignation(employee);//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
-			resignationServiceImpl.save(r);
-			List<Employee> empManager = findManagerByEmpNum(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
-			empManager.forEach((e)->{
+			resignationServiceImpl.save(employee.toResignation(employee));//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
+			findManagerByEmpNum(employee.getEmpNum()).forEach((e)->{// 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
 					EmployeeDTO dto = e.toDTO(e);
 					dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다. 
 					save(dto.toEntity(dto));

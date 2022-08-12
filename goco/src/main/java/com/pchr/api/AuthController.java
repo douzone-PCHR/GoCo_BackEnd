@@ -1,7 +1,12 @@
 package com.pchr.api;
 
 import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +40,16 @@ public class AuthController {
 	}  
 	
     @PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO) {
-        return ResponseEntity.ok(authService.login(employeeDTO));
+    public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
+    	TokenDTO tokenDTO = authService.login(employeeDTO);
+    	if(tokenDTO != null) {
+    		Cookie cookie = new Cookie("accessToken", tokenDTO.getAccessToken());
+    		cookie.setMaxAge(60*60);
+    		response.addCookie(cookie);
+    	}else {
+    		throw new RuntimeException("토큰 생성 에러");
+    	}
+        return ResponseEntity.ok(tokenDTO);
     }
     
     @GetMapping("checkInfo") // 아이디와 이메일 이미 가입되어있는지 확인하는 것
@@ -50,12 +63,12 @@ public class AuthController {
     	return authService.sendEmailForEmail(e.getEmail());
     } //http://localhost:8080/auth/sendEmailForEmail
 
-    @GetMapping("/sendEmailForId") // id 찾기위해 이메일 보내는함수
+    @PostMapping("/sendEmailForId") // id 찾기위해 이메일 보내는함수
     public String sendemail(@RequestBody EmployeeDTO e) {
     	return authService.sendEmailForId(e.getName(),e.getEmail());
     }   //http://localhost:8080/auth/sendEmailForId
     
-    @GetMapping("/sendEmailForPwd") // 비번 찾기위해 이메일 보내는 함수 
+    @PostMapping("/sendEmailForPwd") // 비번 찾기위해 이메일 보내는 함수 
     public String findPassword(@RequestBody EmployeeDTO e) {
     	return authService.sendEmailForPwd(e.getEmpId(),e.getEmail());
     }    //http://localhost:8080/auth/sendEmailForPwd
