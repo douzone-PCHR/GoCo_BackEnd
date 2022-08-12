@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.BusinessTripDTO;
@@ -30,6 +34,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class BusinessTrip {
 
 	@Id
@@ -50,9 +55,11 @@ public class BusinessTrip {
 	@Column(name = "business_trip_content")
 	private String businessTripContent;
 
+	@CreatedDate
 	@Column(name = "business_trip_request_date", nullable = false)
 	private LocalDateTime businessTripRequestDate;
 
+	@LastModifiedDate
 	@Column(name = "business_trip_approve_date", insertable = false)
 	private LocalDateTime businessTripApproveDate;
 
