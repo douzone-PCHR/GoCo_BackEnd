@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService{
     // 아이디 찾기위해 메일 보내는 함수 
 	public String sendEmailForId(String name, String email) {
 		if(empolyServiceImpl.findByNameAndEmail(name,email)==null) { // 이름과 이메일로 해당하는 emp테이블을 가져와 사용자가 없다면 null을 반환하므로 조건문을 준다.
-			return "사용자가 없습니다. 이메일 혹은 이름을 확인하세요 ";
+			throw new RuntimeException("사용자가 없습니다. 이메일 혹은 이름을 확인하세요 ");
 		}		
 		return emailAuthService.save(email);
 	}	
@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService{
 	// 비밀번호 찾기 위해 메일보내는 함수
 	public String sendEmailForPwd(String id, String email) {
 		if(empolyServiceImpl.findByEmpIdAndEmail(id,email)==null) { // 이름과 이메일로 해당하는 emp테이블을 가져와 사용자가 없다면 null을 반환하므로 조건문을 준다.
-			return "사용자가 없습니다. 이메일 혹은 아이디를 확인하세요 ";
+			throw new RuntimeException("사용자가 없습니다. 이메일 혹은 아이디를 확인하세요 ");
 		}
 		return emailAuthService.save(email);
 	}	
@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService{
 	public String find(int number,String authenticationNumber) {
 		EmailAuth emailAuth = emailAuthService.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
 		if(emailAuth==null) {
-			return "올바른 인증번호를 입력하세요";
+			throw new RuntimeException("올바른 인증번호를 입력하세요 ");
 		}
 		if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){	
 			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {// 시간 비교해서 유효할 경우 실행됨
@@ -116,10 +116,10 @@ public class AuthServiceImpl implements AuthService{
 					empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
 					return "이메일 발송";
 				default :
-					return "잘못된 정보가 입력되었습니다.";
+					throw new RuntimeException("잘못된 정보가 입력되었습니다.");
 				}
 			}else {
-				return "시간 초과 다시 인증 바랍니다.";
+				throw new RuntimeException("시간 초과 다시 인증 바랍니다.");
 			}
 		}
 		return "-1";//에러
