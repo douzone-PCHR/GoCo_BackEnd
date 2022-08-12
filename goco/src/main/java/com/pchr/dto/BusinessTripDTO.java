@@ -40,7 +40,6 @@ public class BusinessTripDTO {
 				.businessTripEndDate(businessTripDTO.getBusinessTripEndDate()).approveYn(businessTripDTO.getApproveYn())
 				.businessTripContent(businessTripDTO.getBusinessTripContent())
 				.businessTripRequestDate(businessTripDTO.getBusinessTripRequestDate())
-				.businessTripApproveDate(businessTripDTO.getBusinessTripApproveDate())
 				.file(businessTripDTO.getFile() != null
 						? businessTripDTO.getFile().toFileEntity(businessTripDTO.getFile())
 						: null)
