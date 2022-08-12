@@ -97,7 +97,7 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 		if(existsByAuthenticationNumber(authNum)) {// 반환받은 인증번호가 이미 테이블에 있는 경우 그 테이블을 지워준다.
 			deleteByAuthenticationNumber(authNum);
 		}
-		save(new EmailAuth(email,authNum,LocalDateTime.now().plusMinutes(5)));// 인증 데이터를 저장하기 위해 EmailAuth겍체 생성, 유효시간은 현재보다 5분 앞으로함
+		save(new EmailAuth(email,authNum,LocalDateTime.now().plusMinutes(5),1));// 인증 데이터를 저장하기 위해 EmailAuth겍체 생성, 유효시간은 현재보다 5분 앞으로함
 		return "메일이 전송 되었습니다.";
 	}
 	// 임시 비번 생성 및 고객에게 전송
@@ -129,6 +129,7 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	}
 	@Override
     @Scheduled(cron = "0 0 4 * * *")//매일 새벽 4시 실행
+	//@Scheduled(cron = "0 */5 * * * *")//5분마다실행
 	public void deleteData() {
 		findAll().forEach(e->{
 			if(LocalDateTime.now().compareTo(e.getValidTime())>0) {// 만료시간이 지난 것들 삭제 
