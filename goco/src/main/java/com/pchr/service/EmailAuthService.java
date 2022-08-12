@@ -19,6 +19,7 @@ public interface EmailAuthService {
 
 	public List<EmailAuth> findAll();
 	public EmailAuth findByAuthenticationNumber(String authenticationNumber);
+	public EmailAuth findByEmail(String email);
 	public boolean existsByAuthenticationNumber(String authenticationNumber);
 	public int deleteByEmail(String email);
 	public int deleteByAuthenticationNumber(String authenticationNumber);
