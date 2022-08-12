@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.service.impl.AuthServiceImpl;
@@ -75,9 +76,9 @@ public class AuthController {
     	return authService.sendEmailForPwd(e.getEmpId(),e.getEmail());
     }    //http://localhost:8080/auth/sendEmailForPwd
     
-	@GetMapping("/find/{number}") // 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
-	public String find(@PathVariable("number") int number, @RequestParam String authenticationNumber) {
-		return authService.find(number, authenticationNumber);
+    @PostMapping("/find/{number}") // 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
+	public String find(@PathVariable("number") int number, @RequestBody EmailAuthDTO emailAuthDTO) {
+		return authService.find(number,emailAuthDTO.getEmail(),emailAuthDTO.getAuthenticationNumber());
 	} // http://localhost:8080/auth/find/1?authenticationNumber=
 
 }
