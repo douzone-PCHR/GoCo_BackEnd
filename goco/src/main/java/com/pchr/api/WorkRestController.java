@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pchr.config.SecurityUtil;
+import com.pchr.dto.CommuteDTO;
+import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.WorkDTO;
 import com.pchr.service.impl.WorkServiceImpl;
 
@@ -33,13 +36,34 @@ public class WorkRestController {
 	 */
 
 	@GetMapping(value = "/work")
-	public List<WorkDTO> findAll() {
+	public List<WorkDTO> findAll(@RequestParam Long empNum) {
 		List<WorkDTO> result = null;
 
 		try {
-			result = workService.findAllByEmpNo();
+			result = workService.findAllByEmpNo(empNum);
 			if (result.isEmpty()) {
 				new Exception("일정이 없습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * 직원 별 work list
+	 * 
+	 * @return List<WorkDTO>
+	 */
+
+	@GetMapping(value = "/work/emplist")
+	public List<EmployeeDTO> findAllWorkByEmp() {
+		List<EmployeeDTO> result = null;
+		
+		try {
+			result = workService.findAllWorkByEmp();
+			if (result.isEmpty()) {
+				new Exception("소속된 직원이 없습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

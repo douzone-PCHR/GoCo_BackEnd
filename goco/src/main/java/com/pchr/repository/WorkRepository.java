@@ -10,12 +10,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.pchr.dto.WorkDTO;
+import com.pchr.entity.Employee;
 import com.pchr.entity.Work;
 
 @Repository
 public interface WorkRepository extends JpaRepository<Work, Long>{
 	
-	public List<Work> findAllByEmpEmpId(String empId);
+	public List<Work> findAllByEmpEmpNum(Long empNum);
 	
 	@Query(value = "select * "
 			+ "from work "
@@ -30,5 +31,4 @@ public interface WorkRepository extends JpaRepository<Work, Long>{
 	public List<Work> findAllWithoutDate(@Param("empId") String empId);
 	
 	
-
 }
