@@ -109,6 +109,8 @@ public class VacationServiceImpl implements VacationService {
 			employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
 			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 
+		} else if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_REFUSE) {
+			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 		}
 	}
 

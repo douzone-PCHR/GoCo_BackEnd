@@ -35,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(employee.getAuthority().toString());
 
         return new User(
-                String.valueOf(employee.getEmpId()),//★★★getEmpId 가 아닐 수도 있다.
+                String.valueOf(employee.getEmpId()),
                 employee.getPassword(),
                 Collections.singleton(grantedAuthority)
         );

@@ -90,7 +90,7 @@ public class WebSecurityConfig {
                         response.sendRedirect("/auth/login"); //로그아웃 시 로그인 할 수 있는 페이지로 이동하도록 처리한다.
                     }
                 })
-                .deleteCookies("JSESSIONID", "remember-me");// 로그아웃 후 해당 쿠키 삭제
+                .deleteCookies("JSESSIONID", "remember-me","accessToken");// 로그아웃 후 해당 쿠키 삭제
         return http.build();
     }
 }
