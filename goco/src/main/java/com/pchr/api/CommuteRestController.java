@@ -115,5 +115,10 @@ public class CommuteRestController {
 		}
 		return false;
 	}
+	
+	@GetMapping(value = "/admin/commute")
+	public List<CommuteDTO> findAllCommuteAdmin(){
+		return commuteService.findAllCommuteAdmin();
+	}
 
 }

@@ -90,6 +90,16 @@ public class CommuteServiceImpl implements CommuteService {
 		return findAllCommuteTime;
 	}
 
-
+	@Override
+	public List<CommuteDTO> findAllCommuteAdmin() {
+		List<CommuteDTO> result = commuteRepository
+				.findAllCommuteAdmin(
+						LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
+								LocalDateTime.now().getDayOfMonth(), 0, 0),
+						LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
+								LocalDateTime.now().getDayOfMonth() + 1, 0, 0))
+				.stream().map(commute -> commute.toCommuteDto(commute)).collect(Collectors.toList());
+		return result;
+	}
 
 }

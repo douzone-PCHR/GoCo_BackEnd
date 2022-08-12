@@ -58,6 +58,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 			nativeQuery = true)
 	public List<Employee> findAllEmp(@Param("empId") String empId);
 	
+	
+	public Employee findByUnitUnitIdAndTeamPositionTeamPositionId(Long unitId,Long teamPositionId);
 
 
 }

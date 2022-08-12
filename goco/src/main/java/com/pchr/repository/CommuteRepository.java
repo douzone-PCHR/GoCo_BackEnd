@@ -36,5 +36,9 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 	public Integer findAllCommuteTime(@Param("PARAM_start_date") LocalDateTime paramStartDate,
 			@Param("PARAM_end_date") LocalDateTime paramEndDate, @Param("PARAM_emp_id") String paramEmpId);
 	
-
+	
+	@Query(value = "select * " + "from commute c " + "left join employee e " + "on e.emp_num = c.emp_num "
+			+ "where clock_in >= :clock_in " + "and clock_out <= :clock_out ",nativeQuery = true)
+	public List<Commute> findAllCommuteAdmin(@Param("clock_in") LocalDateTime clock_in,
+			@Param("clock_out") LocalDateTime clock_out);
 }

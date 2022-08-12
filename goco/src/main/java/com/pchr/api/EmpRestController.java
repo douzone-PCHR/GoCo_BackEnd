@@ -102,6 +102,15 @@ public class EmpRestController {
 		return empolyServiceImpl.changUnitId(e.getEmpNum(), e.getUnit());
 	}// http://localhost:8080/admin/changUnitId
 
+	@PutMapping("/admin/changejobtitle")
+	public void updateJobTitle(@RequestBody EmployeeDTO e) {
+		// 넘겨 받아야하는 것 : 사원 ID, 직책
+		// repo에 접근을 하여 employee에 대한 정보 받아와야함,
+		// password와 다른 정보들은 front에 없기 때문에 null 처리가 안되기 위해선 db에 접근해야함.
+		empolyServiceImpl.updateJobTitle(e);
+		
+	}
+	
 	@DeleteMapping("/admin/delete") // 아이디 삭제
 	public int delete(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.adminDelete(e.getEmpNum());
@@ -109,14 +118,11 @@ public class EmpRestController {
 //    {
 //        "empNum":"22"
 //    }   
-
-	@PutMapping("/admin/changejobtitle")
-	public void updateJobTitle(@RequestBody EmployeeDTO e) {
-		// 넘겨 받아야하는 것 : 사원 ID, 직책
-		// repo에 접근을 하여 employee에 대한 정보 받아와야함,
-		// password와 다른 정보들은 front에 없기 때문에 null 처리가 안되기 위해선 db에 접근해야함.
-		empolyServiceImpl.updateJobTitle(e);
-
+	
+	@PutMapping("/admin/emp/{id}")
+	public void updateEmp(@PathVariable("id") Long id,@RequestBody EmployeeDTO emp) {
+		emp.setEmpNum(id);
+		System.out.println(emp);
+		empolyServiceImpl.updateAllEmp(emp);
 	}
-
 }
