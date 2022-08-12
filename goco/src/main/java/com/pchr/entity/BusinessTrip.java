@@ -56,7 +56,7 @@ public class BusinessTrip {
 	private String businessTripContent;
 
 	@CreatedDate
-	@Column(name = "business_trip_request_date", nullable = false)
+	@Column(name = "business_trip_request_date", nullable = false, updatable = false)
 	private LocalDateTime businessTripRequestDate;
 
 	@LastModifiedDate

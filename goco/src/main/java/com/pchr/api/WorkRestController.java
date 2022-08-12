@@ -9,17 +9,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pchr.dto.CommuteDTO;
 import com.pchr.dto.WorkDTO;
-import com.pchr.service.impl.CommuteServiceImpl;
 import com.pchr.service.impl.WorkServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@RequestMapping(value = "/api")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -36,7 +35,7 @@ public class WorkRestController {
 	@GetMapping(value = "/work")
 	public List<WorkDTO> findAll() {
 		List<WorkDTO> result = null;
-		
+
 		try {
 			result = workService.findAllByEmpNo();
 			if (result.isEmpty()) {
@@ -47,8 +46,6 @@ public class WorkRestController {
 		}
 		return result;
 	}
-
-
 
 	/**
 	 * 날짜 클릭 후 날짜 별 이벤트 리스트 출력

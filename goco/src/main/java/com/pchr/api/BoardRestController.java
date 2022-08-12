@@ -18,7 +18,7 @@ import com.pchr.service.impl.BoardServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(value = "/board")
+@RequestMapping(value = "/api/board")
 @RequiredArgsConstructor
 public class BoardRestController {
 	private final BoardServiceImpl boardService;

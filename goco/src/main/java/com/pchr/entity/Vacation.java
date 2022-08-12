@@ -59,7 +59,7 @@ public class Vacation {
 	private String vacationContent;
 
 	@CreatedDate
-	@Column(name = "vacation_request_date", nullable = false)
+	@Column(name = "vacation_request_date", nullable = false, updatable = false)
 	private LocalDateTime vacationRequestDate;
 
 	@LastModifiedDate

@@ -2,7 +2,6 @@ package com.pchr.api;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,17 +9,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pchr.dto.UnitDTO;
-import com.pchr.entity.Unit;
 import com.pchr.service.impl.UnitServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(value = "/admin/unit")
+@RequestMapping(value = "/api/admin/unit")
 @RequiredArgsConstructor
 public class UnitRestController {
 	private final UnitServiceImpl unitImpl;
@@ -53,8 +50,8 @@ public class UnitRestController {
 //	부서추가 {
 //	     "unitName":"회계팀"
 //	 }  
-	 
-	//Unit 업데이트
+
+	// Unit 업데이트
 	@PutMapping(value = "/{unitid}")
 	public void updateUnit(@PathVariable(name = "unitid") Long unitId, @RequestBody UnitDTO unitDTO) {
 		// 부서,팀 이름 변경 및 팀에 대한 부서이동
