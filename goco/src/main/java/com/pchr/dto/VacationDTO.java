@@ -43,7 +43,6 @@ public class VacationDTO {
 				.approveYn(vacationDTO.getApproveYn()).vacationType(vacationDTO.getVacationType())
 				.vacationContent(vacationDTO.getVacationContent())
 				.vacationRequestDate(vacationDTO.getVacationRequestDate())
-				.vacationApproveDate(vacationDTO.getVacationApproveDate())
 				.file(vacationDTO.getFile() != null ? vacationDTO.getFile().toFileEntity(vacationDTO.getFile()) : null)
 				.employee(vacationDTO.getEmployee().toFKManager(vacationDTO.getEmployee())).build();
 		return vacationEntity;

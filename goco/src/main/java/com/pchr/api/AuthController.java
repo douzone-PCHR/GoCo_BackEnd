@@ -2,10 +2,10 @@ package com.pchr.api;
 
 import java.util.Map;
 
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -16,19 +16,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.service.impl.AuthServiceImpl;
 import com.pchr.service.impl.EmpolyServiceImpl;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthServiceImpl authService;
-    private final EmpolyServiceImpl empolyServiceImpl;
-    
+	private final AuthServiceImpl authService;
+	private final EmpolyServiceImpl empolyServiceImpl;
+
 	@PostMapping("/signup") // 회원가입
 	public ResponseEntity<?> signup(@Valid @RequestBody EmployeeDTO employeeDTO, Errors errors) {
 		if (errors.hasErrors()) {
@@ -36,10 +38,10 @@ public class AuthController {
 			Map<String, String> validatorResult = AuthServiceImpl.validateHandling(errors);
 			return ResponseEntity.ok(validatorResult);
 		}
-	    return ResponseEntity.ok(authService.signup(employeeDTO));
+        return ResponseEntity.ok(authService.signup(employeeDTO));
 	}  
-	
-    @PostMapping("/login")
+
+  @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
     	TokenDTO tokenDTO = authService.login(employeeDTO);
     	if(tokenDTO != null) {
@@ -58,10 +60,10 @@ public class AuthController {
     }    // http://localhost:8080/auth/checkInfo?info=kyj
 
 
-    @GetMapping("/sendEmailForEmail") // 회원가입시 이메일 인증을위해 이메일 보내는 부분 
-    public String sendEmailForEmail(@RequestBody EmployeeDTO e) {
-    	return authService.sendEmailForEmail(e.getEmail());
-    } //http://localhost:8080/auth/sendEmailForEmail
+	@GetMapping("/sendEmailForEmail") // 회원가입시 이메일 인증을위해 이메일 보내는 부분
+	public String sendEmailForEmail(@RequestBody EmployeeDTO e) {
+		return authService.sendEmailForEmail(e.getEmail());
+	} // http://localhost:8080/auth/sendEmailForEmail
 
     @PostMapping("/sendEmailForId") // id 찾기위해 이메일 보내는함수
     public String sendemail(@RequestBody EmployeeDTO e) {
@@ -72,10 +74,10 @@ public class AuthController {
     public String findPassword(@RequestBody EmployeeDTO e) {
     	return authService.sendEmailForPwd(e.getEmpId(),e.getEmail());
     }    //http://localhost:8080/auth/sendEmailForPwd
-
-    @GetMapping("/find/{number}")// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
-    public String find(@PathVariable("number") int number,@RequestParam String authenticationNumber) {
-    	return authService.find(number,authenticationNumber);
-    }    //http://localhost:8080/auth/find/1?authenticationNumber=
     
+	@GetMapping("/find/{number}") // 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
+	public String find(@PathVariable("number") int number, @RequestParam String authenticationNumber) {
+		return authService.find(number, authenticationNumber);
+	} // http://localhost:8080/auth/find/1?authenticationNumber=
+
 }

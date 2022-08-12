@@ -60,6 +60,7 @@ public class Unit {
 		if (unit.getParentUnit() != null) {
 			unitDto = UnitDTO.builder().unitName(unit.getUnitName())
 					.unitId(unit.getUnitId())
+					.unitType(unit.isUnitType())
 					.parentUnit(parentUnitDTO(unit.getParentUnit())).build();
 		} else {
 			unitDto = parentUnitDTO(unit);
@@ -76,7 +77,7 @@ public class Unit {
 
 		parentUnitDTO.setUnitId(parentUnit.getUnitId());
 		parentUnitDTO.setUnitName(parentUnit.getUnitName());
-		parentUnitDTO.setUnitType(parentUnitDTO.isUnitType());
+		parentUnitDTO.setUnitType(parentUnit.isUnitType());
 		return parentUnitDTO;
 	}
 

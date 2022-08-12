@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.DynamicInsert;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.VacationDTO;
@@ -30,6 +34,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert
+@EntityListeners(AuditingEntityListener.class)
 public class Vacation {
 
 	@Id
@@ -53,9 +58,11 @@ public class Vacation {
 	@Column(name = "vacation_content")
 	private String vacationContent;
 
-	@Column(name = "vacation_request_date", nullable = false)
+	@CreatedDate
+	@Column(name = "vacation_request_date", nullable = false, updatable = false)
 	private LocalDateTime vacationRequestDate;
 
+	@LastModifiedDate
 	@Column(name = "vacation_approve_date", insertable = false)
 	private LocalDateTime vacationApproveDate;
 
