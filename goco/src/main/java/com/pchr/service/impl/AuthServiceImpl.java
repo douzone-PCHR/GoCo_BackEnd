@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
+import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.TokenDTO;
@@ -94,6 +95,16 @@ public class AuthServiceImpl implements AuthService{
 	@Override// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
 	public String find(int number,String authenticationNumber) {
 		EmailAuth emailAuth = emailAuthService.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
+//
+//		if(emailAuth.getCount()>=3) {//인증을 조회한 횟수가 3회면 runtime 에러
+//			throw new RuntimeException("인증 번호가 3회이상 잘못 입력되었습니다. 재인증 바랍니다.");
+//		}else { // emailAuth의 인증 번호의 count를 뽑아서 1을 증가 시키고 저장한다.
+//			System.out.println("ㄷㄷㄷㄷ");
+//			EmailAuthDTO emailAuthDTO  = emailAuth.toDTO(emailAuth);
+//			emailAuthDTO.setCount(emailAuthDTO.getCount()+1);
+//			emailAuth = emailAuthDTO.toEntity(emailAuthDTO);
+//			emailAuthService.save(emailAuth);
+//		}
 		if(emailAuth==null) {
 			throw new RuntimeException("올바른 인증번호를 입력하세요 ");
 		}
