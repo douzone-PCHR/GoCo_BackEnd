@@ -82,7 +82,7 @@ public class EmployeeDTO {
 					.manager(toManager(employeeDTO.getManager()))
 					.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
 					.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
-					.unit(employeeDTO.getUnit().toFKUnit(unit))
+					.unit(employeeDTO.getUnit().toFKUnit(employeeDTO.getUnit()))
 					.build();
 			return employee;
 		}

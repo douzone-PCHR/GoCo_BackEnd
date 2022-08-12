@@ -21,6 +21,8 @@ public interface CommuteService {
 	public void deleteCommute(CommuteDTO commuteDTO);
 	
 	public Integer findWorkTime(LocalDateTime startDate , LocalDateTime endDate);
+
+	public List<CommuteDTO> findAllCommuteAdmin();
 	
 	
 }
