@@ -29,7 +29,7 @@ public class BusinessTripRestController {
 	private final BusinessTripServiceImpl businessTripService;
 
 	// 출장 신청 리스트 (사원)
-	@GetMapping(value = "/business/{empNum}")
+	@GetMapping(value = "/businesslist/{empNum}")
 	public List<BusinessTripDTO> findBusinessTripByEmployeeEmpNum(@PathVariable Long empNum) {
 		List<BusinessTripDTO> businessTripList = businessTripService.getAllBusinessTrip(empNum);
 		System.out.println(businessTripList);
@@ -37,7 +37,7 @@ public class BusinessTripRestController {
 	}
 
 	// 출장 신청 리스트 (팀장)
-	@GetMapping(value = "/business/approve/{unitId}")
+	@GetMapping(value = "/businesslist/approve/{unitId}")
 	public List<BusinessTripDTO> findBusinessTripByEmployeeUnitId(@PathVariable Long unitId) {
 		List<BusinessTripDTO> businessTripList = businessTripService.getAllTeamBusinessTrip(unitId);
 		System.out.println(businessTripList);
