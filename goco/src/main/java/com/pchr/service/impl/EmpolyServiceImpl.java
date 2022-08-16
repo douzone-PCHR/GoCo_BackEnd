@@ -103,9 +103,9 @@ public class EmpolyServiceImpl implements EmployeeService{
 	//아이디 체크
 	public boolean idCheck(String info) {
 	        if (existsByEmail(info) | existsByEmpId(info)  ) {
-	            return true;
+	            return false;
 	        }
-			return false;
+			return true; // 중복되는 값이 없을 때 true를 반환
 	}
 	// 내정보 회원탈퇴
 	public int delete() {
