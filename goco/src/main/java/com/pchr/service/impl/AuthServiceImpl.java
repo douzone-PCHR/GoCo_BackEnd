@@ -17,6 +17,8 @@ import org.springframework.validation.FieldError;
 import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
+import com.pchr.dto.JobTitleDTO;
+import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.entity.EmailAuth;
 import com.pchr.entity.Employee;
@@ -57,6 +59,9 @@ public class AuthServiceImpl implements AuthService{
 	    if(e.size()==1) {
 	    	employeeDTO.setManager2(e.get(0).toDTO(e.get(0)));//매니저 넣어주는 코드 
 	    }
+	    employeeDTO.setJobTitle(getJobTitleDTO());// 사원직급 자동지정
+	    employeeDTO.setTeamPosition(getTeamPositionDTO());// 팀원으로 자동 지정 
+	    
 	    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
 	    return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
 	}	
@@ -86,10 +91,11 @@ public class AuthServiceImpl implements AuthService{
 	}	
 	@Override
 	public String sendEmailForEmail(String email) {
-		if(!empolyServiceImpl.idCheck(email)) {
+		if(empolyServiceImpl.idCheck(email)) {
 			return emailAuthServiceImpl.save(email);
 		}
-		return "이미 가입되어 있는 유저입니다";
+		throw new RuntimeException("이미 가입되어 있는 유저입니다");
+		
 	}
 
 	@Override// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
@@ -97,7 +103,7 @@ public class AuthServiceImpl implements AuthService{
 		if(count(email)==-1) {
 			return "인증 번호가 3회이상 잘못 입력되었습니다. 재인증 바랍니다.";
 		}
-		EmailAuth emailAuth = emailAuthServiceImpl.findByAuthenticationNumber(authenticationNumber);// 인증 번호로 테이블을 불러온다.
+		EmailAuth emailAuth = emailAuthServiceImpl.findByEmailAndAuthenticationNumber(email,authenticationNumber);// 인증 번호로 테이블을 불러온다.
 		if(emailAuth==null) {
 			return "올바른 인증번호를 입력하세요";
 		}
@@ -128,15 +134,15 @@ public class AuthServiceImpl implements AuthService{
 		}
 		throw new RuntimeException("에러 발생");
 	}
-//	@Transactional
+	// 인증 번호 반환 해주는 서비스 코드 간결화를 위해 분할
 	public int count(String email) {
 		EmailAuth emailAuthThree = emailAuthServiceImpl.findByEmail(email);
 		if(emailAuthThree==null) {
 			throw new RuntimeException("해당 메일로 발송된 인증번호가 없습니다.");
 		}
-		if(emailAuthThree.getCount()>3) {//인증을 조회한 횟수가 3회면 runtime 에러
+		if(emailAuthThree.getCount()>3) {
 			emailAuthServiceImpl.deleteByEmail(email);
-			return -1;
+			return -1;//인증을 조회한 횟수가 3회면 이메일 삭제
 		}else { // emailAuth의 인증 번호의 count를 뽑아서 1을 증가 시키고 저장한다.			
 			EmailAuthDTO emailAuthDTO  = emailAuthThree.toDTO(emailAuthThree);
 			emailAuthDTO.setCount(emailAuthDTO.getCount()+1);
@@ -144,6 +150,17 @@ public class AuthServiceImpl implements AuthService{
 		}
 		return 1;
 	}
-	
+	// 회원 가입시 팀 포지션 팀원으로 자동 지정
+	public TeamPositionDTO getTeamPositionDTO() {
+		TeamPositionDTO team = new TeamPositionDTO();
+	    team.setTeamPositionId(2L);
+	    return team;
+	}
+	// 회원 가입시 사원직급으로 자동 지정 
+	public JobTitleDTO getJobTitleDTO() {
+		JobTitleDTO job = new JobTitleDTO();
+	    job.setJobTitleId(1L);
+	    return job;
+	}
 	
 }

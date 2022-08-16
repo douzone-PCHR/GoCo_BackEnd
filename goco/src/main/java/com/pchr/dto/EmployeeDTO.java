@@ -41,7 +41,7 @@ public class EmployeeDTO {
 	private String name;
 	
 	@NotBlank(message = "핸드폰 번호는 필수 입력 값입니다.")
-	@Pattern(regexp = "^(01[1|6|7|8|9|0])-(\\d{3,4})-(\\d{4})$", message = "핸드폰 번호 형식이 올바르지 않습니다.")
+	@Pattern(regexp = "^(01[1|6|7|8|9|0])(\\d{3,4})(\\d{4})$", message = "핸드폰 번호 형식이 올바르지 않습니다.(10~11자리 입력)")
 	private String phoneNumber;
 
 	private Date updateDatetime;

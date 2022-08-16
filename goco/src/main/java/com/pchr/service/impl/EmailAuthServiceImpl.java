@@ -42,6 +42,10 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 		return emailAuthRepository.findByEmail(email);
 	}
 	@Override
+	public EmailAuth findByEmailAndAuthenticationNumber(String email,String authenticationNumber) {
+		return emailAuthRepository.findByEmailAndAuthenticationNumber(email,authenticationNumber);
+	}
+	@Override
 	public boolean existsByAuthenticationNumber(String authenticationNumber) {
 		return emailAuthRepository.existsByAuthenticationNumber(authenticationNumber);
 	}
