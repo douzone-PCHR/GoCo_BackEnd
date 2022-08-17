@@ -101,16 +101,24 @@ public class VacationServiceImpl implements VacationService {
 	@Override
 	@Transactional
 	public void approveVacation(VacationDTO vacationDTO) {
-		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_SUCCESS) {
-
-			Long count = ((vacationDTO.getVacationEndDate().getTime() - vacationDTO.getVacationStartDate().getTime()))
+		Long count = 0L;
+		switch (vacationDTO.getApproveYn()) {
+		case APPROVE_SUCCESS:
+			count = ((vacationDTO.getVacationEndDate().getTime() - vacationDTO.getVacationStartDate().getTime()))
 					/ (60 * 60 * 24 * 1000);
-
 			employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
 			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 
-		} else if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_REFUSE) {
+			break;
+		case APPROVE_CANCEL:
+			count = ((vacationDTO.getVacationStartDate().getTime() - vacationDTO.getVacationEndDate().getTime()))
+					/ (60 * 60 * 24 * 1000);
+			employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
 			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
+			break;
+		default:
+			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
+			break;
 		}
 	}
 

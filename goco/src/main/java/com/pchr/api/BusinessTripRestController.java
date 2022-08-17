@@ -63,8 +63,9 @@ public class BusinessTripRestController {
 
 	// 출장 결재 (팀장)
 	@Transactional
-	@PutMapping(value = "/business/approve/{businessTripId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/business/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void approveBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
+		System.out.println(businessTripDTO);
 		businessTripService.approveBusiness(businessTripDTO);
 	}
 
