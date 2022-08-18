@@ -19,6 +19,7 @@ public class EmployeeResponseDTO {
     private String empId;
     private String phoneNumber;
     private Unit unit;
+    private String name;
     public static EmployeeResponseDTO of(Employee employee) {
     	return EmployeeResponseDTO.builder()
     			.empNum(employee.getEmpNum())
@@ -26,6 +27,7 @@ public class EmployeeResponseDTO {
     			.empId(employee.getEmpId())
     			.unit(employee.getUnit())
     			.phoneNumber(employee.getPhoneNumber())
+    			.name(employee.getName())
     			.build();
     }
 }
