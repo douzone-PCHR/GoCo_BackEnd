@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.pchr.entity.BusinessTrip;
+import com.pchr.entity.Vacation;
 
 @Repository
 public interface BusinessTripRepository extends JpaRepository<BusinessTrip, Long> {
@@ -26,5 +27,19 @@ public interface BusinessTripRepository extends JpaRepository<BusinessTrip, Long
 	@Query(value = "select * from business_trip where emp_num = :empNum and business_trip_start_date <= :endDate and business_trip_end_date >= :startDate", nativeQuery = true)
 	public List<BusinessTrip> checkBusinessTrip(@Param("empNum") Long empNum, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
+	
+	// 출장 요청 대기 리스트
+	@Query(value = "select * " + 
+			"from business_trip b " + 
+			"left join employee e " + 
+			"on e.emp_num = b.emp_num " + 
+			"where unit_id = ( " + 
+			"select unit_id " + 
+			"from employee " + 
+			"where emp_id = :empId " + 
+			") " + 
+			"and approve_yn = 'APPROVE_WAITTING' ", nativeQuery = true)
+	public List<BusinessTrip> findAllApprove(@Param("empId") String empId);
 
+	
 }

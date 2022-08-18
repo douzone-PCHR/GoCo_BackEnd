@@ -3,7 +3,9 @@ package com.pchr.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.NamedStoredProcedureQuery;
@@ -35,6 +37,9 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 	@Query(value = "CALL commute_procedure(:PARAM_start_date , :PARAM_end_date , :PARAM_emp_id )", nativeQuery = true)
 	public Integer findAllCommuteTime(@Param("PARAM_start_date") LocalDateTime paramStartDate,
 			@Param("PARAM_end_date") LocalDateTime paramEndDate, @Param("PARAM_emp_id") String paramEmpId);
+
+	@Query(value = "CALL commute_vacation_business(:PARAM_emp_id)", nativeQuery = true)
+	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness(@Param("PARAM_emp_id") String empId);
 	
 	
 	@Query(value = "select * " + "from commute c " + "left join employee e " + "on e.emp_num = c.emp_num "

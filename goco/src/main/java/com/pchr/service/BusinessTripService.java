@@ -30,5 +30,7 @@ public interface BusinessTripService {
 
 	// check Business
 	public Map<String, List<BusinessTripDTO>> checkBusiness(BusinessTripDTO businessTripDTO);
-
+	
+	// 출장 승인 대기 리스트
+	public List<BusinessTripDTO> vacationAndBusiness();
 }

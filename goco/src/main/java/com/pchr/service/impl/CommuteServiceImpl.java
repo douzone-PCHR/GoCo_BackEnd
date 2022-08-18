@@ -1,7 +1,9 @@
 package com.pchr.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.orm.jpa.JpaSystemException;
@@ -88,6 +90,13 @@ public class CommuteServiceImpl implements CommuteService {
 		String empId = SecurityUtil.getCurrentMemberId();
 		Integer findAllCommuteTime = commuteRepository.findAllCommuteTime(startDate, endDate, empId);
 		return findAllCommuteTime;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness() {
+		List<Map<String, Object>> list = commuteRepository.findAllCommuteAndVacationAndBusiness(SecurityUtil.getCurrentMemberId());
+		return list;
 	}
 
 	@Override

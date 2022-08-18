@@ -3,6 +3,7 @@ package com.pchr.service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.pchr.dto.CommuteDTO;
@@ -24,5 +25,6 @@ public interface CommuteService {
 
 	public List<CommuteDTO> findAllCommuteAdmin();
 	
+	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness();
 	
 }
