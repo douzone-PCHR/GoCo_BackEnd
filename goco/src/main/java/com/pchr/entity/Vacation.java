@@ -73,7 +73,10 @@ public class Vacation {
 	@OneToOne
 	@JoinColumn(name = "file_id", unique = true)
 	private File file;
-
+	
+//	@Column(name = "row_idx", nullable = false, updatable = false)
+//	private Long idx;
+	
 	// toDTO
 	public VacationDTO toVacationDTO(Vacation vacationEntity) {
 		VacationDTO vacationDTO = VacationDTO.builder().vacationId(vacationEntity.getVacationId())

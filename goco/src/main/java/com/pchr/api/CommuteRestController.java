@@ -1,6 +1,8 @@
 package com.pchr.api;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,29 @@ public class CommuteRestController {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * 현재 우리팀 근무 현황 (매니저 페이지)
+	 * 
+	 * @return List<CommuteDTO>
+	 */
+
+	@GetMapping(value = "/commute/status")
+	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness() {
+		List<Map<String, Object>> result = null;
+		try {
+			result = commuteService.findAllCommuteAndVacationAndBusiness();
+			if (result.isEmpty()) {
+				new Exception("소속 된 직원이 없습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	
 
 	/**
 	 * 사원 별 근태 불러오기

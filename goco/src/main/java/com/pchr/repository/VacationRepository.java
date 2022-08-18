@@ -2,6 +2,7 @@ package com.pchr.repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,5 +28,9 @@ public interface VacationRepository extends JpaRepository<Vacation, Long> {
 	@Query(value = "select * from vacation where emp_num = :empNum and vacation_start_date <= :endDate and vacation_end_date >= :startDate", nativeQuery = true)
 	public List<Vacation> checkVacation(@Param("empNum") Long empNum, @Param("startDate") Date startDate,
 			@Param("endDate") Date endDate);
+	
+	// 휴가 요청 대기 리스트
+	@Query(value = "Call vacation_business_trip(:PARAM_emp_id)", nativeQuery = true)
+	public List<Map<String, Object>> findAllApprove(@Param("PARAM_emp_id") String PARAM_emp_id);
 
 }

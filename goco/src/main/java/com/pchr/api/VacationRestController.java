@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.VacationDTO;
 import com.pchr.service.impl.VacationServiceImpl;
 
@@ -88,4 +89,12 @@ public class VacationRestController {
 
 		return vacationService.checkVacation(vacationDTO);
 	}
+	
+	// 휴가 및 출장 리스트
+	@GetMapping(value = "/vacation/list")
+	public List<Map<String, Object>> vacationAndBusiness() {
+	
+		return vacationService.vacationAndBusiness();
+	}
+	
 }
