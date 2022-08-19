@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@DynamicInsert// emplyee 신규로 컬럼 생성하면서 값 넣을 때 null인건 default로 적용시키기 위한 것 
+@DynamicInsert // emplyee 신규로 컬럼 생성하면서 값 넣을 때 null인건 default로 적용시키기 위한 것
 @EntityListeners(AuditingEntityListener.class)
 public class Employee {
 
@@ -61,7 +61,7 @@ public class Employee {
 	private String phoneNumber;
 
 	@LastModifiedDate
-	@Column(name = "update_datetime",columnDefinition = "datetime default NOW()")
+	@Column(name = "update_datetime", columnDefinition = "datetime default NOW()")
 	private Date updateDatetime;
 
 	@CreatedDate
@@ -75,7 +75,7 @@ public class Employee {
 //	private int authority;
 
 	@Column(name = "vacation_count")
-	private int vacationCount;
+	private Float vacationCount;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "manager", referencedColumnName = "emp_num")
@@ -105,21 +105,14 @@ public class Employee {
 	public EmployeeDTO toDTO(Employee employee) {
 		if (employee.getManager() != null) {
 
-			EmployeeDTO employeeDTO = EmployeeDTO.builder()
-									.empNum(employee.getEmpNum())
-									.empId(employee.getEmpId())
-									.password(employee.getPassword())
-									.email(employee.getEmail())
-									.name(employee.getName())
-									.phoneNumber(employee.getPhoneNumber())
-									.updateDatetime(employee.getUpdateDatetime())
-									.hiredate(employee.getHiredate())
-									.authority(employee.getAuthority())
-									.vacationCount(employee.getVacationCount())
-									.manager(toManagerDTO(employee.getManager()))
-									.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
-									.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-									.unit(employee.getUnit().toUnitDTO(employee.getUnit())).build();
+			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
+					.password(employee.getPassword()).email(employee.getEmail()).name(employee.getName())
+					.phoneNumber(employee.getPhoneNumber()).updateDatetime(employee.getUpdateDatetime())
+					.hiredate(employee.getHiredate()).authority(employee.getAuthority())
+					.vacationCount(employee.getVacationCount()).manager(toManagerDTO(employee.getManager()))
+					.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+					.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+					.unit(employee.getUnit().toUnitDTO(employee.getUnit())).build();
 			return employeeDTO;
 		}
 		return toManagerDTO(employee);
@@ -134,7 +127,7 @@ public class Employee {
 			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
 					// .teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))
 					// // 나중에 추가해줘야함
-					 .unit(employee.getUnit().toUnitDTO(employee.getUnit())) // 나중에 추가해줘야함
+					.unit(employee.getUnit().toUnitDTO(employee.getUnit())) // 나중에 추가해줘야함
 					.manager(toManagerDTO(employee.getManager())).name(employee.getName())
 					.vacationCount(employee.getVacationCount()).build();
 			return employeeDTO;
@@ -152,8 +145,7 @@ public class Employee {
 				// .manager(toManagerDTO(employee.getManager()))
 				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
 				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-				.unit(employee.getUnit().toUnitDTO(employee.getUnit()))
-				.build();
+				.unit(employee.getUnit().toUnitDTO(employee.getUnit())).build();
 	}
 
 	public Resignation toResignation(Employee employee) {
