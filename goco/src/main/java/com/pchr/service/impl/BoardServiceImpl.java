@@ -1,6 +1,9 @@
 package com.pchr.service.impl;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,42 +25,68 @@ import lombok.RequiredArgsConstructor;
 public class BoardServiceImpl implements BoardService {
 	private final BoardRepository boardRepo;
 
-	// 페이지에 맞는 데이터 출력 Clear
-	@Override
-	public PageResultDTO<BoardDTO, Board> getList(PageRequestDTO pRDTO) {
-		Pageable pageable = pRDTO.getPageable(Sort.by("boardId").ascending());
-		Page<Board> result = boardRepo.findAll(pageable);
-		Function<Board, BoardDTO> function = (boardEntity -> boardEntity
-				.toBoardDto(boardEntity));
-		return new PageResultDTO<BoardDTO, Board>(result, function);
+	// 모든 공지 출력
+//	@Override
+//	public PageResultDTO<BoardDTO, Board> getNotice(PageRequestDTO pRDTO) {
+//		Pageable pageable = pRDTO.getPageable(Sort.by("boardId").descending());
+//		Page<Board> result = boardRepo.findAllByBoardType(0,pageable);
+//		Function<Board, BoardDTO> function = (boardEntity -> boardEntity
+//				.toBoardDto(boardEntity));
+//		return new PageResultDTO<BoardDTO, Board>(result, function);
+//	}
+	@Override// 모든 공지 출력
+	public List<BoardDTO> getNotice(){
+		List<BoardDTO> data = boardRepo.findAllByBoardType(0).stream().map(Board::toBoardDto)
+                .collect(Collectors.toList());
+		Collections.reverse(data);
+				return data;
 	}
+	@Override// 모든 일반 게시글 출력
+	public List<BoardDTO> getBoard(){	
+		List<BoardDTO> data = boardRepo.findAllByBoardType(1).stream().map(Board::toBoardDto)
+	            .collect(Collectors.toList());
+		Collections.reverse(data);
+	return data;
+}
+	// 모든 일반 게시글 출력
+//	@Override
+//	public PageResultDTO<BoardDTO, Board> getBoard(PageRequestDTO pRDTO) {
+//		Pageable pageable = pRDTO.getPageable(Sort.by("boardId").descending());
+//		Page<Board> result = boardRepo.findAllByBoardType(1,pageable);
+//		Function<Board, BoardDTO> function = (boardEntity -> boardEntity
+//				.toBoardDto(boardEntity));
+//		return new PageResultDTO<BoardDTO, Board>(result, function);
+//	}
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 
 	// 특정 데이터 조회 (페이징) Clear
-	@Override
-	public PageResultDTO<BoardDTO, Board> getSearch(BoardDTO boardDto) {
-		// Entity를 담을 List 생성
-		Page<Board> boardResults = null;
-		// 페이지에 대한 값 전달
-		Pageable pageable = new PageRequestDTO()
-				.getPageable(Sort.by("boardId").ascending());
-
-		// 중복 검색은 없음.
-		if (boardDto.getBoardContent() != null) { // 내용에 대한 검색
-			boardResults = boardRepo.findAllByBoardContent(
-					boardDto.getBoardContent(), pageable);
-		}
-
-		if (boardDto.getBoardTitle() != null) { // 제목에 대한 검색
-			boardResults = boardRepo
-					.findAllByBoardTitle(boardDto.getBoardTitle(), pageable);
-		}
-
-		// Entity를DTO로 변환하는 과정
-		Function<Board, BoardDTO> boardsDto = (boardEntity -> boardEntity
-				.toBoardDto(boardEntity));
-
-		return new PageResultDTO<BoardDTO, Board>(boardResults, boardsDto);
-	}
+//	@Override
+//	public PageResultDTO<BoardDTO, Board> getSearch(BoardDTO boardDto) {
+//		// Entity를 담을 List 생성
+//		Page<Board> boardResults = null;
+//		// 페이지에 대한 값 전달
+//		Pageable pageable = new PageRequestDTO()
+//				.getPageable(Sort.by("boardId").ascending());
+//
+//		// 중복 검색은 없음.
+//		if (boardDto.getBoardContent() != null) { // 내용에 대한 검색
+//			boardResults = boardRepo.findAllByBoardContent(
+//					boardDto.getBoardContent(), pageable);
+//		}
+//
+//		if (boardDto.getBoardTitle() != null) { // 제목에 대한 검색
+//			boardResults = boardRepo
+//					.findAllByBoardTitle(boardDto.getBoardTitle(), pageable);
+//		}
+//
+//		// Entity를DTO로 변환하는 과정
+//		Function<Board, BoardDTO> boardsDto = (boardEntity -> boardEntity
+//				.toBoardDto(boardEntity));
+//
+//		return new PageResultDTO<BoardDTO, Board>(boardResults, boardsDto);
+//	}
 
 	// 삭제 Clear
 	@Override

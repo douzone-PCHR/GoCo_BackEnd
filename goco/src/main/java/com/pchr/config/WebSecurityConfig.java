@@ -63,11 +63,12 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeRequests()
 //모든 Requests에 있어서 /auth/**를 제외한 모든 uri의 request는 토큰이 필요하다. /auth/**는 로그인 페이지를 뜻한다.
-                .antMatchers("/**").permitAll()
-                //.antMatchers("/auth/**").permitAll()
-               // .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/**").permitAll()
+                //.antMatchers("/api/user/**").access("hasRole('ADMIN') or hasRole('USER')or hasRole('MANAGER')")
+                //.antMatchers("/api/MANAGER/**").access("hasRole('ADMIN') or hasRole('MANAGER')")
+                //.antMatchers("/api/admin/**").access("hasRole('ADMIN')")
                 .anyRequest().authenticated()
-
                 .and()
 //마지막으로 전에 설정한 JwtSecurityConfig클래스를 통해 tokenProvider를 적용시킨다.
                 .apply(new JwtSecurityConfig(tokenProvider))
