@@ -26,7 +26,6 @@ public class PageResultDTO<DTO,EN> {
 		dtoList = result.stream().map(function).collect(Collectors.toList());
 		totalPage = result.getTotalPages();
 		buildPageList(result.getPageable());
-		
 	}
 	
 	private void buildPageList(Pageable pageable) {
