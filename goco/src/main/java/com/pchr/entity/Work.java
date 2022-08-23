@@ -71,6 +71,18 @@ public class Work {
 		return workDTO;
 	}
 	
+	//Entity -> DTO 빌더 (캘린더 dto )
+		public WorkDTO toCalendarWorkDto(Work work) {
+			
+			WorkDTO workDTO = WorkDTO.builder()
+					.workId(work.getWorkId())
+					.workTitle(work.getWorkTitle())
+					.workStartDate(work.getWorkStartDate())
+					.workEndDate(work.getWorkEndDate())
+					.build();
+			
+			return workDTO;
+		}
 	
 	
 }

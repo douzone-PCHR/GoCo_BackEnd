@@ -34,9 +34,8 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 
 	public List<Commute> findAllByEmployeeEmpNum(Long empnum);
 
-	@Query(value = "CALL commute_procedure(:PARAM_start_date , :PARAM_end_date , :PARAM_emp_id )", nativeQuery = true)
-	public Integer findAllCommuteTime(@Param("PARAM_start_date") LocalDateTime paramStartDate,
-			@Param("PARAM_end_date") LocalDateTime paramEndDate, @Param("PARAM_emp_id") String paramEmpId);
+	@Query(value = "CALL commute_procedure(:PARAM_emp_id )", nativeQuery = true)
+	public Map<String,Object> findAllCommuteTime(@Param("PARAM_emp_id") String paramEmpId);
 
 	@Query(value = "CALL commute_vacation_business(:PARAM_emp_id)", nativeQuery = true)
 	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness(@Param("PARAM_emp_id") String empId);
@@ -46,4 +45,8 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 			+ "where clock_in >= :clock_in " + "and clock_out <= :clock_out ",nativeQuery = true)
 	public List<Commute> findAllCommuteAdmin(@Param("clock_in") LocalDateTime clock_in,
 			@Param("clock_out") LocalDateTime clock_out);
+	
+	
+	@Query(value = "CALL myteam_detail(:PARAM_emp_id)", nativeQuery = true)
+	public List<Map<String, Object>> findAllMyTeamWorkTime(@Param("PARAM_emp_id") String empId);
 }

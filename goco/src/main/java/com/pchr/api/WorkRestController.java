@@ -3,6 +3,7 @@ package com.pchr.api;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.CommuteDTO;
 import com.pchr.dto.EmployeeDTO;
@@ -37,11 +39,11 @@ public class WorkRestController {
 	 */
 
 	@GetMapping(value = "/work")
-	public List<WorkDTO> findAll(@RequestParam Long empNum) {
+	public List<WorkDTO> findAll() {
 		List<WorkDTO> result = null;
 
 		try {
-			result = workService.findAllByEmpNo(empNum);
+			result = workService.findAllByEmpId();
 			if (result.isEmpty()) {
 				new Exception("일정이 없습니다.");
 			}
@@ -50,6 +52,28 @@ public class WorkRestController {
 		}
 		return result;
 	}
+	
+	/**
+	 * 사원 별 업무 불러오기 달력 
+	 * 
+	 * @return List<WorkDTO>
+	 */
+
+	@GetMapping(value = "/work/calendar")
+	public List<WorkDTO> findAllCalendar(@RequestParam String empId) {
+		List<WorkDTO> result = null;
+		
+		try {
+			result = workService.findAllCalendar(empId);
+			if (result.isEmpty()) {
+				new Exception("일정이 없습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	
 	/**
 	 * 직원 별 work list
@@ -71,6 +95,8 @@ public class WorkRestController {
 		}
 		return result;
 	}
+	
+
 
 	/**
 	 * 날짜 클릭 후 날짜 별 이벤트 리스트 출력
@@ -79,7 +105,7 @@ public class WorkRestController {
 	 */
 
 	@PostMapping(value = "/work/detail")
-	public List<WorkDTO> detailFind(@RequestBody LocalDateTime day) {
+	public List<WorkDTO> detailFind(@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") @RequestBody LocalDateTime day) {
 		List<WorkDTO> result = null;
 		try {
 			result = workService.findAllByDay(day);
