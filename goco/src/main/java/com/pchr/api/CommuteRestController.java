@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pchr.dto.CommuteDTO;
+import com.pchr.dto.EmployeeDTO;
+import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.WorkTimeVO;
 import com.pchr.service.impl.CommuteServiceImpl;
 
@@ -67,7 +69,30 @@ public class CommuteRestController {
 		}
 		return result;
 	}
+	
+	/**
+	 * 매니저 페이지 myteam work list
+	 * 
+	 * @return List<Map<String, Object>>
+	 */
 
+	@GetMapping(value = "/commute/myteam")
+	public List<VacationAndBusinessVO> findAllMyTeamWorkTime() {
+		List<VacationAndBusinessVO> result = null;
+		
+		try {
+			result = commuteService.findAllMyTeamWorkTime();
+			if (result.isEmpty()) {
+				new Exception("");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	
+	
 	
 
 	/**
@@ -96,11 +121,11 @@ public class CommuteRestController {
 	 * @return List<CommuteDTO>
 	 */
 
-	@PostMapping(value = "/commute/time")
-	public Integer workTime(@RequestBody WorkTimeVO workTimeVO){
-		Integer result = null;
+	@GetMapping(value = "/commute/time")
+	public VacationAndBusinessVO workTime(){
+		VacationAndBusinessVO result = null;
 		try {
-			result = commuteService.findWorkTime(workTimeVO.getStartDate(), workTimeVO.getEndDate());
+			result = commuteService.findWorkTime();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,19 +1,21 @@
 package com.pchr.service.impl;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.CommuteDTO;
+import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.entity.Commute;
 import com.pchr.repository.CommuteRepository;
 import com.pchr.service.CommuteService;
@@ -86,10 +88,16 @@ public class CommuteServiceImpl implements CommuteService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public Integer findWorkTime(LocalDateTime startDate, LocalDateTime endDate) {
-		String empId = SecurityUtil.getCurrentMemberId();
-		Integer findAllCommuteTime = commuteRepository.findAllCommuteTime(startDate, endDate, empId);
-		return findAllCommuteTime;
+	public VacationAndBusinessVO findWorkTime() {
+		 
+		Map<String, Object> map = commuteRepository.findAllCommuteTime(SecurityUtil.getCurrentMemberId());
+		VacationAndBusinessVO vo = VacationAndBusinessVO.builder()
+		.startDate((Date) map.get("start_date"))
+		.endDate((Date) map.get("end_date"))
+		.commute_work_time((BigDecimal) map.get("commute_work_time"))
+		.vacation_count((int) map.get("vacation_count"))
+		.build();
+		return vo;
 	}
 	
 	@Transactional(readOnly = true)
@@ -110,5 +118,38 @@ public class CommuteServiceImpl implements CommuteService {
 				.stream().map(commute -> commute.toCommuteDto(commute)).collect(Collectors.toList());
 		return result;
 	}
+	
+	@Transactional(readOnly = true)
+	public List<VacationAndBusinessVO> findAllMyTeamWorkTime() {
+		
+		List<Map<String, Object>> findList = commuteRepository.findAllMyTeamWorkTime(SecurityUtil.getCurrentMemberId());
+		List<VacationAndBusinessVO> list = new ArrayList<VacationAndBusinessVO>(); 
+
+		for (int i = 0; i < findList.size(); i++) {
+			System.out.println(findList.get(i).get("emp_num"));
+			VacationAndBusinessVO vo = VacationAndBusinessVO.builder()
+			.empNum( (BigInteger) findList.get(i).get("emp_num"))
+			.name((String) findList.get(i).get("name"))
+			.vacation_approve((String) findList.get(i).get("vacation_approve"))
+			.business_approve((String) findList.get(i).get("business_approve"))
+			.clock_in((Timestamp) findList.get(i).get("clock_in"))
+			.clock_out((Timestamp) findList.get(i).get("clock_out"))
+			.vacation_start_date((Timestamp)findList.get(i).get("vacation_start_date"))
+			.vacation_end_date((Timestamp)findList.get(i).get("vacation_end_date"))
+			.business_trip_start_date((Timestamp)findList.get(i).get("business_trip_start_date"))
+			.business_trip_end_date((Timestamp)findList.get(i).get("business_trip_end_date"))
+			.commute_work_time((BigDecimal) findList.get(i).get("commute_work_time"))
+			.vacation_count((int) findList.get(i).get("vacation_count"))
+			.build();
+			list.add(vo);
+		}
+		
+	
+	
+		
+		return list;
+	}
+
+
 
 }

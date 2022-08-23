@@ -7,7 +7,7 @@ import com.pchr.dto.WorkDTO;
 
 public interface WorkService {
 	
-	public List<WorkDTO> findAllByEmpNo(Long empNum);
+	public List<WorkDTO> findAllByEmpId();
 	
 	public List<WorkDTO> findAllByDay(LocalDateTime day);
 	
@@ -21,6 +21,7 @@ public interface WorkService {
 	
 	public List<WorkDTO> findAllWithoutDate();
 	
+	public List<WorkDTO> findAllCalendar(String empId);
 	
 	
 }

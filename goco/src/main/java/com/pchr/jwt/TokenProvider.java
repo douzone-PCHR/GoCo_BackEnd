@@ -33,9 +33,9 @@ public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";//토큰 생성, 검증할 때 쓰이는 값
     private static final String BEARER_TYPE = "bearer"; //토큰 생성, 검증할 때 쓰이는 값
 //    private static final long ACCESS_TOKEN_EXPIRE_TIME =30 * 60 * 1000L;// 토큰 만료시간 30분
-    private static final long ACCESS_TOKEN_EXPIRE_TIME =900 * 60 * 1000L;// 토큰 만료시간 900분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME =900000 * 60 * 1000L;// 토큰 만료시간 900분
     private final Key key; //JWT를 만들 때 사용하는 암호화 키값을 사용학 ㅣ위해 security에서 불러옴
-
+ 
 
     public TokenProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
