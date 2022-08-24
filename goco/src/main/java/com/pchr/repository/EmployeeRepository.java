@@ -47,10 +47,27 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	@Query(value = "select * from employee where team_position_id = :teamPositionId and unit_id = :unitId", nativeQuery = true)
 	List<Employee> findByManager(@Param("teamPositionId") Long teamPositionId, @Param("unitId") Long unitId);
 
-	// 휴가 결재 vacationCount 차감
+
+	// 매니저 id로 같은 팀원 찾기
+	@Query(value = "select  * " 
+			+ "from employee " 
+			+ " where unit_id = ( " 
+			+ "select unit_id "
+			+ "from employee "
+			+ "where emp_id = :empId )" ,
+			
+			nativeQuery = true)
+	public List<Employee> findAllEmp(@Param("empId") String empId);
+	
+	// 팀장 찾기
+	public Employee findByUnitUnitIdAndTeamPositionTeamPositionId(Long unitId,Long teamPositionId);
+  
+  
+  // 휴가 결재 vacationCount 차감
 	@Modifying
 	@Query(value = "update employee set vacation_count =vacation_count -:count where emp_num = :empNum", nativeQuery = true)
 	public void updateVacationCount(@Param("empNum") Long empNum, @Param("count") Float count);
+
 
 	// 잔여 휴가 check
 	@Query(value = "select vacation_count from employee where emp_num = :empNum ", nativeQuery = true)

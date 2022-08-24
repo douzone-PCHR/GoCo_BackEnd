@@ -101,6 +101,23 @@ public class Employee {
 		this.password = password;
 	}
 
+	public EmployeeDTO toUpdateEmp(Employee employee) {
+		// 업데이트 시 매니저가 아니라면
+		if (employee.getManager() != null) {
+			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
+					.password(employee.getPassword()).email(employee.getEmail()).name(employee.getName())
+					.phoneNumber(employee.getPhoneNumber()).updateDatetime(employee.getUpdateDatetime())
+					.hiredate(employee.getHiredate()).authority(employee.getAuthority())
+					.vacationCount(employee.getVacationCount()).manager(toManagerDTO(employee.getManager()))
+					.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
+					.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
+					.unit(employee.getUnit().toUnitDTO(employee.getUnit())).build();
+			return employeeDTO;
+		}
+		// 업데이트 시 매니저라면
+		return toManagerDTO(employee);
+	}
+
 	// 매니저가 아닌 사원에 대한 ToDTO
 	public EmployeeDTO toDTO(Employee employee) {
 		if (employee.getManager() != null) {
@@ -127,7 +144,8 @@ public class Employee {
 			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
 					// .teamPosition(employee.getTeamPosition().toTeamPositionDto(employee.getTeamPosition))
 					// // 나중에 추가해줘야함
-					.unit(employee.getUnit().toUnitDTO(employee.getUnit())) // 나중에 추가해줘야함
+					.unit(employee.getUnit() == null ? null : employee.getUnit().toUnitDTO(employee.getUnit())) // 나중에
+																												// 추가해줘야함
 					.manager(toManagerDTO(employee.getManager())).name(employee.getName())
 					.vacationCount(employee.getVacationCount()).build();
 			return employeeDTO;
@@ -137,6 +155,7 @@ public class Employee {
 
 	// 사원 이면서 매니저일때 ToDTO
 	public EmployeeDTO toManagerDTO(Employee employee) {
+
 		return EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
 				.password(employee.getPassword()).email(employee.getEmail()).name(employee.getName())
 				.phoneNumber(employee.getPhoneNumber()).updateDatetime(employee.getUpdateDatetime())
@@ -145,7 +164,7 @@ public class Employee {
 				// .manager(toManagerDTO(employee.getManager()))
 				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
 				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-				.unit(employee.getUnit().toUnitDTO(employee.getUnit())).build();
+				.unit(employee.getUnit() == null ? null : employee.getUnit().toUnitDTO(employee.getUnit())).build();
 	}
 
 	public Resignation toResignation(Employee employee) {

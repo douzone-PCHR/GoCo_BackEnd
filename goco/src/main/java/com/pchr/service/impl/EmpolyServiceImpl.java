@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
+import com.pchr.dto.JobTitleDTO;
+import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.UnitDTO;
 import com.pchr.entity.Authority;
 import com.pchr.entity.Employee;
@@ -110,10 +112,10 @@ public class EmpolyServiceImpl implements EmployeeService {
 	/////////////////////////////////// 이하 회원 정보 수정 //////////////////////////////
 	// 아이디 체크
 	public boolean idCheck(String info) {
-		if (existsByEmail(info) | existsByEmpId(info)) {
-			return true;
-		}
-		return false;
+	        if (existsByEmail(info) | existsByEmpId(info)  ) {
+	            return false;
+	        }
+			return true; // 중복되는 값이 없을 때 true를 반환
 	}
 
 	// 내정보 회원탈퇴
@@ -221,17 +223,15 @@ public class EmpolyServiceImpl implements EmployeeService {
 
 	// 관리자의 유저 데이터 삭제
 	public int adminDelete(Long empNum) {
-		Employee employee = findByEmpNum(empNum).orElseThrow(() -> new RuntimeException("회원 정보가 없습니다."));
-		Resignation r = employee.toResignation(employee);// 퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
-		resignationServiceImpl.save(r);
-		List<Employee> empManager = findManagerByEmpNum(employee.getEmpNum()); // 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로
-																				// 불러옴
-		empManager.forEach((e) -> {
-			EmployeeDTO dto = e.toDTO(e);
-			dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다.
-			save(dto.toEntity(dto));
-		});
-		return deleteByEmpNum(empNum);
+			Employee employee = findByEmpNum(empNum)
+					.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
+			resignationServiceImpl.save(employee.toResignation(employee));//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
+			findManagerByEmpNum(employee.getEmpNum()).forEach((e)->{// 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
+					EmployeeDTO dto = e.toDTO(e);
+					dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다. 
+					save(dto.toEntity(dto));
+			});
+			return 	deleteByEmpNum(empNum);
 	}
 
 	// 관리자의 퇴사자 확인
@@ -316,4 +316,56 @@ public class EmpolyServiceImpl implements EmployeeService {
 		employeeRepository.save(empDto.toEntity(empDto));
 	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	// 성준 관리자가 사용할 거
+	public Employee updateAllEmp(EmployeeDTO emp) {
+		// unitId가 null 이 아니라면 
+		Long unitId= emp.getUnit().getUnitId();
+		System.out.println("0");
+		if(unitId != null) {
+			System.out.println("1");
+			//사원에 대해 팀장으로 변경하는데 매니저가 존재한다면 
+			Employee manager = employeeRepository.findByUnitUnitIdAndTeamPositionTeamPositionId(emp.getUnit().getUnitId(),2L);
+			// teamPositionId가 2이면서 Unit_id가 n번인 사람이 존재한다면 저장이 안되고 그 사람에 대한 정보를 리턴
+			if(manager != null) {
+				System.out.println(manager.getEmpId());
+				System.out.println(manager.getEmpNum());
+				System.out.println("2");
+				//매니저 페이지로 이동시켜야함
+				return manager;
+				
+			}
+			// DB에서 그 사원에 대한 정보를 모두 받아옴.
+			Employee userEmp = employeeRepository.findByEmpNum(emp.getEmpNum()).get();
+			System.out.println(userEmp.getUnit());
+			EmployeeDTO userDto= userEmp.toUpdateEmp(userEmp);
+			System.out.println("328Line");
+			//JobTitle이 Null이 아니라면
+			if(emp.getJobTitle().getJobTitleId() != null) {
+				System.out.println("3");
+				JobTitleDTO jobTitleDto = new JobTitleDTO(); 
+				jobTitleDto.setJobTitleId(emp.getJobTitle().getJobTitleId());
+				userDto.setJobTitle(jobTitleDto);
+			}
+			
+			//Unit_Id가 Null이 아니라면
+			if(emp.getUnit().getUnitId() != null) {
+				System.out.println("4");
+				UnitDTO unitDto = new UnitDTO();
+				unitDto.setUnitId(emp.getUnit().getUnitId());
+				userDto.setUnit(unitDto);
+			}
+			// TeamPosition이 Null이 아니라면
+			if(emp.getTeamPosition().getTeamPositionId() !=null) {
+				System.out.println("5");
+				TeamPositionDTO teamPositionDto = new TeamPositionDTO();
+				teamPositionDto.setTeamPositionId(emp.getTeamPosition().getTeamPositionId());
+				userDto.setTeamPosition(teamPositionDto);
+			}
+			System.out.println(userDto);
+			return employeeRepository.save(userDto.toEntity(userDto));
+		}
+		return null;
+	}
+
 }

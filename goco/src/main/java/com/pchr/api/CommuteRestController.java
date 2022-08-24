@@ -1,15 +1,20 @@
 package com.pchr.api;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pchr.dto.CommuteDTO;
+import com.pchr.dto.EmployeeDTO;
+import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.WorkTimeVO;
 import com.pchr.service.impl.CommuteServiceImpl;
 
@@ -43,6 +48,52 @@ public class CommuteRestController {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * 현재 우리팀 근무 현황 (매니저 페이지)
+	 * 
+	 * @return List<CommuteDTO>
+	 */
+
+	@GetMapping(value = "/commute/status")
+	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness() {
+		List<Map<String, Object>> result = null;
+		try {
+			result = commuteService.findAllCommuteAndVacationAndBusiness();
+			if (result.isEmpty()) {
+				new Exception("소속 된 직원이 없습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * 매니저 페이지 myteam work list
+	 * 
+	 * @return List<Map<String, Object>>
+	 */
+
+	@GetMapping(value = "/commute/myteam")
+	public List<VacationAndBusinessVO> findAllMyTeamWorkTime() {
+		List<VacationAndBusinessVO> result = null;
+		
+		try {
+			result = commuteService.findAllMyTeamWorkTime();
+			if (result.isEmpty()) {
+				new Exception("");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	
+	
+	
 
 	/**
 	 * 사원 별 근태 불러오기
@@ -65,16 +116,16 @@ public class CommuteRestController {
 	}
 
 	/**
-	 * 실제 근로 시간 Select
+	 * 실제 근로 시간 검색 
 	 * 
 	 * @return List<CommuteDTO>
 	 */
 
 	@GetMapping(value = "/commute/time")
-	public Integer workTime(@RequestBody WorkTimeVO workTimeVO) {
-		Integer result = null;
+	public VacationAndBusinessVO workTime(){
+		VacationAndBusinessVO result = null;
 		try {
-			result = commuteService.findWorkTime(workTimeVO.getStartDate(), workTimeVO.getEndDate());
+			result = commuteService.findWorkTime();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -113,6 +164,11 @@ public class CommuteRestController {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	@GetMapping(value = "/admin/commute")
+	public List<CommuteDTO> findAllCommuteAdmin(){
+		return commuteService.findAllCommuteAdmin();
 	}
 
 }

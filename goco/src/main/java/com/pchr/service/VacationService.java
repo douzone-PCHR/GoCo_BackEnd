@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.VacationDTO;
 
 public interface VacationService {
@@ -26,6 +27,9 @@ public interface VacationService {
 	// 휴가 삭제
 //		public void deleteVacation(Long vacationId, FileDTO fileDTO, ApproveEnum approveYn);
 	public void deleteVacation(VacationDTO vacationDTO);
+	
+	// 휴가 및 출장 검색
+	public List<Map<String, Object>> vacationAndBusiness();
 
 	// checkDate
 	public Map<String, List<VacationDTO>> checkVacation(VacationDTO vacationDTO);

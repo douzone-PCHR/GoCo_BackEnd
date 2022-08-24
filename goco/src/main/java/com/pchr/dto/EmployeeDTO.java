@@ -41,7 +41,7 @@ public class EmployeeDTO {
 	private String name;
 
 	@NotBlank(message = "핸드폰 번호는 필수 입력 값입니다.")
-	@Pattern(regexp = "^(01[1|6|7|8|9|0])-(\\d{3,4})-(\\d{4})$", message = "핸드폰 번호 형식이 올바르지 않습니다.")
+	@Pattern(regexp = "^(01[1|6|7|8|9|0])(\\d{3,4})(\\d{4})$", message = "핸드폰 번호 형식이 올바르지 않습니다.(10~11자리 입력)")
 	private String phoneNumber;
 
 	private Date updateDatetime;
@@ -75,7 +75,8 @@ public class EmployeeDTO {
 					.vacationCount(employeeDTO.getVacationCount()).manager(toManager(employeeDTO.getManager()))
 					.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
 					.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
-					.unit(employeeDTO.getUnit().toFKUnit(unit)).build();
+					.unit(employeeDTO.getUnit().toFKUnit(employeeDTO.getUnit()))
+					.build();
 			return employee;
 		}
 		return toManager(employeeDTO); // 매니저가 없으면 실행

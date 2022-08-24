@@ -5,15 +5,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.pchr.config.SecurityUtil;
 import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.BusinessTripDTO;
 import com.pchr.dto.FileDTO;
+import com.pchr.dto.VacationDTO;
 import com.pchr.entity.BusinessTrip;
 import com.pchr.repository.BusinessTripRepository;
 import com.pchr.service.BusinessTripService;
@@ -141,6 +144,11 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 		approveMap.put("success", successDTO);
 
 		return approveMap;
+	}
+	
+	public List<BusinessTripDTO> vacationAndBusiness() {
+		List<BusinessTripDTO> businessTripList = businessRepository.findAllApprove(SecurityUtil.getCurrentMemberId()).stream().map(business -> business.toBusinessTripDTO(business)).collect(Collectors.toList()); 
+		return businessTripList;
 	}
 
 }

@@ -7,7 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.DynamicInsert;
 
+import com.pchr.dto.EmailAuthDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +32,17 @@ public class EmailAuth {
 	
 	@Column(name = "valid_time")
 	 private LocalDateTime validTime;
+	
+	@Column(name = "count")
+	 private int count;
+	
+	public EmailAuthDTO toDTO(EmailAuth emailAuth) {
+		return EmailAuthDTO.builder()
+				.email(emailAuth.getEmail())
+				.authenticationNumber(emailAuth.getAuthenticationNumber())
+				.validTime(emailAuth.getValidTime())
+				.count(emailAuth.getCount())
+				.build();
+	}
 	
 }

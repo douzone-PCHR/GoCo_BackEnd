@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.dto.BusinessTripDTO;
+import com.pchr.dto.VacationDTO;
 import com.pchr.service.impl.BusinessTripServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -80,3 +81,12 @@ public class BusinessTripRestController {
 		return businessTripService.checkBusiness(businessTripDTO);
 	}
 }
+	
+	// 매니저페이지 메인 리스트
+	@GetMapping(value = "/business/list")
+	public List<BusinessTripDTO> vacationAndBusiness() {
+
+		return businessTripService.vacationAndBusiness();
+	}
+}
+
