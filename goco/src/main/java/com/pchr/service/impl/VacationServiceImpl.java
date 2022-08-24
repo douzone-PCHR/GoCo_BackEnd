@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -14,13 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.ApproveEnum;
-import com.pchr.dto.BusinessTripDTO;
 import com.pchr.dto.FileDTO;
-import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.VacationDTO;
-import com.pchr.entity.BusinessTrip;
 import com.pchr.entity.Vacation;
-import com.pchr.repository.BusinessTripRepository;
 import com.pchr.repository.EmployeeRepository;
 import com.pchr.repository.VacationRepository;
 import com.pchr.service.VacationService;
@@ -39,7 +34,6 @@ public class VacationServiceImpl implements VacationService {
 	private final FileServiceImpl fileService;
 
 	private final EmployeeRepository employeeRepository;
-
 
 	// 휴가신청리스트(사원)
 	@Override
@@ -135,10 +129,10 @@ public class VacationServiceImpl implements VacationService {
 
 				count = (float) (((vacationDTO.getVacationStartDate().getTime()
 						- vacationDTO.getVacationEndDate().getTime())) / (60 * 60 * 24 * 1000));
-				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
+				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count - 1.0F);
 			} else if (vacationDTO.getVacationType().equals("반차")) {
 
-				count = 0.5F;
+				count = -0.5F;
 				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
 			}
 
@@ -194,7 +188,7 @@ public class VacationServiceImpl implements VacationService {
 		return employeeRepository.checkVacationCount(empNum);
 	}
 
-  // 매니저 메인페이지 리스트 
+	// 매니저 메인페이지 리스트
 	public List<Map<String, Object>> vacationAndBusiness() {
 		List<Map<String, Object>> findAllApprove = vacationRepository.findAllApprove(SecurityUtil.getCurrentMemberId());
 		return findAllApprove;
