@@ -79,13 +79,21 @@ public class VacationRestController {
 	@Transactional
 	@PostMapping(value = "/vacation/del", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void deleteVacation(@RequestBody VacationDTO vacationDTO) {
+		System.out.println(vacationDTO);
 		vacationService.deleteVacation(vacationDTO);
 	}
 
 	// check date
-	@GetMapping(value = "/vacation/check")
+	@PostMapping(value = "/vacation/check", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, List<VacationDTO>> checkVacation(@RequestBody VacationDTO vacationDTO) {
-
+		System.out.println(vacationDTO);
 		return vacationService.checkVacation(vacationDTO);
+	}
+
+	// check vacationCount
+	@GetMapping(value = "/vacation/count/{empNum}")
+	public Float checkVacationCount(@PathVariable Long empNum) {
+
+		return vacationService.checkVacationCount(empNum);
 	}
 }

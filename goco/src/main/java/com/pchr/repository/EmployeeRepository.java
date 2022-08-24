@@ -52,4 +52,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	@Query(value = "update employee set vacation_count =vacation_count -:count where emp_num = :empNum", nativeQuery = true)
 	public void updateVacationCount(@Param("empNum") Long empNum, @Param("count") Float count);
 
+	// 잔여 휴가 check
+	@Query(value = "select vacation_count from employee where emp_num = :empNum ", nativeQuery = true)
+	public Float checkVacationCount(@Param("empNum") Long empNum);
+
 }

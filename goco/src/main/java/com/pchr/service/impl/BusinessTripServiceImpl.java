@@ -72,14 +72,17 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 		if (checkBusinessTripsDTO.get("success").size() == 0) {
 			if (checkBusinessTripsDTO.get("waitting").size() == 0) {
 				try {
-					// fileDTO = S3에 Upload된
-					// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
-					FileDTO fileDTO = S3Util.S3Upload(multipartFile, "business/");
-					// 파일을 넣었을 때
-					if (fileDTO != null) {
-						FileDTO newFileDTO = fileService.insertFile(fileDTO);
-						System.out.println(newFileDTO.getFileId());
-						businessTripDTO.setFile(newFileDTO);
+					// 프론트에서 빈파일이 넘어 왔을 때
+					if (multipartFile.getSize() != 0) {
+						// fileDTO = S3에 Upload된
+						// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
+						FileDTO fileDTO = S3Util.S3Upload(multipartFile, "business/");
+						// 파일을 넣었을 때
+						if (fileDTO != null) {
+							FileDTO newFileDTO = fileService.insertFile(fileDTO);
+							System.out.println(newFileDTO.getFileId());
+							businessTripDTO.setFile(newFileDTO);
+						}
 					}
 					businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
 
@@ -105,12 +108,14 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 	@Override
 	@Transactional
 	public void deleteBusinessTrip(BusinessTripDTO businessTripDTO) {
-		if (businessTripDTO.getFile() != null) {
-			S3Util.deleteFile("business/" + businessTripDTO.getFile().getFileName());
-			fileService.deleteFile(businessTripDTO.getFile().getFileId());
-		}
-		businessRepository.deleteById(businessTripDTO.getBusinessTripId());
+		if (businessTripDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 
+			if (businessTripDTO.getFile() != null) {
+				S3Util.deleteFile("business/" + businessTripDTO.getFile().getFileName());
+				fileService.deleteFile(businessTripDTO.getFile().getFileId());
+			}
+			businessRepository.deleteById(businessTripDTO.getBusinessTripId());
+		}
 	}
 
 	// check date

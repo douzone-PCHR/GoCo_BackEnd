@@ -56,8 +56,6 @@ public class BusinessTripRestController {
 	public Map<String, List<BusinessTripDTO>> insertBusinessTrip(
 			@RequestPart("businessTripDTO") BusinessTripDTO businessTripDTO,
 			@RequestPart("file") MultipartFile multipartFile) {
-		System.out.println(businessTripDTO);
-
 		return businessTripService.insertBusinessTrip(businessTripDTO, multipartFile);
 	}
 
@@ -65,7 +63,6 @@ public class BusinessTripRestController {
 	@Transactional
 	@PutMapping(value = "/business/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void approveBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
-		System.out.println(businessTripDTO);
 		businessTripService.approveBusiness(businessTripDTO);
 	}
 
@@ -75,11 +72,11 @@ public class BusinessTripRestController {
 	public void deleteBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
 		businessTripService.deleteBusinessTrip(businessTripDTO);
 	}
-}
 
-//	// check date
-//	@GetMapping(value = "/business/check")
-//	public List<BusinessTripDTO> checkBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
-//
-//		return businessTripService.checkBusiness(businessTripDTO);
-//	}
+	// check date
+	@PostMapping(value = "/business/check", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, List<BusinessTripDTO>> checkBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
+
+		return businessTripService.checkBusiness(businessTripDTO);
+	}
+}

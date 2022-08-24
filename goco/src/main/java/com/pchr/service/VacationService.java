@@ -27,4 +27,10 @@ public interface VacationService {
 //		public void deleteVacation(Long vacationId, FileDTO fileDTO, ApproveEnum approveYn);
 	public void deleteVacation(VacationDTO vacationDTO);
 
+	// checkDate
+	public Map<String, List<VacationDTO>> checkVacation(VacationDTO vacationDTO);
+
+	// check 잔여일수
+	public Float checkVacationCount(Long empNum);
+
 }
