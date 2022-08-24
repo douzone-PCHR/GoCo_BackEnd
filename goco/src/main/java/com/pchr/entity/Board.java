@@ -43,7 +43,7 @@ public class Board {
 	@Column(name = "board_title", nullable = false)
 	private String boardTitle;
 
-	@Column(name = "board_content")
+	@Column(name = "board_content", length=10000)
 	private String boardContent;
 
 	@Column(name = "registered_date", updatable = false)

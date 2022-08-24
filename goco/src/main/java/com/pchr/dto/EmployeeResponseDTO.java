@@ -1,5 +1,6 @@
 package com.pchr.dto;
 
+import com.pchr.entity.Authority;
 import com.pchr.entity.Employee;
 import com.pchr.entity.Unit;
 
@@ -20,6 +21,7 @@ public class EmployeeResponseDTO {
     private String phoneNumber;
     private Unit unit;
     private String name;
+	private Authority authority;
     public static EmployeeResponseDTO of(Employee employee) {
     	return EmployeeResponseDTO.builder()
     			.empNum(employee.getEmpNum())
@@ -28,6 +30,7 @@ public class EmployeeResponseDTO {
     			.unit(employee.getUnit())
     			.phoneNumber(employee.getPhoneNumber())
     			.name(employee.getName())
+    			.authority(employee.getAuthority())
     			.build();
     }
 }
