@@ -73,7 +73,6 @@ public class BoardRestController {
 	// 추가 (empNum에 대한 값 같이 받아야함)
 	@PostMapping
 	public void insertBoard(@RequestBody BoardDTO boardDto) {
-		System.out.println(boardDto);
 		boardService.insertBoard(boardDto);
 	}
 }
