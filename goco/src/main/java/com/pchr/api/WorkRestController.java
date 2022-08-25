@@ -39,7 +39,7 @@ public class WorkRestController {
 	 * @return List<WorkDTO>
 	 */
 
-	@GetMapping(value = "/work")
+	@GetMapping(value = "/user/work")
 	public List<WorkDTO> findAll() {
 		List<WorkDTO> result = null;
 
@@ -60,7 +60,7 @@ public class WorkRestController {
 	 * @return List<WorkDTO>
 	 */
 
-	@GetMapping(value = "/work/calendar")
+	@GetMapping(value = "/user/work/calendar")
 	public List<WorkDTO> findAllCalendar(@RequestParam String empId) {
 		List<WorkDTO> result = null;
 		
@@ -82,7 +82,7 @@ public class WorkRestController {
 	 * @return List<WorkDTO>
 	 */
 
-	@GetMapping(value = "/work/emplist")
+	@GetMapping(value = "/user/work/emplist")
 	public List<EmployeeDTO> findAllWorkByEmp() {
 		List<EmployeeDTO> result = null;
 		
@@ -105,7 +105,7 @@ public class WorkRestController {
 	 * @return List<WorkDTO>
 	 */
 
-	@PostMapping(value = "/work/detail")
+	@PostMapping(value = "/user/work/detail")
 	public List<WorkDTO> detailFind(@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") @RequestBody LocalDateTime day) {
 		List<WorkDTO> result = null;
 		try {
@@ -125,7 +125,7 @@ public class WorkRestController {
 	 * @return boolean
 	 */
 
-	@PostMapping(value = "/work",consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/user/work",consumes = MediaType.APPLICATION_JSON_VALUE)
 	public boolean workAdd(@RequestBody WorkDTO workDTO) {
 		try {
 			workService.workSave(workDTO);
@@ -143,7 +143,7 @@ public class WorkRestController {
 	 * @return List<WorkDTO>
 	 */
 
-	@GetMapping(value = "/work/{id}")
+	@GetMapping(value = "/user/work/{id}")
 	public WorkDTO findDetailList(@PathVariable Long id) {
 
 		WorkDTO workDTO = null;
@@ -162,7 +162,7 @@ public class WorkRestController {
 	 * @return List<WorkDTO>
 	 */
 
-	@GetMapping(value = "/work/list")
+	@GetMapping(value = "/user/work/list")
 	public List<WorkDTO> findAllWithoutDate() {
 		List<WorkDTO> result = null;
 		try {
@@ -182,7 +182,7 @@ public class WorkRestController {
 	 * @return boolean
 	 */
 
-	@PutMapping(value = "/work")
+	@PutMapping(value = "/user/work")
 	public boolean updateWork(@RequestBody WorkDTO workDTO) {
 		System.out.println(workDTO);
 		try {
@@ -200,7 +200,7 @@ public class WorkRestController {
 	 * @return List<WorkDTO>
 	 */
 
-	@DeleteMapping(value = "/work/{id}")
+	@DeleteMapping(value = "/user/work/{id}")
 	public boolean workDelete(@PathVariable Long id) {
 		try {
 			workService.deleteWork(id);
