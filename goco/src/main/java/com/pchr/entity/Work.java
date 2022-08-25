@@ -42,10 +42,10 @@ public class Work {
 	private String workContent;
 	
 	@Column(name = "work_start_date")
-	private LocalDateTime workStartDate;
+	private Date workStartDate;
 	
 	@Column(name = "work_end_date")
-	private LocalDateTime workEndDate;
+	private Date workEndDate;
 	
 	@Column(name = "work_type")
 	private boolean workType;

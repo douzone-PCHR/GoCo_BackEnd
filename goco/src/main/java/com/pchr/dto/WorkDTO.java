@@ -29,9 +29,9 @@ public class WorkDTO {
 	
 	private String workContent;
 	
-	private LocalDateTime workStartDate;
+	private Date workStartDate;
 	
-	private LocalDateTime workEndDate;
+	private Date workEndDate;
 	
 	private boolean workType;
 	

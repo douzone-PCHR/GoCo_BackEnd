@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -138,14 +139,15 @@ public class CommuteRestController {
 //	 */
 	@PutMapping(value = "/commute")
 	public boolean update(@RequestBody CommuteDTO commuteDTO) {
-
+		System.out.println("조명윤" + commuteDTO);
+		boolean check = false;
 		try {
-			commuteService.updateCommute(commuteDTO);
-			return true;
+			check = commuteService.updateCommute(commuteDTO);
+			return check;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return check;
 	}
 //	
 
