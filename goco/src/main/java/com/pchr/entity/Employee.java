@@ -127,9 +127,12 @@ public class Employee {
 					.phoneNumber(employee.getPhoneNumber()).updateDatetime(employee.getUpdateDatetime())
 					.hiredate(employee.getHiredate()).authority(employee.getAuthority())
 					.vacationCount(employee.getVacationCount()).manager(toManagerDTO(employee.getManager()))
-					.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
-					.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-					.unit(employee.getUnit().toUnitDTO(employee.getUnit())).build();
+					.jobTitle(employee.getTeamPosition() != null ? employee.getJobTitle().toDTO(employee.getJobTitle())
+							: null)
+					.teamPosition(employee.getTeamPosition() != null
+							? employee.getTeamPosition().toDTO(employee.getTeamPosition())
+							: null)
+					.unit(employee.getUnit() != null ? employee.getUnit().toUnitDTO(employee.getUnit()) : null).build();
 			return employeeDTO;
 		}
 		return toManagerDTO(employee);

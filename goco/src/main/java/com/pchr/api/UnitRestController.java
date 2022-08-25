@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pchr.dto.UnitDTO;
+import com.pchr.dto.UnitEmpVO;
 import com.pchr.service.impl.UnitServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,10 @@ public class UnitRestController {
 
 	// 부서 및 팀 추가 Clear
 	@PostMapping
-	public void insertUnit(@RequestBody UnitDTO unitDTO) {
-		unitImpl.unitInsert(unitDTO);
+	public boolean insertUnit(@RequestBody UnitEmpVO unitVO) {
+		return unitImpl.unitInsert(unitVO);
+		//true = 정상처리
+		//false = 중복 이름
 	}
 
 //	팀추가 { 
@@ -53,14 +56,14 @@ public class UnitRestController {
 
 	// Unit 업데이트
 	@PutMapping(value = "/{unitid}")
-	public void updateUnit(@PathVariable(name = "unitid") Long unitId, @RequestBody UnitDTO unitDTO) {
+	public boolean updateUnit(@PathVariable(name = "unitid") Long unitId, @RequestBody UnitDTO unitDTO) {
 		// 부서,팀 이름 변경 및 팀에 대한 부서이동
-		unitImpl.unitUpdate(unitId, unitDTO);
+		return unitImpl.unitUpdate(unitId, unitDTO);
 	}
 
 	// Unit(부서 및 팀) 삭제
-	@DeleteMapping(value = "/{unitid}")
-	public void deleteUnit(@PathVariable(name = "unitid") Long unitId) {
-		unitImpl.unitDelete(unitId);
+	@DeleteMapping(value = "/{type}/{unitid}")
+	public int deleteUnit(@PathVariable(name ="type") int type,@PathVariable(name = "unitid") Long unitId) {
+		return unitImpl.unitDelete(type,unitId);
 	}
 }
