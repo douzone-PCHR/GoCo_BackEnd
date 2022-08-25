@@ -10,5 +10,4 @@ import com.pchr.entity.Comment;
 public interface CommentRepository extends JpaRepository<Comment, Long>{
 	List<Comment> findAllByBoardBoardId(Long id);
 	Optional<Comment> findByCommentId(Long commentId);
-	boolean existsByBoardId(Board boardId);
 }
