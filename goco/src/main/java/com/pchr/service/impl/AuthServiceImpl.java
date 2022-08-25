@@ -149,7 +149,7 @@ public class AuthServiceImpl implements AuthService{
 		}else { // emailAuth의 인증 번호의 count를 뽑아서 1을 증가 시키고 저장한다.			
 			EmailAuthDTO emailAuthDTO  = emailAuthThree.toDTO(emailAuthThree);
 			emailAuthDTO.setCount(emailAuthDTO.getCount()+1);
-			EmailAuth save = emailAuthServiceImpl.save(emailAuthDTO.toEntity(emailAuthDTO));
+			emailAuthServiceImpl.save(emailAuthDTO.toEntity(emailAuthDTO));
 		}
 		return 1;
 	}

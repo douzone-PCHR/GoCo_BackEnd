@@ -20,7 +20,7 @@ import com.pchr.service.impl.CommentServiceImpl;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(value = "/api/comment")
+@RequestMapping(value = "/api/user/comment")
 @RequiredArgsConstructor
 public class CommentRestController {
 	private final CommentServiceImpl commentService;
