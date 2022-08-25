@@ -40,7 +40,7 @@ public class WorkServiceImpl implements WorkService {
 	@Override
 	public List<WorkDTO> findAllByDay(LocalDateTime day) {
 		LocalDateTime startDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth(), 0, 0, 0);
-		LocalDateTime endDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth() + 1, 0, 0, 0);
+		LocalDateTime endDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth() , 23, 59, 0);
 		List<WorkDTO> list = workRepository.findAllByDay(startDay, endDay, SecurityUtil.getCurrentMemberId()).stream()
 				.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
 		return list;

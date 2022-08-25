@@ -3,7 +3,8 @@ package com.pchr.api;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
+
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -124,7 +125,7 @@ public class WorkRestController {
 	 * @return boolean
 	 */
 
-	@PostMapping(value = "/work")
+	@PostMapping(value = "/work",consumes = MediaType.APPLICATION_JSON_VALUE)
 	public boolean workAdd(@RequestBody WorkDTO workDTO) {
 		try {
 			workService.workSave(workDTO);
@@ -183,7 +184,7 @@ public class WorkRestController {
 
 	@PutMapping(value = "/work")
 	public boolean updateWork(@RequestBody WorkDTO workDTO) {
-
+		System.out.println(workDTO);
 		try {
 			workService.updateWork(workDTO);
 			return true;

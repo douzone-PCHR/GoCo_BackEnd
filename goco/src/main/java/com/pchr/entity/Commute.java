@@ -47,6 +47,9 @@ public class Commute {
 	@JoinColumn(name = "emp_num",nullable = false)
 	private Employee employee;
 	
+	@Column(name= "commute_check")
+	private int commuteCheck;
+	
 	//Entity -> DTO 빌더 (Select 시)
 		public CommuteDTO toCommuteDto(Commute commute) {
 			
@@ -56,6 +59,7 @@ public class Commute {
 					.clockOut(commute.getClockOut())
 					.commuteStatus(commute.getCommuteStatus())
 					.employee(commute.getEmployee().toFKDTO(commute.getEmployee()))
+					.commuteCheck(commute.getCommuteCheck())
 					.build();
 			
 			return commuteDTO;

@@ -31,7 +31,8 @@ public class CommuteDTO {
 	
 	private EmployeeDTO employee;
 	
-	private int check;
+	private int commuteCheck;
+	
 	// DTO -> Entity 빌더 (Update)
 	public Commute toUpdateCommute(CommuteDTO commuteDTO) {
 		Commute commute = Commute.builder()
@@ -40,6 +41,7 @@ public class CommuteDTO {
 				.clockOut(commuteDTO.getClockOut())
 				.commuteStatus(commuteDTO.getCommuteStatus())
 				.employee(commuteDTO.getEmployee().toFKManager(commuteDTO.getEmployee()))
+				.commuteCheck(commuteDTO.getCommuteCheck())
 				.build();
 		return commute;
 	}

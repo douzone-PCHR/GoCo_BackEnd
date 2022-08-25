@@ -18,7 +18,7 @@ public interface CommuteService {
 	
 	public List<CommuteDTO> findById(Long commuteId);
 	
-	public void updateCommute(CommuteDTO commuteDTO);
+	public boolean updateCommute(CommuteDTO commuteDTO);
 	
 	public void deleteCommute(CommuteDTO commuteDTO);
 	
