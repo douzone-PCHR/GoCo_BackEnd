@@ -1,5 +1,7 @@
 package com.pchr.api;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +25,10 @@ import lombok.RequiredArgsConstructor;
 public class CommentRestController {
 	private final CommentServiceImpl commentService;
 
-	// 조회
-	// boardId를 같이 받아야함.
+	// 전체 데이터 조회
 	@GetMapping("/{boardid}")
-	public PageResultDTO<CommentDTO, Comment> getAllComment(@PathVariable(name = "boardid") Long boardId,
-			@RequestBody PageRequestDTO prDto) {
-		prDto.setSize(5); // 댓글 기본 갯수 5개 설정
-		return commentService.getCommentList(prDto, boardId);
+	public List<CommentDTO> getAllComment(@PathVariable(name = "boardid") Long boardId) {
+		return commentService.getCommentList(boardId);
 	}
 
 	// 추가
@@ -43,9 +42,10 @@ public class CommentRestController {
 	// 삭제
 	@DeleteMapping("/{commentid}")
 	public void deleteComment(@PathVariable("commentid") Long commentId) {
+		System.out.println("전달된 값 : "+commentId);
 		commentService.deleteComment(commentId);
 	}
-
+	// 수정
 	@PutMapping("/{commentid}")
 	public void updateComment(@PathVariable("commentid") Long commentId, @RequestBody CommentDTO commentDto) {
 		commentService.updateComment(commentId, commentDto);

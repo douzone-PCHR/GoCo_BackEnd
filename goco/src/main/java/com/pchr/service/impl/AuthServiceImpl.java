@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService{
     private final TokenProvider tokenProvider;
     private final EmailAuthServiceImpl emailAuthServiceImpl;// 메일보내는 함수
 
-
+// static이라 오버라이드 안됨
     //회원 가입시 유효성 검사 중 오류 있으면 반환해주는 것
 	public static Map<String, String> validateHandling(Errors errors) {
         Map<String, String> validatorResult = new HashMap<>();
@@ -137,7 +137,7 @@ public class AuthServiceImpl implements AuthService{
 		}
 		throw new RuntimeException("에러 발생");
 	}
-	// 인증 번호 반환 해주는 서비스 코드 간결화를 위해 분할
+	@Override// 인증 번호 반환 해주는 서비스 코드 간결화를 위해 분할
 	public int count(String email) {
 		EmailAuth emailAuthThree = emailAuthServiceImpl.findByEmail(email);
 		if(emailAuthThree==null) {
@@ -153,13 +153,13 @@ public class AuthServiceImpl implements AuthService{
 		}
 		return 1;
 	}
-	// 회원 가입시 팀 포지션 팀원으로 자동 지정
+	@Override// 회원 가입시 팀 포지션 팀원으로 자동 지정
 	public TeamPositionDTO getTeamPositionDTO() {
 		TeamPositionDTO team = new TeamPositionDTO();
 	    team.setTeamPositionId(2L);
 	    return team;
 	}
-	// 회원 가입시 사원직급으로 자동 지정 
+	@Override// 회원 가입시 사원직급으로 자동 지정 
 	public JobTitleDTO getJobTitleDTO() {
 		JobTitleDTO job = new JobTitleDTO();
 	    job.setJobTitleId(1L);

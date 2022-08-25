@@ -2,6 +2,8 @@ package com.pchr.service;
 
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
+import com.pchr.dto.JobTitleDTO;
+import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.TokenDTO;
 
 
@@ -19,4 +21,7 @@ public interface AuthService {
 	public String sendEmailForPwd(String id, String email);
 	// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
 	public String find(int number,String email, String authenticationNumber);
+	public int count(String email);
+	public TeamPositionDTO getTeamPositionDTO();
+	public JobTitleDTO getJobTitleDTO();
 }
