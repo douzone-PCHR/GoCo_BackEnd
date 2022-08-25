@@ -3,8 +3,13 @@ package com.pchr.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.pchr.config.SecurityUtil;
 import com.pchr.dto.EmployeeDTO;
+import com.pchr.dto.EmployeeResponseDTO;
+import com.pchr.dto.UnitDTO;
+import com.pchr.entity.Authority;
 import com.pchr.entity.Employee;
+import com.pchr.entity.Resignation;
 
 public interface EmployeeService {
 	Optional<Employee> findByEmail(String email);
@@ -23,4 +28,21 @@ public interface EmployeeService {
 	public List<Employee> findByManager(Long teamPositionId,Long unitId);
 	void updateJobTitle(EmployeeDTO emp);
 	public List<EmployeeDTO> findAllManager(Long unitId);
+	public boolean idCheck(String info);
+	public int delete();
+	public int setPassword(String password,String password2);
+	public EmployeeResponseDTO getMyInfoBySecurity();
+	public int emailChange(String email);
+	public int setPhone(String phoneNumber);
+	public int changeRole(Authority authority, String empId);
+	public int changeData(int number,String empNum,String data);
+	public int adminDelete(Long empNum);
+	public List<Resignation> ResignationAll();
+	public int changUnitId(Long empNum, UnitDTO unit);
+	public void setUnitID(EmployeeDTO employeeDTO, UnitDTO unit);
+	public void setLeader(Employee employee, Long unitId);
+	public int changeManager(Long empNum, UnitDTO unit);
+	public void LeaderToMember(Long unitId);
+	public void MemberToLeader(Employee employee, UnitDTO unit);
+	public Employee updateAllEmp(EmployeeDTO emp);
 }

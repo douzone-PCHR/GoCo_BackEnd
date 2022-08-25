@@ -1,6 +1,6 @@
 package com.pchr.service.impl;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +26,7 @@ import com.pchr.entity.Employee;
 import com.pchr.jwt.TokenProvider;
 import com.pchr.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import java.text.DateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date; 
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +39,7 @@ public class AuthServiceImpl implements AuthService{
     private final TokenProvider tokenProvider;
     private final EmailAuthServiceImpl emailAuthServiceImpl;// 메일보내는 함수
 
-
+// static이라 오버라이드 안됨
     //회원 가입시 유효성 검사 중 오류 있으면 반환해주는 것
 	public static Map<String, String> validateHandling(Errors errors) {
         Map<String, String> validatorResult = new HashMap<>();
@@ -58,7 +55,7 @@ public class AuthServiceImpl implements AuthService{
 	public EmployeeResponseDTO signup(EmployeeDTO employeeDTO) {
 				 
 	    if (empolyServiceImpl.existsByEmail(employeeDTO.getEmail()) | empolyServiceImpl.existsByEmpId(employeeDTO.getEmpId())  ) {
-	        throw new RuntimeException("이미 가입되어 있는 유저입니다");
+	        throw new RuntimeException("이미 가입되어 있는 유저입니다.");
 	    }
 	    // unit_id로 매니저의 emp_num을 받아옴
 	    List<Employee> e = empolyServiceImpl.findByManager(1L, employeeDTO.getUnit().getUnitId());
@@ -82,7 +79,7 @@ public class AuthServiceImpl implements AuthService{
     // 아이디 찾기위해 메일 보내는 함수 
 	public String sendEmailForId(String name, String email) {
 		if(empolyServiceImpl.findByNameAndEmail(name,email)==null) { // 이름과 이메일로 해당하는 emp테이블을 가져와 사용자가 없다면 null을 반환하므로 조건문을 준다.
-			throw new RuntimeException("사용자가 없습니다. 이메일 혹은 이름을 확인하세요 ");
+			throw new RuntimeException("사용자가 없습니다. 이메일 혹은 이름을 확인하세요.");
 		}		
 		return emailAuthServiceImpl.save(email);
 	}	
@@ -91,7 +88,7 @@ public class AuthServiceImpl implements AuthService{
 	// 비밀번호 찾기 위해 메일보내는 함수
 	public String sendEmailForPwd(String id, String email) {
 		if(empolyServiceImpl.findByEmpIdAndEmail(id,email)==null) { // 이름과 이메일로 해당하는 emp테이블을 가져와 사용자가 없다면 null을 반환하므로 조건문을 준다.
-			throw new RuntimeException("사용자가 없습니다. 이메일 혹은 아이디를 확인하세요 ");
+			throw new RuntimeException("사용자가 없습니다. 이메일 혹은 아이디를 확인하세요.");
 		}
 		return emailAuthServiceImpl.save(email);
 	}	
@@ -100,7 +97,7 @@ public class AuthServiceImpl implements AuthService{
 		if(empolyServiceImpl.idCheck(email)) {
 			return emailAuthServiceImpl.save(email);
 		}
-		throw new RuntimeException("이미 가입되어 있는 유저입니다");
+		throw new RuntimeException("이미 가입되어 있는 유저입니다.");
 		
 	}
 
@@ -111,7 +108,7 @@ public class AuthServiceImpl implements AuthService{
 		}
 		EmailAuth emailAuth = emailAuthServiceImpl.findByEmailAndAuthenticationNumber(email,authenticationNumber);// 인증 번호로 테이블을 불러온다.
 		if(emailAuth==null) {
-			return "올바른 인증번호를 입력하세요";
+			return "올바른 인증번호를 입력하세요.";
 		}
 		if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){	
 			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {// 시간 비교해서 유효할 경우 실행됨
@@ -126,7 +123,7 @@ public class AuthServiceImpl implements AuthService{
 					// 2) employee를 employeeDto로 바꾸고  employeeDto에 임시비번 저장하고 이걸다시 employee로 바꾸고, 이걸 레포를써서 저장한다.
 					EmployeeDTO employeeDTO = empolyServiceImpl.findByEmail(emailAuth.getEmail())
 												.map(emp->emp.toDTO(emp))
-												.orElseThrow(()->new RuntimeException("유저 정보가 없습니다"));
+												.orElseThrow(()->new RuntimeException("유저 정보가 없습니다."));
 					
 					employeeDTO.setPassword(passwordEncoder.encode((password)));
 					empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
@@ -140,7 +137,7 @@ public class AuthServiceImpl implements AuthService{
 		}
 		throw new RuntimeException("에러 발생");
 	}
-	// 인증 번호 반환 해주는 서비스 코드 간결화를 위해 분할
+	@Override// 인증 번호 반환 해주는 서비스 코드 간결화를 위해 분할
 	public int count(String email) {
 		EmailAuth emailAuthThree = emailAuthServiceImpl.findByEmail(email);
 		if(emailAuthThree==null) {
@@ -156,13 +153,13 @@ public class AuthServiceImpl implements AuthService{
 		}
 		return 1;
 	}
-	// 회원 가입시 팀 포지션 팀원으로 자동 지정
+	@Override// 회원 가입시 팀 포지션 팀원으로 자동 지정
 	public TeamPositionDTO getTeamPositionDTO() {
 		TeamPositionDTO team = new TeamPositionDTO();
 	    team.setTeamPositionId(2L);
 	    return team;
 	}
-	// 회원 가입시 사원직급으로 자동 지정 
+	@Override// 회원 가입시 사원직급으로 자동 지정 
 	public JobTitleDTO getJobTitleDTO() {
 		JobTitleDTO job = new JobTitleDTO();
 	    job.setJobTitleId(1L);

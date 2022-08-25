@@ -1,73 +1,43 @@
 package com.pchr.service.impl;
-
-import java.util.function.Function;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-
 import com.pchr.dto.BoardDTO;
-import com.pchr.dto.EmployeeDTO;
-import com.pchr.dto.PageRequestDTO;
-import com.pchr.dto.PageResultDTO;
 import com.pchr.entity.Board;
 import com.pchr.repository.BoardRepository;
+import com.pchr.repository.CommentRepository;
 import com.pchr.service.BoardService;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 	private final BoardRepository boardRepo;
+	//private final CommentRepository commentRepo;
 
-	// 페이지에 맞는 데이터 출력 Clear
-	@Override
-	public PageResultDTO<BoardDTO, Board> getList(PageRequestDTO pRDTO) {
-		Pageable pageable = pRDTO.getPageable(Sort.by("boardId").ascending());
-		Page<Board> result = boardRepo.findAll(pageable);
-		Function<Board, BoardDTO> function = (boardEntity -> boardEntity
-				.toBoardDto(boardEntity));
-		return new PageResultDTO<BoardDTO, Board>(result, function);
+	@Override// 모든 공지 출력
+	public List<BoardDTO> getNotice(){
+		List<BoardDTO> data = boardRepo.findAllByBoardType(0).stream().map(Board::toBoardDto)
+                .collect(Collectors.toList());
+		Collections.reverse(data);
+				return data;
 	}
-
-	// 특정 데이터 조회 (페이징) Clear
-	@Override
-	public PageResultDTO<BoardDTO, Board> getSearch(BoardDTO boardDto) {
-		// Entity를 담을 List 생성
-		Page<Board> boardResults = null;
-		// 페이지에 대한 값 전달
-		Pageable pageable = new PageRequestDTO()
-				.getPageable(Sort.by("boardId").ascending());
-
-		// 중복 검색은 없음.
-		if (boardDto.getBoardContent() != null) { // 내용에 대한 검색
-			boardResults = boardRepo.findAllByBoardContent(
-					boardDto.getBoardContent(), pageable);
-		}
-
-		if (boardDto.getBoardTitle() != null) { // 제목에 대한 검색
-			boardResults = boardRepo
-					.findAllByBoardTitle(boardDto.getBoardTitle(), pageable);
-		}
-
-		// Entity를DTO로 변환하는 과정
-		Function<Board, BoardDTO> boardsDto = (boardEntity -> boardEntity
-				.toBoardDto(boardEntity));
-
-		return new PageResultDTO<BoardDTO, Board>(boardResults, boardsDto);
+	@Override// 모든 일반 게시글 출력
+	public List<BoardDTO> getBoard(){	
+		List<BoardDTO> data = boardRepo.findAllByBoardType(1).stream().map(Board::toBoardDto)
+	            .collect(Collectors.toList());
+		Collections.reverse(data);
+	return data;
 	}
-
-	// 삭제 Clear
-	@Override
+	@Override// 삭제 Clear
 	public void removeBoard(long boardId) {
+//		if(commentRepo.existsByBoardId(boardId)) {
+//			throw new RuntimeException("게시글 삭제는 댓글이 없는 경우 가능합니다.");
+//		}
 		boardRepo.deleteById(boardId);
 	}
-
-// --------------------------------------------------------------------
-	// 수정 !!!
-	@Override
+	@Override // 게시판 수정
 	public void updateBoard(long boardId, BoardDTO updateBoardDto) {
 		Board board = boardRepo.findById(boardId).get(); // board에 Entity 가져오기
 		BoardDTO boardDto = board.toBoardDto(board); // board DTO 변환
@@ -80,19 +50,12 @@ public class BoardServiceImpl implements BoardService {
 		}
 		boardRepo.save(boardDto.toUpdateBoard(boardDto));
 	}
-
-	// 추가 Clear
-	// (EmpNum에 대한 값도 받아야함. - Front : {empNum:n})
-	@Override
+	@Override // 게시글 추가 , EmpNum도 인자로 받는다  Front : {empNum:n}
 	public void insertBoard(BoardDTO boardDto) {
 		boardRepo.save(boardDto.toBoard(boardDto));
-
 	}
-
-	// 상세 조회 Clear
-	@Override
+	@Override	// 상세 조회 Clear
 	public BoardDTO getBoard(Long boardId) {
-		// DB에서 데이터 가져옴. Entity 상태
 		Board board = boardRepo.findById(boardId).get();
 		BoardDTO boardDto = board.toBoardDto(board); // Entity -> Dto 변환
 		boardDto.setCount(boardDto.getCount() + 1); // 조회수(Count) 1증가

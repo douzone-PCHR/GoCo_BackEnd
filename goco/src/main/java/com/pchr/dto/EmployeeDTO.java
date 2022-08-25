@@ -50,7 +50,7 @@ public class EmployeeDTO {
 
 	private Authority authority;
 
-	private int vacationCount;
+	private Float vacationCount;
 
 	// 팀장에 대한 필드
 	private EmployeeDTO manager;
@@ -66,9 +66,6 @@ public class EmployeeDTO {
 
 	// -------------- to Entity ------------------- //
 	public Employee toEntity(EmployeeDTO employeeDTO) {
-		System.out.println(employeeDTO.getUnit().getUnitId());
-		System.out.print("empId: ");
-		System.out.println(employeeDTO.getEmpNum());
 		if (employeeDTO.getManager() != null) {// 매니저가 있으면 아래 실행
 			Employee employee = Employee.builder().empNum(employeeDTO.getEmpNum()).empId(employeeDTO.getEmpId())
 					.password(employeeDTO.getPassword()).email(employeeDTO.getEmail()).name(employeeDTO.getName())

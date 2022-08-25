@@ -75,7 +75,7 @@ public class Employee {
 //	private int authority;
 
 	@Column(name = "vacation_count")
-	private int vacationCount;
+	private Float vacationCount;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "manager", referencedColumnName = "emp_num")

@@ -25,13 +25,13 @@ public class WorkServiceImpl implements WorkService {
 
 	private final WorkRepository workRepository;
 	private final EmployeeRepository employeeRepository;
-	
+
 	@Transactional(readOnly = true)
 	@Override
-	public List<WorkDTO> findAllByEmpNo(Long empNum) {
+	public List<WorkDTO> findAllByEmpId() {
 
-		List<WorkDTO> list = workRepository.findAllByEmpEmpNum(empNum).stream().map(work -> work.toWorkDto(work))
-				.collect(Collectors.toList());
+		List<WorkDTO> list = workRepository.findAllByEmpEmpId(SecurityUtil.getCurrentMemberId()).stream()
+				.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
 		return list;
 
 	}
@@ -82,14 +82,28 @@ public class WorkServiceImpl implements WorkService {
 		System.out.println("===========");
 		System.out.println(SecurityUtil.getCurrentMemberId());
 		System.out.println("===========");
-						workRepository.findAllWithoutDate(SecurityUtil.getCurrentMemberId());
+		workRepository.findAllWithoutDate(SecurityUtil.getCurrentMemberId());
 		return null;
 	}
 
 	public List<EmployeeDTO> findAllWorkByEmp() {
-		List<EmployeeDTO> list = employeeRepository.findAllEmp(SecurityUtil.getCurrentMemberId()).stream().map(emp -> emp.toFKDTO(emp)).collect(Collectors.toList());
+		List<EmployeeDTO> list = employeeRepository.findAllEmp(SecurityUtil.getCurrentMemberId()).stream()
+				.map(emp -> emp.toFKDTO(emp)).collect(Collectors.toList());
 		return list;
 	}
 
+	public List<WorkDTO> findAllCalendar(String empId) {
+		List<WorkDTO> list = null;
+		if ("0".equals(empId) ) {
+			list = workRepository.findAllByEmpEmpId(SecurityUtil.getCurrentMemberId()).stream()
+					.map(work -> work.toCalendarWorkDto(work)).collect(Collectors.toList());
+
+		} else {
+			list = workRepository.findAllCalendarData(empId).stream()
+					.map(work -> work.toCalendarWorkDto(work)).collect(Collectors.toList());
+
+		}
+		return list;
+	}
 
 }

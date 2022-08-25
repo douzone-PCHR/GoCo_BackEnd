@@ -31,4 +31,10 @@ public interface VacationService {
 	// 휴가 및 출장 검색
 	public List<Map<String, Object>> vacationAndBusiness();
 
+	// checkDate
+	public Map<String, List<VacationDTO>> checkVacation(VacationDTO vacationDTO);
+
+	// check 잔여일수
+	public Float checkVacationCount(Long empNum);
+
 }

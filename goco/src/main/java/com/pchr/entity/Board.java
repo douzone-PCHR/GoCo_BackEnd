@@ -43,7 +43,7 @@ public class Board {
 	@Column(name = "board_title", nullable = false)
 	private String boardTitle;
 
-	@Column(name = "board_content")
+	@Column(name = "board_content", length=10000)
 	private String boardContent;
 
 	@Column(name = "registered_date", updatable = false)
@@ -57,6 +57,10 @@ public class Board {
 	@Column(name = "count",insertable = false)
 	@ColumnDefault("0")
 	private int count;
+	
+	@Column(name = "board_type")
+	@ColumnDefault("0")
+	private int boardType; // 0이 공지사항, 1이 게시판
 
 	@ManyToOne
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -68,7 +72,7 @@ public class Board {
 //	private List<Comment> comments = new ArrayList<Comment>();
 
 	//Entity -> DTO 빌더 (Update /Select 시)
-	public BoardDTO toBoardDto(Board board) {
+	public static BoardDTO toBoardDto(Board board) {
 //		List<CommentDTO> commentsDto = new ArrayList<CommentDTO>();
 //		//board의 Comment 리스트들을 DTO로 변환
 //		for (Comment comment : board.getComments()) {
@@ -79,6 +83,7 @@ public class Board {
 				.boardId(board.getBoardId())
 				.boardTitle(board.getBoardTitle())
 				.count(board.getCount())
+				.boardType(board.getBoardType())
 				.boardContent(board.getBoardContent())
 				.employee(board.getEmployee().toFKDTO(board.getEmployee()))
 				.registeredDate(board.getRegisteredDate())

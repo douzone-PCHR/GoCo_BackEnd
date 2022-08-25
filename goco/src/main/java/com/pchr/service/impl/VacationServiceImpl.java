@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -14,13 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.ApproveEnum;
-import com.pchr.dto.BusinessTripDTO;
 import com.pchr.dto.FileDTO;
-import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.VacationDTO;
-import com.pchr.entity.BusinessTrip;
 import com.pchr.entity.Vacation;
-import com.pchr.repository.BusinessTripRepository;
 import com.pchr.repository.EmployeeRepository;
 import com.pchr.repository.VacationRepository;
 import com.pchr.service.VacationService;
@@ -39,7 +34,6 @@ public class VacationServiceImpl implements VacationService {
 	private final FileServiceImpl fileService;
 
 	private final EmployeeRepository employeeRepository;
-
 
 	// 휴가신청리스트(사원)
 	@Override
@@ -83,14 +77,18 @@ public class VacationServiceImpl implements VacationService {
 		if (checkVacationsDTO.get("success").size() == 0) {
 			if (checkVacationsDTO.get("waitting").size() == 0) {
 				try {
-					// fileDTO = S3에 Upload된
-					// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
-					FileDTO fileDTO = S3Util.S3Upload(multipartFile, "vacation/");
-					// 파일을 넣었을 때
-					if (fileDTO != null) {
-						FileDTO newFileDTO = fileService.insertFile(fileDTO);
-						System.out.println(newFileDTO.getFileId());
-						vacationDTO.setFile(newFileDTO);
+					// 프론트에서 빈파일이 넘어 왔을 때
+					if (multipartFile.getSize() != 0) {
+
+						// fileDTO = S3에 Upload된
+						// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
+						FileDTO fileDTO = S3Util.S3Upload(multipartFile, "vacation/");
+						// 파일을 넣었을 때
+						if (fileDTO != null) {
+							FileDTO newFileDTO = fileService.insertFile(fileDTO);
+							System.out.println(newFileDTO.getFileId());
+							vacationDTO.setFile(newFileDTO);
+						}
 					}
 					vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 
@@ -108,16 +106,42 @@ public class VacationServiceImpl implements VacationService {
 	@Override
 	@Transactional
 	public void approveVacation(VacationDTO vacationDTO) {
-		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_SUCCESS) {
+		Float count = 0F;
 
-			Long count = ((vacationDTO.getVacationEndDate().getTime() - vacationDTO.getVacationStartDate().getTime()))
-					/ (60 * 60 * 24 * 1000);
+		switch (vacationDTO.getApproveYn()) {
+		case APPROVE_SUCCESS:
+			if (vacationDTO.getVacationType().equals("연차")) {
 
-			employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
+				count = (float) (((vacationDTO.getVacationEndDate().getTime()
+						- vacationDTO.getVacationStartDate().getTime())) / (60 * 60 * 24 * 1000));
+				System.out.println(count);
+				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count + 1.0F);
+			} else if (vacationDTO.getVacationType().equals("반차")) {
+				count = 0.5F;
+				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
+			}
+
 			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 
-		} else if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_REFUSE) {
+			break;
+		case APPROVE_CANCEL:
+			if (vacationDTO.getVacationType().equals("연차")) {
+
+				count = (float) (((vacationDTO.getVacationStartDate().getTime()
+						- vacationDTO.getVacationEndDate().getTime())) / (60 * 60 * 24 * 1000));
+				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count - 1.0F);
+			} else if (vacationDTO.getVacationType().equals("반차")) {
+
+				count = -0.5F;
+				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count);
+			}
+
 			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
+
+			break;
+		default:
+			vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
+			break;
 		}
 	}
 
@@ -127,15 +151,16 @@ public class VacationServiceImpl implements VacationService {
 //	public void deleteVacation(Long vacationId, FileDTO fileDTO, ApproveEnum approveYn) {
 	public void deleteVacation(VacationDTO vacationDTO) {
 		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
-
-			S3Util.deleteFile("vacation/" + vacationDTO.getFile().getFileName());
+			if (vacationDTO.getFile() != null) {
+				S3Util.deleteFile("vacation/" + vacationDTO.getFile().getFileName());
+				fileService.deleteFile(vacationDTO.getFile().getFileId());
+			}
 			vacationRepository.deleteById(vacationDTO.getVacationId());
-			fileService.deleteFile(vacationDTO.getFile().getFileId());
-
 		}
 	}
 
 	// check date
+	@Override
 	public Map<String, List<VacationDTO>> checkVacation(VacationDTO vacationDTO) {
 		List<VacationDTO> waittingDTO = new ArrayList<VacationDTO>();
 		List<VacationDTO> successDTO = new ArrayList<VacationDTO>();
@@ -153,10 +178,17 @@ public class VacationServiceImpl implements VacationService {
 		}
 		approveMap.put("waitting", waittingDTO);
 		approveMap.put("success", successDTO);
-//			System.out.println(vacationsDTO);
+
 		return approveMap;
 	}
 
+	// 잔여 휴가 일수 check
+	@Override
+	public Float checkVacationCount(Long empNum) {
+		return employeeRepository.checkVacationCount(empNum);
+	}
+
+	// 매니저 메인페이지 리스트
 	public List<Map<String, Object>> vacationAndBusiness() {
 		List<Map<String, Object>> findAllApprove = vacationRepository.findAllApprove(SecurityUtil.getCurrentMemberId());
 		return findAllApprove;
