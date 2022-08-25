@@ -8,20 +8,10 @@ import com.pchr.dto.PageResultDTO;
 import com.pchr.entity.Board;
 
 public interface BoardService {
-
-//	PageResultDTO<BoardDTO, Board> getNotice(PageRequestDTO pRDTO);
 	List<BoardDTO> getNotice();
 	List<BoardDTO> getBoard();
-//	PageResultDTO<BoardDTO, Board> getBoard(PageRequestDTO pRDTO);
-	
-//	PageResultDTO<BoardDTO, Board> getSearch(BoardDTO boardDto);
-	
 	void insertBoard(BoardDTO boardDto);
-
 	void updateBoard(long id, BoardDTO updateBoardDto);
-
 	void removeBoard(long id);
-
 	BoardDTO getBoard(Long id);
-
 }

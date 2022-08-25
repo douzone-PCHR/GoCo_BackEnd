@@ -32,11 +32,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class EmpolyServiceImpl implements EmployeeService{
 	private final PasswordEncoder passwordEncoder;
-	@Autowired
-	private EmployeeRepository employeeRepository;
-	@Autowired
-	private ResignationServiceImpl resignationServiceImpl;
-	
+	private final EmployeeRepository employeeRepository;
+	private final ResignationServiceImpl resignationServiceImpl;
 	
 	@Override
 	public Optional<Employee> findByEmail(String email) {
@@ -96,18 +93,19 @@ public class EmpolyServiceImpl implements EmployeeService{
 	public Optional<Employee> findByEmpNum(Long empNum) {
 		return employeeRepository.findByEmpNum(empNum);
 	}
+	@Override
 	public List<Employee> findByManager(Long teamPositionId,Long unitId){
 		return employeeRepository.findByManager(teamPositionId,unitId);
 	}
 	   /////////////////////////////////// 이하 회원 정보 수정 //////////////////////////////
-	//아이디 체크
+	@Override//아이디 체크
 	public boolean idCheck(String info) {
 	        if (existsByEmail(info) | existsByEmpId(info)  ) {
 	            return false;
 	        }
 			return true; // 중복되는 값이 없을 때 true를 반환
 	}
-	// 내정보 회원탈퇴
+	@Override// 내정보 회원탈퇴
 	public int delete() {
 			String empId = SecurityUtil.getCurrentMemberId();
 			if(existsByEmpId(empId)) { // 탈퇴할 회원이 있는지 먼저 확인
@@ -123,7 +121,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			return 0;
 	}
 	
-	// 내정보 비번 변경
+	@Override// 내정보 비번 변경
 	public int setPassword(String password,String password2) {
 			if(!password.equals(password2)) {
 				return -1;
@@ -137,13 +135,13 @@ public class EmpolyServiceImpl implements EmployeeService{
 			return 1;
 	}
 	
-	// 내정보 반환 하는 메소드
+	@Override// 내정보 반환 하는 메소드
 	public EmployeeResponseDTO getMyInfoBySecurity() {
 			return findByEmpId(SecurityUtil.getCurrentMemberId())
     		 						.map(EmployeeResponseDTO::of)
     		 						.orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
 	}
-	// 내정보 이메일변경
+	@Override// 내정보 이메일변경
 	public int emailChange(String email) {
 			if (existsByEmail(email) ) {
 		        throw new RuntimeException("이미 가입되어 있는 이메일 입니다.");
@@ -156,7 +154,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			save(employeeDTO.toEntity(employeeDTO));				
 			return 1;
 	}
-	// 내정보 폰번호변경
+	@Override// 내정보 폰번호변경
 	public int setPhone(String phoneNumber) {
 			String EmpId = SecurityUtil.getCurrentMemberId();
 			EmployeeDTO employeeDTO = findByEmpId(EmpId)
@@ -166,7 +164,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			save(employeeDTO.toEntity(employeeDTO));			
 		return 1;
 	}
-	// 관리자의 Role 권한변경권
+	@Override// 관리자의 Role 권한변경권
 	public int changeRole(Authority authority, String empId) {
 			EmployeeDTO employeeDTO = findByEmpId(empId)
 									.map(emp->emp.toDTO(emp))
@@ -176,7 +174,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			return 1;
 	}
  
-	//관리자의 휴가 , 메일 , 아이디, 입사일, 이름 , 핸드폰 번호 변경
+	@Override//관리자의 휴가 , 메일 , 아이디, 입사일, 이름 , 핸드폰 번호 변경
 	public int changeData(int number,String empNum,String data) {
 			EmployeeDTO employeeDTO = findByEmpNum(Long.parseLong(empNum))
 									.map(emp->emp.toDTO(emp))
@@ -211,7 +209,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			save(employeeDTO.toEntity(employeeDTO));	
 			return 1;
 	}
-	// 관리자의 유저 데이터 삭제
+	@Override// 관리자의 유저 데이터 삭제
 	public int adminDelete(Long empNum) {
 			Employee employee = findByEmpNum(empNum)
 					.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
@@ -223,12 +221,12 @@ public class EmpolyServiceImpl implements EmployeeService{
 			});
 			return 	deleteByEmpNum(empNum);
 	}
-	// 관리자의 퇴사자 확인
+	@Override// 관리자의 퇴사자 확인
 	public List<Resignation> ResignationAll() {
 			return resignationServiceImpl.findAll();
 	}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Unit_id 변경
+	@Override// Unit_id 변경
 	public int changUnitId(Long empNum, UnitDTO unit) {
 			Employee employee = findByEmpNum(empNum)
 					.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
@@ -248,7 +246,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			}
 			return 1;
 	}
-	// 나의 unit_id를 수정하는 코드 
+	@Override// 나의 unit_id를 수정하는 코드 
 	public void setUnitID(EmployeeDTO employeeDTO, UnitDTO unit) {
 			employeeDTO.setManager(null);// 매니저를 null로 바꿔준다.
 			employeeDTO.getTeamPosition().setTeamPositionId(2L);// 팀원으로 변경하는 것
@@ -256,7 +254,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			employeeDTO.setUnit(unit); // 팀 변경 한다. 
 			save(employeeDTO.toEntity(employeeDTO));	
 	}
-	// unit_id 수정 후 팀원들의 팀장을 찾아 지정해주는 코드
+	@Override// unit_id 수정 후 팀원들의 팀장을 찾아 지정해주는 코드
 	public void setLeader(Employee employee, Long unitId) {
 			findByManager(2L, unitId).forEach(e->{
 				EmployeeDTO empDTO = e.toDTO(e); 
@@ -265,7 +263,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			});		
 	}
 	
-	// 매니저 변경  함수
+	@Override// 매니저 변경  함수
 	public int changeManager(Long empNum, UnitDTO unit) {  
 			Employee employee = findByEmpNum(empNum)
 					.orElseThrow(()->new RuntimeException("회원 정보가 없습니다."));
@@ -274,7 +272,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 			setLeader(employee,unit.getUnitId() );// 팀원들의 팀장을 찾아 지정해주는 코드
 			return 1;
 	}
-	// 기존 데이터의 팀장을 팀원으로 바꾸는 코드 
+	@Override// 기존 데이터의 팀장을 팀원으로 바꾸는 코드 
 	public void LeaderToMember(Long unitId) {
 			findByManager(1L, unitId).forEach(e->{
 				EmployeeDTO empDTO = e.toDTO(e); 
@@ -282,7 +280,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 				save(empDTO.toEntity(empDTO));
 			});
 	}
-	// 전달 받은 empNum을 통해 해당 empNum의 주체를 팀장으로 지정
+	@Override// 전달 받은 empNum을 통해 해당 empNum의 주체를 팀장으로 지정
 	public void MemberToLeader(Employee employee, UnitDTO unit) {
 			EmployeeDTO employeeDTO = employee.toDTO(employee);
 			employeeDTO.setManager(null);// 팀장이 될거기 때문에 manager는 null
@@ -304,7 +302,7 @@ public class EmpolyServiceImpl implements EmployeeService{
 	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	// 성준 관리자가 사용할 거
+	@Override// 성준 관리자가 사용할 거
 	public Employee updateAllEmp(EmployeeDTO emp) {
 		// unitId가 null 이 아니라면 
 		Long unitId= emp.getUnit().getUnitId();

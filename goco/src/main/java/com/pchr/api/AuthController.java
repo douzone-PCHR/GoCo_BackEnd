@@ -62,8 +62,6 @@ public class AuthController {
     public boolean checkInfo(@RequestParam String info) {
     	return empolyServiceImpl.idCheck(info);
     }   
-
-
     @PostMapping("/sendEmailForEmail") // 회원가입시 이메일 인증을위해 이메일 보내는 부분
 	public String sendEmailForEmail(@RequestBody EmployeeDTO e) {
 		return authService.sendEmailForEmail(e.getEmail());

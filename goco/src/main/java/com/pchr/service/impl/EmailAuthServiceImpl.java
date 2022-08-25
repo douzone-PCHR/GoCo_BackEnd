@@ -139,8 +139,7 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	}
 
 	@Override
-    @Scheduled(cron = "0 0 4 * * *")//매일 새벽 4시 실행
-	//@Scheduled(cron = "0 */5 * * * *")//5분마다실행
+	@Scheduled(cron = "0 */5 * * * *")//5분마다실행
 	public void deleteData() {
 		findAll().forEach(e->{
 			if(LocalDateTime.now().compareTo(e.getValidTime())>0) {// 만료시간이 지난 것들 삭제 

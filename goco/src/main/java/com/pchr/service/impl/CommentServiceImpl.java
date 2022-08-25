@@ -1,41 +1,28 @@
 package com.pchr.service.impl;
-
-import java.util.function.Function;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-
 import com.pchr.dto.BoardDTO;
 import com.pchr.dto.CommentDTO;
 import com.pchr.dto.EmployeeDTO;
-import com.pchr.dto.PageRequestDTO;
-import com.pchr.dto.PageResultDTO;
 import com.pchr.entity.Comment;
 import com.pchr.repository.CommentRepository;
 import com.pchr.service.CommentService;
-
 import lombok.RequiredArgsConstructor;
-
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService{
 	private final CommentRepository commentRepo;
 	
-	//조회
-	@Override
-	public PageResultDTO<CommentDTO, Comment> getCommentList(PageRequestDTO prDto,Long id){
-		Pageable pageable = prDto.getPageable(Sort.by("commentId").ascending());
-		
-		//BoardId로 Comment조회
-		Page<Comment> commentResult = commentRepo.findAllByBoardBoardId(id,pageable);
-		Function<Comment, CommentDTO> function = (comment -> comment.toCommentDto(comment));
-		return new PageResultDTO<CommentDTO, Comment>(commentResult, function);
+	@Override//조회
+	public List<CommentDTO> getCommentList(Long id){
+		List<Comment> commentList = commentRepo.findAllByBoardBoardId(id);
+		List<CommentDTO> commentDto = commentList.stream()
+										.map(Comment::toCommentDto)
+										.collect(Collectors.toList());
+		return commentDto;
 	}
-	
-	// 추가
-//	@Override
+	@Override// 추가
 	public void insertComment(Long id,CommentDTO commentDto,Long empId) {
 		BoardDTO boardDto = new BoardDTO();
 		EmployeeDTO empDto = new EmployeeDTO();
@@ -45,18 +32,17 @@ public class CommentServiceImpl implements CommentService{
 		commentDto.setEmployeeDto(empDto);
 		commentRepo.save(commentDto.toComment(commentDto));
 	}
-	
-	//삭제
+	@Override//삭제
 	public void deleteComment(Long commentId) {
 		commentRepo.deleteById(commentId);
 	}
-	
-	//댓글수정
-	@Override
+	@Override//댓글수정
 	public void updateComment(Long commentId,CommentDTO commentDto) {
-		
-		commentDto.setCommentId(commentId);
-		commentRepo.save(commentDto.toComment(commentDto));
-		
+		CommentDTO commentdto = commentRepo.findByCommentId(commentId)
+									.map(comment->comment.toCommentDto(comment))
+									.orElseThrow(()-> new RuntimeException("로그인 유저 정보가 없습니다"));
+		commentdto.setCommentContent(commentDto.getCommentContent());
+		Comment com = commentdto.toComment(commentdto);
+		commentRepo.save(com);
 	}
 }
