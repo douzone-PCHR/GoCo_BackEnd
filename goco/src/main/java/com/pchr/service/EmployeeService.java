@@ -27,6 +27,7 @@ public interface EmployeeService {
 	public List<Employee> findManagerByEmpNum(Long empNum);
 	public List<Employee> findByManager(Long teamPositionId,Long unitId);
 	void updateJobTitle(EmployeeDTO emp);
+	public List<EmployeeDTO> findAllManager(Long unitId);
 	public boolean idCheck(String info);
 	public int delete();
 	public int setPassword(String password,String password2);

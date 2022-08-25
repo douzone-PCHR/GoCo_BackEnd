@@ -102,6 +102,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 	public Optional<Employee> findByEmpNum(Long empNum) {
 		return employeeRepository.findByEmpNum(empNum);
 	}
+
 	@Override
 	public List<Employee> findByManager(Long teamPositionId,Long unitId){
 		return employeeRepository.findByManager(teamPositionId,unitId);
@@ -109,11 +110,12 @@ public class EmpolyServiceImpl implements EmployeeService {
 	   /////////////////////////////////// 이하 회원 정보 수정 //////////////////////////////
 	@Override//아이디 체크
 	public boolean idCheck(String info) {
-	        if (existsByEmail(info) | existsByEmpId(info)  ) {
-	            return false;
-	        }
-			return true; // 중복되는 값이 없을 때 true를 반환
+		if (existsByEmail(info) | existsByEmpId(info)) {
+			return false;
+		}
+		return true; // 중복되는 값이 없을 때 true를 반환
 	}
+
 
 	@Override// 내정보 회원탈퇴
 	public int delete() {
@@ -131,6 +133,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 		}
 		return 0;
 	}
+
 
 	@Override// 내정보 비번 변경
 	public int setPassword(String password,String password2) {
@@ -152,6 +155,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 				.orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
 	}
 
+
 	@Override// 내정보 이메일변경
 	public int emailChange(String email) {
 		if (existsByEmail(email)) {
@@ -165,6 +169,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 		return 1;
 	}
 
+
 	@Override// 내정보 폰번호변경
 	public int setPhone(String phoneNumber) {
 		String EmpId = SecurityUtil.getCurrentMemberId();
@@ -174,6 +179,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 		save(employeeDTO.toEntity(employeeDTO));
 		return 1;
 	}
+
 	@Override// 관리자의 Role 권한변경권
 	public int changeRole(Authority authority, String empId) {
 			EmployeeDTO employeeDTO = findByEmpId(empId)
@@ -219,18 +225,20 @@ public class EmpolyServiceImpl implements EmployeeService {
 		return 1;
 	}
 
+
 	@Override// 관리자의 유저 데이터 삭제
 	public int adminDelete(Long empNum) {
-			Employee employee = findByEmpNum(empNum)
-					.orElseThrow(()-> new RuntimeException("회원 정보가 없습니다."));
-			resignationServiceImpl.save(employee.toResignation(employee));//퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후 저장한다.
-			findManagerByEmpNum(employee.getEmpNum()).forEach((e)->{// 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
-					EmployeeDTO dto = e.toDTO(e);
-					dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다. 
-					save(dto.toEntity(dto));
-			});
-			return 	deleteByEmpNum(empNum);
+		Employee employee = findByEmpNum(empNum).orElseThrow(() -> new RuntimeException("회원 정보가 없습니다."));
+		resignationServiceImpl.save(employee.toResignation(employee));// 퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후
+																		// 저장한다.
+		findManagerByEmpNum(employee.getEmpNum()).forEach((e) -> {// 외래키 null을 만들기위해 참조하는 모든 값들을 list형태로 불러옴
+			EmployeeDTO dto = e.toDTO(e);
+			dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다.
+			save(dto.toEntity(dto));
+		});
+		return deleteByEmpNum(empNum);
 	}
+
 
 	@Override// 관리자의 퇴사자 확인
 	public List<Resignation> ResignationAll() {
@@ -257,6 +265,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 		return 1;
 	}
 
+
 	@Override// 나의 unit_id를 수정하는 코드 
 	public void setUnitID(EmployeeDTO employeeDTO, UnitDTO unit) {
 		employeeDTO.setManager(null);// 매니저를 null로 바꿔준다.
@@ -266,6 +275,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 		save(employeeDTO.toEntity(employeeDTO));
 	}
 
+
 	@Override// unit_id 수정 후 팀원들의 팀장을 찾아 지정해주는 코드
 	public void setLeader(Employee employee, Long unitId) {
 		findByManager(2L, unitId).forEach(e -> {
@@ -274,6 +284,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 			save(empDTO.toEntity(empDTO));
 		});
 	}
+
 	
 	@Override// 매니저 변경  함수
 	public int changeManager(Long empNum, UnitDTO unit) {  
@@ -292,6 +303,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 			save(empDTO.toEntity(empDTO));
 		});
 	}
+
 
 	@Override// 전달 받은 empNum을 통해 해당 empNum의 주체를 팀장으로 지정
 	public void MemberToLeader(Employee employee, UnitDTO unit) {
@@ -314,56 +326,87 @@ public class EmpolyServiceImpl implements EmployeeService {
 		employeeRepository.save(empDto.toEntity(empDto));
 	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	@Override// 성준 관리자가 사용할 거
-	public Employee updateAllEmp(EmployeeDTO emp) {
-		// unitId가 null 이 아니라면 
-		Long unitId= emp.getUnit().getUnitId();
-		System.out.println("0");
-		if(unitId != null) {
-			System.out.println("1");
-			//사원에 대해 팀장으로 변경하는데 매니저가 존재한다면 
-			Employee manager = employeeRepository.findByUnitUnitIdAndTeamPositionTeamPositionId(emp.getUnit().getUnitId(),2L);
-			// teamPositionId가 2이면서 Unit_id가 n번인 사람이 존재한다면 저장이 안되고 그 사람에 대한 정보를 리턴
-			if(manager != null) {
-				System.out.println(manager.getEmpId());
-				System.out.println(manager.getEmpNum());
-				System.out.println("2");
-				//매니저 페이지로 이동시켜야함
-				return manager;
-				
-			}
-			// DB에서 그 사원에 대한 정보를 모두 받아옴.
-			Employee userEmp = employeeRepository.findByEmpNum(emp.getEmpNum()).get();
-			System.out.println(userEmp.getUnit());
-			EmployeeDTO userDto= userEmp.toUpdateEmp(userEmp);
-			System.out.println("328Line");
-			//JobTitle이 Null이 아니라면
-			if(emp.getJobTitle().getJobTitleId() != null) {
-				System.out.println("3");
-				JobTitleDTO jobTitleDto = new JobTitleDTO(); 
-				jobTitleDto.setJobTitleId(emp.getJobTitle().getJobTitleId());
-				userDto.setJobTitle(jobTitleDto);
-			}
-			
-			//Unit_Id가 Null이 아니라면
-			if(emp.getUnit().getUnitId() != null) {
-				System.out.println("4");
-				UnitDTO unitDto = new UnitDTO();
-				unitDto.setUnitId(emp.getUnit().getUnitId());
-				userDto.setUnit(unitDto);
-			}
-			// TeamPosition이 Null이 아니라면
-			if(emp.getTeamPosition().getTeamPositionId() !=null) {
-				System.out.println("5");
-				TeamPositionDTO teamPositionDto = new TeamPositionDTO();
-				teamPositionDto.setTeamPositionId(emp.getTeamPosition().getTeamPositionId());
-				userDto.setTeamPosition(teamPositionDto);
-			}
-			System.out.println(userDto);
-			return employeeRepository.save(userDto.toEntity(userDto));
+
+	@Override
+	// 팀의 팀원들 가져오기
+	public List<EmployeeDTO> findAllManager(Long unitId) {
+		List<EmployeeDTO> empListDto = new ArrayList<EmployeeDTO>();
+		List<Employee> empList = employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitUnitId(2L, unitId);
+		for (Employee e : empList) {
+			empListDto.add(e.toDTO(e));
 		}
+		return empListDto;
+	}
+
+	// 성준 관리자가 사용할 거
+	public EmployeeDTO updateAllEmp(EmployeeDTO newEmp) {
+		Employee empMember = employeeRepository.findByEmpNum(newEmp.getEmpNum()).get();
+		EmployeeDTO empDtoMember = empMember.toDTO(empMember);
+		Long unitId = null;
+		// 직책 설정
+		if (newEmp.getJobTitle().getJobTitleId() != null) {
+			empDtoMember.setJobTitle(newEmp.getJobTitle());
+		}
+
+		if (empDtoMember.getUnit() == null) { // 기존 팀이 없다면
+
+			// 새로운 팀이 있을 경우
+			if (newEmp.getUnit() != null) {
+
+				unitId = newEmp.getUnit().getUnitId(); // 팀Id 설정
+
+				// 새로운 팀장일 경우
+				if (newEmp.getTeamPosition().getTeamPositionId() == 1L) {
+
+					// 그 팀에 매니저가 있을 경우 (그냥 리턴해주고 끝)
+					Employee teamManager = employeeRepository.findByUnitUnitIdAndTeamPositionTeamPositionId(unitId, 1L);
+					if (teamManager != null) {
+						return teamManager.toDTO(teamManager);
+					}
+					List<Employee> teamMembers = employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitUnitId(2L,
+							unitId);
+					List<Employee> teamNewMember = new ArrayList<Employee>();
+//					setLeader();
+
+					// 기존에 팀장이었을 경우
+					if (empDtoMember.getTeamPosition().getTeamPositionId() == 1L) {
+						employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitUnitId(2L,
+								empDtoMember.getUnit().getUnitId());
+					}
+					// 새로운 팀장이 아닐 경우
+				} else {
+
+				}
+				// 유닛이 있을 경우
+			} else {
+
+			}
+
+			// 팀이 있다면
+		} else {
+
+		}
+
 		return null;
 	}
 
 }
+
+
+//	@Override// 성준 관리자가 사용할 거
+//	public Employee updateAllEmp(EmployeeDTO emp) {
+//		// unitId가 null 이 아니라면 
+//		Long unitId= emp.getUnit().getUnitId();
+//		System.out.println("0");
+//		if(unitId != null) {
+//			System.out.println("1");
+//			//사원에 대해 팀장으로 변경하는데 매니저가 존재한다면 
+//			Employee manager = employeeRepository.findByUnitUnitIdAndTeamPositionTeamPositionId(emp.getUnit().getUnitId(),2L);
+//			// teamPositionId가 2이면서 Unit_id가 n번인 사람이 존재한다면 저장이 안되고 그 사람에 대한 정보를 리턴
+//			if(manager != null) {
+//				System.out.println(manager.getEmpId());
+//				System.out.println(manager.getEmpNum());
+//				System.out.println("2");
+//				//매니저 페이지로 이동시켜야함
+//				return manager;
+

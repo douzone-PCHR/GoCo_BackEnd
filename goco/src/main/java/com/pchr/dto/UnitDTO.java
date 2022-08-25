@@ -24,23 +24,16 @@ public class UnitDTO {
 	public Unit toUnit(UnitDTO unitDto) {
 		Unit unit = null;
 		// 업데이트 시 unitId를 필요로 하기 때문에 새로운 build 생성
-		if(unitDto.getUnitId() != null) {
-			unit = Unit.builder()
-					.unitId(unitDto.getUnitId())
-					.unitName(unitDto.getUnitName())
-					.unitType(true)
-					.parentUnit(unitDto.getParentUnit()
-							.toParentUnit(unitDto.getParentUnit()))
-					.build();
+		if (unitDto.getUnitId() != null) {
+			unit = Unit.builder().unitId(unitDto.getUnitId()).unitName(unitDto.getUnitName()).unitType(true)
+					.parentUnit(unitDto.getParentUnit().toParentUnit(unitDto.getParentUnit())).build();
 			return unit;
 		}
 		// 팀 일 경우
 		if (unitDto.getParentUnit() != null) {
-			unit = Unit.builder().unitName(unitDto.getUnitName())
-					.unitType(true)
-					.parentUnit(unitDto.getParentUnit()
-						.toParentUnit(unitDto.getParentUnit()))
-					.build();
+			System.out.println(unitDto.getParentUnit());
+			unit = Unit.builder().unitName(unitDto.getUnitName()).unitType(true)
+					.parentUnit(unitDto.getParentUnit().toParentUnit(unitDto.getParentUnit())).build();
 		}
 		// 부서 일 경우
 		else {
@@ -51,7 +44,7 @@ public class UnitDTO {
 
 	// 부모에 대한 값 추가 시
 	private Unit toParentUnit(UnitDTO parentUnit) {
-		Unit Parentunit = Unit.builder().unitId(parentUnit.getUnitId())
+		Unit Parentunit = Unit.builder().unitId(parentUnit.getUnitId() == null ? null : parentUnit.getUnitId())
 				.unitName(parentUnit.getUnitName()).unitType(false).build();
 
 		return Parentunit;

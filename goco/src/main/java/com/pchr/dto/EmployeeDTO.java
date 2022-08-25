@@ -66,7 +66,6 @@ public class EmployeeDTO {
 
 	// -------------- to Entity ------------------- //
 	public Employee toEntity(EmployeeDTO employeeDTO) {
-
 		if (employeeDTO.getManager() != null) {// 매니저가 있으면 아래 실행
 			Employee employee = Employee.builder().empNum(employeeDTO.getEmpNum()).empId(employeeDTO.getEmpId())
 					.password(employeeDTO.getPassword()).email(employeeDTO.getEmail()).name(employeeDTO.getName())
@@ -75,7 +74,7 @@ public class EmployeeDTO {
 					.vacationCount(employeeDTO.getVacationCount()).manager(toManager(employeeDTO.getManager()))
 					.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
 					.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
-					.unit(employeeDTO.getUnit().toFKUnit(employeeDTO.getUnit()))
+					.unit(employeeDTO.getUnit() == null ? null : employeeDTO.getUnit().toFKUnit(employeeDTO.getUnit()))
 					.build();
 			return employee;
 		}
@@ -95,8 +94,11 @@ public class EmployeeDTO {
 				.authority(employeeDTO.getAuthority()).vacationCount(employeeDTO.getVacationCount())
 				// .manager(toManager(employeeDTO.getManager()))
 				.jobTitle(employeeDTO.getJobTitle().toEntity(employeeDTO.getJobTitle()))
-				.teamPosition(employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition()))
-				.unit(employeeDTO.getUnit().toFKUnit(unit)).build();
+				.teamPosition(employeeDTO.getTeamPosition() != null
+						? employeeDTO.getTeamPosition().toEntity(employeeDTO.getTeamPosition())
+						: null)
+				.unit(employeeDTO.getUnit() != null ? employeeDTO.getUnit().toFKUnit(employeeDTO.getUnit()) : null)
+				.build();
 		return employee;
 	}
 

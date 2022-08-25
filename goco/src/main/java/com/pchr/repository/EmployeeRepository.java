@@ -73,4 +73,17 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	@Query(value = "select vacation_count from employee where emp_num = :empNum ", nativeQuery = true)
 	public Float checkVacationCount(@Param("empNum") Long empNum);
 
+//	public List<Employee> findAllByTeamPositionTeamPositionIdAndUnitParentUnitUnitId(Long teamPositionId,Long unitId);
+	
+	@Query(value ="select * from employee where emp_num in (:empNum)",nativeQuery = true)
+	public List<Employee> findAllByEmpNums(@Param("empNum") List<Long> empNum); 
+	
+	public List<Employee> findAllByUnitUnitId(Long unitId);
+	
+	// 팀 Id가 n번인 곳에  속해있는 팀원 전체 
+	@Query(value = "select * from employee where unit_id in(select unit_id from unit where unit_id =(:unitId))",nativeQuery = true)
+	public List<Employee> findAllByUnitParentUnitId(Long unitId);
+
+	// 그 팀에 있는 매니저를 제외한 사원들의 정보 모두 가져오기
+	List<Employee> findAllByTeamPositionTeamPositionIdAndUnitUnitId(Long teamId, Long unitId); 
 }

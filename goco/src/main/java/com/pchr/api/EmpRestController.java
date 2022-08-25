@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,6 +68,11 @@ public class EmpRestController {
 //        "authority":"ROLE_ADMIN"
 //    }
 
+	@GetMapping("/admin/findmanager/{id}")
+	public List<EmployeeDTO> findManager(@PathVariable Long id) {
+		return empolyServiceImpl.findAllManager(id);
+	}
+
 	@GetMapping("/admin/findAll") // 직원전체조회
 	public List<EmployeeDTO> findAll() {
 		return empolyServiceImpl.findAll();
@@ -108,21 +114,21 @@ public class EmpRestController {
 		// repo에 접근을 하여 employee에 대한 정보 받아와야함,
 		// password와 다른 정보들은 front에 없기 때문에 null 처리가 안되기 위해선 db에 접근해야함.
 		empolyServiceImpl.updateJobTitle(e);
-		
+
 	}
-	
-	@DeleteMapping("/admin/delete") // 아이디 삭제
-	public int delete(@RequestBody EmployeeDTO e) {
-		return empolyServiceImpl.adminDelete(e.getEmpNum());
+
+	@DeleteMapping("/admin/delete/{id}") // 아이디 삭제
+	public int delete(@PathVariable("id") Long id) {
+		System.out.println(id);
+		return empolyServiceImpl.adminDelete(id);
 	} // http://localhost:8080/admin/delete?empNum=14
 //    {
 //        "empNum":"22"
 //    }   
-	
+
 	@PutMapping("/admin/emp/{id}")
-	public void updateEmp(@PathVariable("id") Long id,@RequestBody EmployeeDTO emp) {
+	public EmployeeDTO updateEmp(@PathVariable("id") Long id, @RequestBody EmployeeDTO emp) {
 		emp.setEmpNum(id);
-		System.out.println(emp);
-		empolyServiceImpl.updateAllEmp(emp);
+		return empolyServiceImpl.updateAllEmp(emp);
 	}
 }
