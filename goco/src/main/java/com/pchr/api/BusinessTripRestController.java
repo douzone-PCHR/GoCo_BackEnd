@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.dto.BusinessTripDTO;
-import com.pchr.dto.VacationDTO;
 import com.pchr.service.impl.BusinessTripServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -57,14 +56,12 @@ public class BusinessTripRestController {
 	public Map<String, List<BusinessTripDTO>> insertBusinessTrip(
 			@RequestPart("businessTripDTO") BusinessTripDTO businessTripDTO,
 			@RequestPart("file") MultipartFile multipartFile) {
-		System.out.println(businessTripDTO);
-
 		return businessTripService.insertBusinessTrip(businessTripDTO, multipartFile);
 	}
 
 	// 출장 결재 (팀장)
 	@Transactional
-	@PutMapping(value = "/business/approve/{businessTripId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/business/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void approveBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
 		businessTripService.approveBusiness(businessTripDTO);
 	}
@@ -75,21 +72,18 @@ public class BusinessTripRestController {
 	public void deleteBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
 		businessTripService.deleteBusinessTrip(businessTripDTO);
 	}
-	
-	//출장 리스트
+
+	// check date
+	@PostMapping(value = "/business/check", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, List<BusinessTripDTO>> checkBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
+
+		return businessTripService.checkBusiness(businessTripDTO);
+	}
+
+	// 매니저페이지 메인 리스트
 	@GetMapping(value = "/business/list")
 	public List<BusinessTripDTO> vacationAndBusiness() {
 
 		return businessTripService.vacationAndBusiness();
 	}
 }
-
-//	// check date
-//	@GetMapping(value = "/business/check")
-//	public List<BusinessTripDTO> checkBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
-//
-//		return businessTripService.checkBusiness(businessTripDTO);
-//	}
-
-
-
