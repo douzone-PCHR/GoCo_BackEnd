@@ -36,7 +36,7 @@ public class CommuteRestController {
 	 * @return List<CommuteDTO>
 	 */
 
-	@GetMapping(value = "/commute")
+	@GetMapping(value = "/manager/commute")
 	public List<CommuteDTO> findAll() {
 		List<CommuteDTO> result = null;
 		try {
@@ -57,7 +57,7 @@ public class CommuteRestController {
 	 * @return List<CommuteDTO>
 	 */
 
-	@GetMapping(value = "/commute/status")
+	@GetMapping(value = "/manager/commute/status")
 	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness() {
 		List<Map<String, Object>> result = null;
 		try {
@@ -77,7 +77,7 @@ public class CommuteRestController {
 	 * @return List<Map<String, Object>>
 	 */
 
-	@GetMapping(value = "/commute/myteam")
+	@GetMapping(value = "/manager/commute/myteam")
 	public List<VacationAndBusinessVO> findAllMyTeamWorkTime() {
 		List<VacationAndBusinessVO> result = null;
 		
@@ -122,7 +122,7 @@ public class CommuteRestController {
 	 * @return List<CommuteDTO>
 	 */
 
-	@GetMapping(value = "/commute/time")
+	@GetMapping(value = "/user/commute/time")
 	public VacationAndBusinessVO workTime(){
 		VacationAndBusinessVO result = null;
 		try {
@@ -137,9 +137,8 @@ public class CommuteRestController {
 //	 * 근태 업데이트
 //	 * @return boolean
 //	 */
-	@PutMapping(value = "/commute")
+	@PutMapping(value = "/user/commute")
 	public boolean update(@RequestBody CommuteDTO commuteDTO) {
-		System.out.println("조명윤" + commuteDTO);
 		boolean check = false;
 		try {
 			check = commuteService.updateCommute(commuteDTO);

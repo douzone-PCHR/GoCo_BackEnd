@@ -89,7 +89,7 @@ public class CommuteServiceImpl implements CommuteService {
 			commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지 
 			commuteDTO.setClockIn(findCommute.get(0).getClockIn());
 			commuteDTO.setClockOut(LocalDateTime.now());
-			commuteDTO.setCommuteStatus("5");
+			commuteDTO.setCommuteStatus("1");
 			
 			Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
 			commuteRepository.save(entity);
