@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 	private final BoardRepository boardRepo;
-	//private final CommentRepository commentRepo;
+	private final CommentRepository commentRepo;
 
 	@Override// 모든 공지 출력
 	public List<BoardDTO> getNotice(){
@@ -32,9 +32,9 @@ public class BoardServiceImpl implements BoardService {
 	}
 	@Override// 삭제 Clear
 	public void removeBoard(long boardId) {
-//		if(commentRepo.existsByBoardId(boardId)) {
-//			throw new RuntimeException("게시글 삭제는 댓글이 없는 경우 가능합니다.");
-//		}
+		if(commentRepo.countComment(boardId)!=0) {
+			throw new RuntimeException("게시글 삭제는 댓글이 없는 경우 가능합니다.");
+		}
 		boardRepo.deleteById(boardId);
 	}
 	@Override // 게시판 수정

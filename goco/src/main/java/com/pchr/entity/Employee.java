@@ -74,7 +74,7 @@ public class Employee {
 //	@Column(name = "authority",nullable = false)
 //	private int authority;
 
-	@Column(name = "vacation_count")
+	@Column(name = "vacation_count", columnDefinition = "float default 11")
 	private Float vacationCount;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
