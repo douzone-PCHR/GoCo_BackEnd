@@ -15,12 +15,16 @@ import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.UnitDTO;
 import com.pchr.entity.Authority;
+import com.pchr.entity.BusinessTrip;
 import com.pchr.entity.Employee;
 import com.pchr.entity.Resignation;
+import com.pchr.entity.Vacation;
 import com.pchr.repository.BusinessTripRepository;
 import com.pchr.repository.EmployeeRepository;
+import com.pchr.repository.FileRepository;
 import com.pchr.repository.VacationRepository;
 import com.pchr.service.EmployeeService;
+import com.pchr.util.S3Util;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +37,9 @@ public class EmpolyServiceImpl implements EmployeeService {
 	private final ResignationServiceImpl resignationServiceImpl;
 	private final VacationRepository vacationRepo;
 	private final BusinessTripRepository businessRepo;
+	private final FileRepository fileRepo;
+	
+
 	@Override
 	public Optional<Employee> findByEmail(String email) {
 		return employeeRepository.findByEmail(email);
@@ -222,7 +229,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 
 	@Override // 관리자의 유저 데이터 삭제
 	public int adminDelete(Long empNum) {
-				
+
 		Employee employee = findByEmpNum(empNum).orElseThrow(() -> new RuntimeException("회원 정보가 없습니다."));
 		resignationServiceImpl.save(employee.toResignation(employee));// 퇴사자테이블을위해employee테이블을 Resignation객체로 변환 한다.그 후
 																		// 저장한다.
@@ -230,10 +237,27 @@ public class EmpolyServiceImpl implements EmployeeService {
 			EmployeeDTO dto = e.toDTO(e);
 			dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다.
 			save(dto.toEntity(dto));
-		});		
-		
-		
-		
+		});
+
+		List<Vacation> vacations = vacationRepo.findAllByEmployeeEmpNum(empNum);
+		List<BusinessTrip> businesses = businessRepo.findAllByEmployeeEmpNum(empNum);
+		List<Long> fileIds = new ArrayList<Long>();
+		for (Vacation vacation : vacations) {
+			if (vacation.getFile().getFileId() != null) {
+				S3Util.deleteFile("vacation/" + vacation.getFile().getFileName()); //S3 데이터 삭제
+				fileIds.add(vacation.getFile().getFileId());
+			}
+
+		}
+		for (BusinessTrip business : businesses) {
+			if (business.getFile().getFileId() != null) {
+				S3Util.deleteFile("buiness/" + business.getFile().getFileName()); //S3 데이터 삭제
+				fileIds.add(business.getFile().getFileId());
+			}
+		}
+		fileRepo.deleteAllById(fileIds); // 모든 파일 DB 삭제
+		vacationRepo.deleteAll(vacations);
+		businessRepo.deleteAll(businesses);
 		return deleteByEmpNum(empNum);
 	}
 
@@ -335,17 +359,17 @@ public class EmpolyServiceImpl implements EmployeeService {
 		Employee emp = employeeRepository.findByEmpNum(id).get();
 		EmployeeDTO empDto = emp.toDTO(emp);
 		switch (type) {
-		case 1: //부서
+		case 1: // 부서
 			return updateAdminDept(empDto, value);
 		case 2: // 직책
 			return updateAdminTeamPosition(empDto, value);
 
-		case 3: //직급
+		case 3: // 직급
 			return updateAdminJobTitle(empDto, value);
 		default:
 			return false;
 		}
-		
+
 	}
 
 	public boolean updateAdminDept(EmployeeDTO empDto, Long unitId) {
