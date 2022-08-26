@@ -102,7 +102,7 @@ public class VacationRestController {
 	
 	// 매니저 메인페이지 휴가 및 출장 리스트
 	@GetMapping(value = "/manager/vacation/list")
-	public List<Map<String, Object>> vacationAndBusiness() {
+	public List<VacationAndBusinessVO> vacationAndBusiness() {
 	
 		return vacationService.vacationAndBusiness();
 	}

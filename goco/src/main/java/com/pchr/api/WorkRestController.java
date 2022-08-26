@@ -106,10 +106,10 @@ public class WorkRestController {
 	 */
 
 	@PostMapping(value = "/user/work/detail")
-	public List<WorkDTO> detailFind(@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") @RequestBody LocalDateTime day) {
+	public List<WorkDTO> detailFind(@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") @RequestBody WorkDTO workDTO) {
 		List<WorkDTO> result = null;
 		try {
-			result = workService.findAllByDay(day);
+			result = workService.findAllByDay(workDTO);
 			if (result.isEmpty()) {
 				System.out.println("일정이 없습니다.");
 			}
@@ -154,26 +154,6 @@ public class WorkRestController {
 			e.printStackTrace();
 		}
 		return workDTO;
-	}
-
-	/**
-	 * 날짜 값 없는 업무 리스트 값 출력
-	 * 
-	 * @return List<WorkDTO>
-	 */
-
-	@GetMapping(value = "/user/work/list")
-	public List<WorkDTO> findAllWithoutDate() {
-		List<WorkDTO> result = null;
-		try {
-			result = workService.findAllWithoutDate();
-			if (result.isEmpty()) {
-				new Exception("일정이 없습니다.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
 	}
 
 	/**

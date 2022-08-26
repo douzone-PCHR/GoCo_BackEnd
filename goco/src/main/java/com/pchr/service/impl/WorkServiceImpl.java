@@ -1,6 +1,7 @@
 package com.pchr.service.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,11 +39,21 @@ public class WorkServiceImpl implements WorkService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<WorkDTO> findAllByDay(LocalDateTime day) {
+	public List<WorkDTO> findAllByDay(WorkDTO workDTO) {
+		LocalDateTime day = workDTO.getWorkStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(); 
 		LocalDateTime startDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth(), 0, 0, 0);
-		LocalDateTime endDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth() , 23, 59, 0);
-		List<WorkDTO> list = workRepository.findAllByDay(startDay, endDay, SecurityUtil.getCurrentMemberId()).stream()
-				.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
+		LocalDateTime endDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth(), 23, 59, 0);
+		List<WorkDTO> list = null;
+	
+		if(SecurityUtil.getCurrentMemberId().equals(workDTO.getEmployee().getEmpId())) {
+			list = workRepository.findAllByDay(startDay, endDay, SecurityUtil.getCurrentMemberId()).stream()
+					.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
+		}else {
+			list = workRepository.findAllByDay(startDay, endDay, workDTO.getEmployee().getEmpId()).stream()
+					.filter(work -> (work.isWorkType() == false))
+					.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
+		}
+		
 		return list;
 	}
 
@@ -73,18 +84,6 @@ public class WorkServiceImpl implements WorkService {
 		workRepository.deleteById(id);
 	}
 
-	@Transactional(readOnly = true)
-	@Override
-	public List<WorkDTO> findAllWithoutDate() {
-//		List<WorkDTO> list = workRepository.findAllWithoutDate(SecurityUtil.getCurrentMemberId()).stream().map(work -> work.toWorkDto(work))
-//		.collect(Collectors.toList());
-//				List<WorkDTO> list = 
-		System.out.println("===========");
-		System.out.println(SecurityUtil.getCurrentMemberId());
-		System.out.println("===========");
-		workRepository.findAllWithoutDate(SecurityUtil.getCurrentMemberId());
-		return null;
-	}
 
 	public List<EmployeeDTO> findAllWorkByEmp() {
 		List<EmployeeDTO> list = employeeRepository.findAllEmp(SecurityUtil.getCurrentMemberId()).stream()
@@ -93,15 +92,14 @@ public class WorkServiceImpl implements WorkService {
 	}
 
 	public List<WorkDTO> findAllCalendar(String empId) {
+	
 		List<WorkDTO> list = null;
-		if ("0".equals(empId) ) {
-			list = workRepository.findAllByEmpEmpId(SecurityUtil.getCurrentMemberId()).stream()
-					.map(work -> work.toCalendarWorkDto(work)).collect(Collectors.toList());
-
+		if (SecurityUtil.getCurrentMemberId().equals(empId)) {
+			list = workRepository.findAllCalendarData(empId).stream().map(work -> work.toWorkDto(work))
+					.collect(Collectors.toList());
 		} else {
-			list = workRepository.findAllCalendarData(empId).stream()
-					.map(work -> work.toCalendarWorkDto(work)).collect(Collectors.toList());
-
+			list = workRepository.findAllCalendarData(empId).stream().filter(work -> (work.isWorkType() == false))
+					.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
 		}
 		return list;
 	}

@@ -2,6 +2,7 @@ package com.pchr.service.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -10,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,8 @@ import com.pchr.dto.CommuteDTO;
 import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.entity.Commute;
 import com.pchr.repository.CommuteRepository;
+import com.pchr.response.Message;
+import com.pchr.response.StatusEnum;
 import com.pchr.service.CommuteService;
 
 import lombok.RequiredArgsConstructor;
@@ -60,17 +67,22 @@ public class CommuteServiceImpl implements CommuteService {
 		return findAllByEmployeeEmpNum;
 	}
 
-	public boolean updateCommute(CommuteDTO commuteDTO) {
+	public ResponseEntity<Message> updateCommute(CommuteDTO commuteDTO) {
 //		0 미출근
 //		1 지각
 //		2 출근
 //		3 휴가
 //		4 출장
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+     
+        
 		Commute commuteEntity = commuteDTO.toUpdateCommute(commuteDTO);
 		List<CommuteDTO> findCommute = findById(commuteEntity.getEmployee().getEmpNum());
 		int ClockInhour = LocalDateTime.now().getHour();
 		int ClockOuthour = LocalDateTime.now().getHour();
-	
+		
 		commuteDTO.setCommuteId(findCommute.get(0).getCommuteId());
 		commuteDTO.setEmployee(findCommute.get(0).getEmployee());
 		if(commuteDTO.getClockIn() != null && findCommute.get(0).getCommuteCheck() != 2 && findCommute.get(0).getClockIn().getHour() == 0 ) {
@@ -78,27 +90,41 @@ public class CommuteServiceImpl implements CommuteService {
 			commuteDTO.setClockOut(findCommute.get(0).getClockOut());
 			commuteDTO.setClockIn(LocalDateTime.now());
 			commuteDTO.setCommuteStatus("2"); // 정상 출근 
+			
+			message.setStatus(StatusEnum.OK);
+	        message.setMessage("정상 출근 처리 되었습니다.");
 			if(ClockInhour >= 9 ) {
 				commuteDTO.setCommuteStatus("1"); // 지각
+				message.setMessage("지각 처리 되었습니다.");
 			}
 			Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
 			commuteRepository.save(entity);
 			
-			return true;
+		
 		}else if(commuteDTO.getClockOut() != null && findCommute.get(0).getCommuteCheck() != 1 && findCommute.get(0).getClockOut().getHour() == 0) {
 			commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지 
 			commuteDTO.setClockIn(findCommute.get(0).getClockIn());
 			commuteDTO.setClockOut(LocalDateTime.now());
 			commuteDTO.setCommuteStatus("1");
 			
+			message.setMessage("퇴근 처리 되었습니다.");
+			message.setStatus(StatusEnum.OK);
+			
 			Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
 			commuteRepository.save(entity);
 			
-			return true;
+			
+		}else if(commuteDTO.getClockIn() != null && (findCommute.get(0).getCommuteCheck() == 1 || findCommute.get(0).getCommuteCheck() == 2) && findCommute.get(0).getClockIn().getHour() != 0){
+			message.setMessage("오늘자 출근은 처리가 되었습니다.");
+			message.setStatus(StatusEnum.ALREADY_DONE);
+			
+		}else if(commuteDTO.getClockOut() != null && (findCommute.get(0).getCommuteCheck() == 1 || findCommute.get(0).getCommuteCheck() == 2) && findCommute.get(0).getClockOut().getHour() != 0){
+			message.setMessage("오늘자 퇴근은 처리가 되었습니다.");
+			message.setStatus(StatusEnum.ALREADY_DONE);
+			
 		}
 		
-		
-		return false;
+		return new ResponseEntity<>(message, headers, HttpStatus.OK);
 	}
 
 	@Transactional()
@@ -154,13 +180,13 @@ public class CommuteServiceImpl implements CommuteService {
 		List<VacationAndBusinessVO> list = new ArrayList<VacationAndBusinessVO>();
 
 		for (int i = 0; i < findList.size(); i++) {
-			System.out.println(findList.get(i).get("emp_num"));
+
 			VacationAndBusinessVO vo = VacationAndBusinessVO.builder()
 					.empNum((BigInteger) findList.get(i).get("emp_num")).name((String) findList.get(i).get("name"))
 					.vacation_approve((String) findList.get(i).get("vacation_approve"))
 					.business_approve((String) findList.get(i).get("business_approve"))
-					.clock_in((Timestamp) findList.get(i).get("clock_in"))
-					.clock_out((Timestamp) findList.get(i).get("clock_out"))
+					.clock_in(((Timestamp) findList.get(i).get("clock_in")).toLocalDateTime())
+					.clock_out(((Timestamp) findList.get(i).get("clock_in")).toLocalDateTime())
 					.vacation_start_date((Timestamp) findList.get(i).get("vacation_start_date"))
 					.vacation_end_date((Timestamp) findList.get(i).get("vacation_end_date"))
 					.business_trip_start_date((Timestamp) findList.get(i).get("business_trip_start_date"))
