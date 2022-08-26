@@ -193,5 +193,5 @@ public class VacationServiceImpl implements VacationService {
 		List<Map<String, Object>> findAllApprove = vacationRepository.findAllApprove(SecurityUtil.getCurrentMemberId());
 		return findAllApprove;
 	}
-
+	
 }
