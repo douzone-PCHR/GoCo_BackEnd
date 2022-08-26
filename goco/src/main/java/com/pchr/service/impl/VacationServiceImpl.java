@@ -1,7 +1,10 @@
 package com.pchr.service.impl;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.ApproveEnum;
+import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.FileDTO;
+import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.VacationDTO;
 import com.pchr.entity.Vacation;
 import com.pchr.repository.EmployeeRepository;
@@ -189,9 +194,23 @@ public class VacationServiceImpl implements VacationService {
 	}
 
 	// 매니저 메인페이지 리스트
-	public List<Map<String, Object>> vacationAndBusiness() {
+	public List<VacationAndBusinessVO> vacationAndBusiness() {
+		List<VacationAndBusinessVO> list = new ArrayList<VacationAndBusinessVO>();
+		
 		List<Map<String, Object>> findAllApprove = vacationRepository.findAllApprove(SecurityUtil.getCurrentMemberId());
-		return findAllApprove;
+		for (Map<String, Object> map : findAllApprove) {
+			
+			VacationAndBusinessVO va = VacationAndBusinessVO.builder()
+					.approveEnum((String) map.get("approve_yn"))
+					.name((String) map.get("ename"))
+					.vacationType((String) map.get("vacation_type"))
+					.clock_in(((Timestamp) map.get("vacation_start_date")).toLocalDateTime())
+					.clock_out(((Timestamp) map.get("vacation_end_date")).toLocalDateTime())
+					.build();
+			list.add(va);
+		}
+
+		return list;
 	}
 	
 }

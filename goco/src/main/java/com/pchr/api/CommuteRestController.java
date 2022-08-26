@@ -1,10 +1,14 @@
 package com.pchr.api;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +21,8 @@ import com.pchr.dto.CommuteDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.WorkTimeVO;
+import com.pchr.response.Message;
+import com.pchr.response.StatusEnum;
 import com.pchr.service.impl.CommuteServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -49,8 +55,7 @@ public class CommuteRestController {
 		}
 		return result;
 	}
-	
-	
+
 	/**
 	 * 현재 우리팀 근무 현황 (매니저 페이지)
 	 * 
@@ -70,7 +75,7 @@ public class CommuteRestController {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 매니저 페이지 myteam work list
 	 * 
@@ -80,7 +85,7 @@ public class CommuteRestController {
 	@GetMapping(value = "/manager/commute/myteam")
 	public List<VacationAndBusinessVO> findAllMyTeamWorkTime() {
 		List<VacationAndBusinessVO> result = null;
-		
+
 		try {
 			result = commuteService.findAllMyTeamWorkTime();
 			if (result.isEmpty()) {
@@ -91,10 +96,6 @@ public class CommuteRestController {
 		}
 		return result;
 	}
-	
-	
-	
-	
 
 	/**
 	 * 사원 별 근태 불러오기
@@ -117,13 +118,13 @@ public class CommuteRestController {
 	}
 
 	/**
-	 * 실제 근로 시간 검색 
+	 * 실제 근로 시간 검색
 	 * 
 	 * @return List<CommuteDTO>
 	 */
 
 	@GetMapping(value = "/user/commute/time")
-	public VacationAndBusinessVO workTime(){
+	public VacationAndBusinessVO workTime() {
 		VacationAndBusinessVO result = null;
 		try {
 			result = commuteService.findWorkTime();
@@ -138,15 +139,16 @@ public class CommuteRestController {
 //	 * @return boolean
 //	 */
 	@PutMapping(value = "/user/commute")
-	public boolean update(@RequestBody CommuteDTO commuteDTO) {
-		boolean check = false;
+	public ResponseEntity<Message> update(@RequestBody CommuteDTO commuteDTO) {
+
+		ResponseEntity<Message> updateCommute = null;
 		try {
-			check = commuteService.updateCommute(commuteDTO);
-			return check;
+			updateCommute = commuteService.updateCommute(commuteDTO);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return check;
+		return updateCommute;
 	}
 //	
 
@@ -166,9 +168,9 @@ public class CommuteRestController {
 		}
 		return false;
 	}
-	
+
 	@GetMapping(value = "/admin/commute")
-	public List<CommuteDTO> findAllCommuteAdmin(){
+	public List<CommuteDTO> findAllCommuteAdmin() {
 		return commuteService.findAllCommuteAdmin();
 	}
 

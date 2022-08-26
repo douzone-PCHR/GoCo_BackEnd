@@ -28,9 +28,9 @@ public class VacationAndBusinessVO {
 	
 	private String business_approve;
 	
-	private Timestamp clock_in;
+	private LocalDateTime clock_in;
 	
-	private Timestamp clock_out;
+	private LocalDateTime clock_out;
 	
 	private Date startDate;
 	
@@ -48,7 +48,9 @@ public class VacationAndBusinessVO {
 	
 	private int vacation_count;
 	
+	private String approveEnum;
 
+	private String vacationType;
 
 
 	

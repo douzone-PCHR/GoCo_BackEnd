@@ -9,7 +9,7 @@ public interface WorkService {
 	
 	public List<WorkDTO> findAllByEmpId();
 	
-	public List<WorkDTO> findAllByDay(LocalDateTime day);
+	public List<WorkDTO> findAllByDay(WorkDTO workDTO);
 	
 	public void workSave(WorkDTO workDTO);
 	
@@ -18,8 +18,6 @@ public interface WorkService {
 	public void updateWork(WorkDTO workDTO);
 	
 	public void deleteWork(Long id);
-	
-	public List<WorkDTO> findAllWithoutDate();
 	
 	public List<WorkDTO> findAllCalendar(String empId);
 	
