@@ -126,9 +126,11 @@ public class EmpRestController {
 //        "empNum":"22"
 //    }   
 
-	@PutMapping("/admin/emp/{id}")
-	public EmployeeDTO updateEmp(@PathVariable("id") Long id, @RequestBody EmployeeDTO emp) {
-		emp.setEmpNum(id);
-		return empolyServiceImpl.updateAllEmp(emp);
+	@PutMapping("/admin/emp/jobtitle/{id}/{type}/{value}")
+	public boolean updateEmpJobTitle(@PathVariable("id") Long id, @PathVariable("type") int type,
+			@PathVariable("value") Long value) {
+		return empolyServiceImpl.updateAdminEmp(id,type,value);
+		
 	}
+
 }

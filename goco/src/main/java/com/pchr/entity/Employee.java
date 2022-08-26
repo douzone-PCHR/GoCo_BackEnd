@@ -60,7 +60,7 @@ public class Employee {
 	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	@LastModifiedDate
+//	@LastModifiedDate
 	@Column(name = "update_datetime", columnDefinition = "datetime default NOW()")
 	private Date updateDatetime;
 
@@ -87,14 +87,17 @@ public class Employee {
 
 	@ManyToOne
 	@JoinColumn(name = "job_title_id")
+	@JsonIgnore
 	private JobTitle jobTitle;
 
 	@ManyToOne
 	@JoinColumn(name = "team_position_id")
+	@JsonIgnore
 	private TeamPosition teamPosition;
 
 	@ManyToOne
 	@JoinColumn(name = "unit_id")
+	@JsonIgnore
 	private Unit unit;
 
 	public void setPassword(String password) { // Entity는 setter 지양 => 변경사항
