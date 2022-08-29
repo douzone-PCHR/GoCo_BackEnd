@@ -49,4 +49,11 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 	
 	@Query(value = "CALL myteam_detail(:PARAM_emp_id)", nativeQuery = true)
 	public List<Map<String, Object>> findAllMyTeamWorkTime(@Param("PARAM_emp_id") String empId);
+	
+	@Query(value = "select * "
+			+ "from commute "
+			+ "where emp_num = (select emp_num from employee where emp_id = :currentMemberId) "
+			+ "and clock_in >= date_format(now(), '%Y-%m-%d 00:00:00') "
+			+ "and clock_out <= date_format(now(), '%Y-%m-%d 23:59:00') ", nativeQuery = true)
+	public List<Commute> findMenuCommuteStatus(@Param("currentMemberId") String currentMemberId);
 }

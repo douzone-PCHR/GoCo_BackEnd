@@ -173,5 +173,21 @@ public class CommuteRestController {
 	public List<CommuteDTO> findAllCommuteAdmin() {
 		return commuteService.findAllCommuteAdmin();
 	}
-
+	
+	/**
+	 * 로그인 한 직원 근무 상태
+	 * 
+	 * @return List<CommuteDTO>
+	 */
+	@GetMapping(value = "/user/menu/commute")
+	public List<CommuteDTO> findMenuCommuteStatus() {
+		List<CommuteDTO> result = null;
+		try {
+		 result = commuteService.findMenuCommuteStatus();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 }

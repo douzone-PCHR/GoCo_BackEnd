@@ -31,4 +31,5 @@ public interface CommuteService {
 	
 	public List<Map<String, Object>> findAllCommuteAndVacationAndBusiness();
 	
+	public List<CommuteDTO> findMenuCommuteStatus();
 }
