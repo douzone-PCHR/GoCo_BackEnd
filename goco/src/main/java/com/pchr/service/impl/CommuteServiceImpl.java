@@ -105,7 +105,7 @@ public class CommuteServiceImpl implements CommuteService {
 			commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지 
 			commuteDTO.setClockIn(findCommute.get(0).getClockIn());
 			commuteDTO.setClockOut(LocalDateTime.now());
-			commuteDTO.setCommuteStatus("1");
+			commuteDTO.setCommuteStatus("5");
 			
 			message.setMessage("퇴근 처리 되었습니다.");
 			message.setStatus(StatusEnum.OK);
@@ -186,7 +186,7 @@ public class CommuteServiceImpl implements CommuteService {
 					.vacation_approve((String) findList.get(i).get("vacation_approve"))
 					.business_approve((String) findList.get(i).get("business_approve"))
 					.clock_in(((Timestamp) findList.get(i).get("clock_in")).toLocalDateTime())
-					.clock_out(((Timestamp) findList.get(i).get("clock_in")).toLocalDateTime())
+					.clock_out(((Timestamp) findList.get(i).get("clock_out")).toLocalDateTime())
 					.vacation_start_date((Timestamp) findList.get(i).get("vacation_start_date"))
 					.vacation_end_date((Timestamp) findList.get(i).get("vacation_end_date"))
 					.business_trip_start_date((Timestamp) findList.get(i).get("business_trip_start_date"))
@@ -197,6 +197,13 @@ public class CommuteServiceImpl implements CommuteService {
 		}
 
 		return list;
+	}
+
+	public List<CommuteDTO> findMenuCommuteStatus() {
+		
+		return commuteRepository.findMenuCommuteStatus(SecurityUtil.getCurrentMemberId())
+		.stream().map(commute -> commute.toCommuteDto(commute))
+				.collect(Collectors.toList());
 	}
 
 }
