@@ -33,6 +33,8 @@ public class CommuteDTO {
 	
 	private int commuteCheck;
 	
+
+	
 	// DTO -> Entity 빌더 (Update)
 	public Commute toUpdateCommute(CommuteDTO commuteDTO) {
 		Commute commute = Commute.builder()

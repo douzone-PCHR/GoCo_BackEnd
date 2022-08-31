@@ -31,6 +31,14 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 			nativeQuery = true)
 	public List<Commute> findAllCommute(@Param("emp_id") String emp_id, @Param("clock_in") LocalDateTime clock_in,
 			@Param("clock_out") LocalDateTime clock_out);
+	
+	@Query(value = "select count(commute_status) " + "from commute c " + "left join employee e " + "on e.emp_num = c.emp_num "
+			+ "where clock_in >= :clock_in " + "and clock_out <= :clock_out " + "and e.unit_id = " + "(select unit_id "
+			+ "from employee " + "where emp_id = :emp_id) group by commute_status ",
+
+			nativeQuery = true)
+	public List<Integer> findAllCommuteCount(@Param("emp_id") String emp_id, @Param("clock_in") LocalDateTime clock_in,
+			@Param("clock_out") LocalDateTime clock_out);
 
 	public List<Commute> findAllByEmployeeEmpNum(Long empnum);
 
