@@ -58,7 +58,7 @@ public class CommuteServiceImpl implements CommuteService {
 		LocalDateTime startDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
 				LocalDateTime.now().getDayOfMonth(), 0, 0);
 		LocalDateTime endDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
-				LocalDateTime.now().getDayOfMonth() + 1, 0, 0);
+				LocalDateTime.now().getDayOfMonth() , 23, 59);
 		List<CommuteDTO> findAllByEmployeeEmpNum = commuteRepository.findAllByEmployeeEmpNum(empnum).stream()
 				.filter(commute -> (commute.getClockIn().isAfter(startDate) && commute.getClockOut().isBefore(endDate))
 						|| (commute.getClockIn().isEqual(startDate) && commute.getClockOut().isEqual(startDate)))
