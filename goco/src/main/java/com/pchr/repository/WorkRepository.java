@@ -3,6 +3,7 @@ package com.pchr.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,16 +31,7 @@ public interface WorkRepository extends JpaRepository<Work, Long>{
 			nativeQuery = true)
 	public List<Work> findAllWithoutDate(@Param("empId") String empId);
 	
-	@Query(value = "select"
-			+ " * "
-			+ " from work "
-			+ " where work_start_date is not null and "
-			+ "  work_end_date is not null "
-			+ " and emp_num = "
-			+ " (select emp_num "
-			+ " from employee "
-			+ " where emp_id = :empId) " ,
-			nativeQuery = true)
-	public List<Work> findAllCalendarData(@Param("empId") String empId);
+	@Query(value = "CALL schedule_list(:PARAM_emp_id)", nativeQuery = true)
+	public List<Map<String, Object>> findAllCalendarData(@Param("PARAM_emp_id") String empId);
 	
 }

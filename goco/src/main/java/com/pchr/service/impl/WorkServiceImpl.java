@@ -1,8 +1,12 @@
 package com.pchr.service.impl;
 
+import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -10,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pchr.config.SecurityUtil;
+import com.pchr.dto.CalendarVO;
 import com.pchr.dto.EmployeeDTO;
+import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.WorkDTO;
 import com.pchr.entity.Employee;
 import com.pchr.entity.Work;
@@ -91,17 +97,38 @@ public class WorkServiceImpl implements WorkService {
 		return list;
 	}
 
-	public List<WorkDTO> findAllCalendar(String empId) {
+	public List<CalendarVO> findAllCalendar(String empId) {
 	
-		List<WorkDTO> list = null;
+		List<CalendarVO> result = new ArrayList<CalendarVO>();
 		if (SecurityUtil.getCurrentMemberId().equals(empId)) {
-			list = workRepository.findAllCalendarData(empId).stream().map(work -> work.toWorkDto(work))
-					.collect(Collectors.toList());
+			List<Map<String, Object>> findList = workRepository.findAllCalendarData(SecurityUtil.getCurrentMemberId());
+			
+			for (int i = 0; i < findList.size(); i++) {
+				CalendarVO calenaderVO = CalendarVO.builder()
+						.id((BigInteger) findList.get(i).get("id"))
+						.title((String) findList.get(i).get("title"))
+						.start(((Timestamp) findList.get(i).get("start")).toLocalDateTime())
+						.end(((Timestamp) findList.get(i).get("end")).toLocalDateTime())
+						.build();
+				
+				result.add(calenaderVO);
+			}
+		
 		} else {
-			list = workRepository.findAllCalendarData(empId).stream().filter(work -> (work.isWorkType() == false))
-					.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
+			List<Map<String, Object>> findList = workRepository.findAllCalendarData(empId);
+			for (int i = 0; i < findList.size(); i++) {
+				CalendarVO calenaderVO = CalendarVO.builder()
+						.id((BigInteger) findList.get(i).get("id"))
+						.title((String) findList.get(i).get("title"))
+						.start(((Timestamp) findList.get(i).get("start")).toLocalDateTime())
+						.end(((Timestamp) findList.get(i).get("end")).toLocalDateTime())
+//						.end((LocalDateTime) findList.get(i).get("end"))
+						.build();
+				
+				result.add(calenaderVO);
+			}
 		}
-		return list;
+		return result;
 	}
 
 }

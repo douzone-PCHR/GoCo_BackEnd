@@ -2,7 +2,9 @@ package com.pchr.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
+import com.pchr.dto.CalendarVO;
 import com.pchr.dto.WorkDTO;
 
 public interface WorkService {
@@ -19,7 +21,7 @@ public interface WorkService {
 	
 	public void deleteWork(Long id);
 	
-	public List<WorkDTO> findAllCalendar(String empId);
+	public List<CalendarVO> findAllCalendar(String empId);
 	
 	
 }

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Transient;
 
 import com.pchr.dto.BoardDTO;
 import com.pchr.dto.CommuteDTO;
@@ -50,6 +51,7 @@ public class Commute {
 	@Column(name= "commute_check")
 	private int commuteCheck;
 	
+	
 	//Entity -> DTO 빌더 (Select 시)
 		public CommuteDTO toCommuteDto(Commute commute) {
 			
@@ -64,5 +66,7 @@ public class Commute {
 			
 			return commuteDTO;
 		}
+		
+		
 	
 }

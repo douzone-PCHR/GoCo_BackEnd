@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pchr.config.SecurityUtil;
+import com.pchr.dto.CalendarVO;
 import com.pchr.dto.CommuteDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.WorkDTO;
@@ -61,8 +62,8 @@ public class WorkRestController {
 	 */
 
 	@GetMapping(value = "/user/work/calendar")
-	public List<WorkDTO> findAllCalendar(@RequestParam String empId) {
-		List<WorkDTO> result = null;
+	public List<CalendarVO> findAllCalendar(@RequestParam String empId) {
+		List<CalendarVO> result = null;
 		
 		try {
 			result = workService.findAllCalendar(empId);
