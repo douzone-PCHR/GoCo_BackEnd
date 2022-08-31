@@ -344,17 +344,6 @@ public class EmpolyServiceImpl implements EmployeeService {
 	}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@Override
-	// 팀의 팀원들 가져오기
-	public List<EmployeeDTO> findAllManager(Long unitId) {
-		List<EmployeeDTO> empListDto = new ArrayList<EmployeeDTO>();
-		List<Employee> empList = employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitUnitId(2L, unitId);
-		for (Employee e : empList) {
-			empListDto.add(e.toDTO(e));
-		}
-		return empListDto;
-	}
-
 	public boolean updateAdminEmp(Long id, int type, Long value) {
 		Employee emp = employeeRepository.findByEmpNum(id).get();
 		EmployeeDTO empDto = emp.toDTO(emp);
@@ -412,18 +401,14 @@ public class EmpolyServiceImpl implements EmployeeService {
 
 	}
 
-	@Transactional
 	public boolean updateAdminTeamPosition(EmployeeDTO empDto, Long teamPositionId) {
 		System.out.println("메소드 드렁옴");
 		// 같은 직급으로 변경 시
 		if (empDto.getTeamPosition().getTeamPositionId() == teamPositionId) {
 			System.out.println("같은직급");
 			System.out.println("false");
-
 			return false;
 		}
-		// 다른 직급으로 변경 시
-
 		// 팀장이었을 경우
 		if (empDto.getTeamPosition().getTeamPositionId() == 1L) {
 			System.out.println("팀장=> 팀원");
@@ -480,5 +465,15 @@ public class EmpolyServiceImpl implements EmployeeService {
 		empDto.getJobTitle().setJobTitleId(jobTitleId);
 		employeeRepository.save(empDto.toEntity(empDto));
 		return true;
+	}
+	
+	public List<EmployeeDTO> findManager(Long unitId){
+		List<Employee> managers = employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitParentUnitUnitId(1L,unitId);
+		List<EmployeeDTO> managersDto = new ArrayList<EmployeeDTO>();
+		for(Employee manager : managers) {
+			System.out.println(manager.getEmpId());
+			managersDto.add(manager.toDTO(manager));
+		}
+		return managersDto;
 	}
 }

@@ -81,9 +81,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	public List<Employee> findAllByUnitUnitId(Long unitId);
 	
 	// 팀 Id가 n번인 곳에  속해있는 팀원 전체 
-	@Query(value = "select * from employee where unit_id in(select unit_id from unit where unit_id =(:unitId))",nativeQuery = true)
+	@Query(value = "select * from employee where unit_id in(select unit_id from unit where parent_unit =:unitId)",nativeQuery = true)
 	public List<Employee> findAllByUnitParentUnitId(Long unitId);
 
 	// 그 팀에 있는 매니저를 제외한 사원들의 정보 모두 가져오기
-	List<Employee> findAllByTeamPositionTeamPositionIdAndUnitUnitId(Long teamId, Long unitId); 
+	List<Employee> findAllByTeamPositionTeamPositionIdAndUnitUnitId(Long teamId, Long unitId);
+	
+	//
+	public List<Employee> findAllByTeamPositionTeamPositionIdAndUnitParentUnitUnitId(Long teamId,Long unitId);
+	
+	@Query(value = "select * from employee where manager = :empNum",nativeQuery = true)
+	public List<Employee> findAllByManager(Long empNum);
 }

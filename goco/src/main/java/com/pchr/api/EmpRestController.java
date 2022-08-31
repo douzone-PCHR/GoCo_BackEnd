@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
+import com.pchr.entity.Employee;
 import com.pchr.entity.Resignation;
 import com.pchr.service.impl.EmpolyServiceImpl;
 
@@ -67,12 +68,10 @@ public class EmpRestController {
 //        "empId":"kyj",
 //        "authority":"ROLE_ADMIN"
 //    }
-
-	@GetMapping("/admin/findmanager/{id}")
-	public List<EmployeeDTO> findManager(@PathVariable Long id) {
-		return empolyServiceImpl.findAllManager(id);
+	@GetMapping("/admin/findmanager/{unitid}")
+	public List<EmployeeDTO> findManager(@PathVariable("unitid") Long unitId){
+		return empolyServiceImpl.findManager(unitId);
 	}
-
 	@GetMapping("/admin/findAll") // 직원전체조회
 	public List<EmployeeDTO> findAll() {
 		return empolyServiceImpl.findAll();
@@ -114,7 +113,6 @@ public class EmpRestController {
 		// repo에 접근을 하여 employee에 대한 정보 받아와야함,
 		// password와 다른 정보들은 front에 없기 때문에 null 처리가 안되기 위해선 db에 접근해야함.
 		empolyServiceImpl.updateJobTitle(e);
-
 	}
 
 	@DeleteMapping("/admin/delete/{id}") // 아이디 삭제
@@ -130,7 +128,7 @@ public class EmpRestController {
 	public boolean updateEmpJobTitle(@PathVariable("id") Long id, @PathVariable("type") int type,
 			@PathVariable("value") Long value) {
 		return empolyServiceImpl.updateAdminEmp(id,type,value);
-		
 	}
 
+	
 }
