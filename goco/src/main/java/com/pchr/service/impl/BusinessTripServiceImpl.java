@@ -38,7 +38,8 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 	// 출장 신청 리스트 (사원)
 	@Override
 	public List<BusinessTripDTO> getAllBusinessTrip(Long empNum) {
-		List<BusinessTrip> businessList = businessRepository.findAllByEmployeeEmpNum(empNum);
+		List<BusinessTrip> businessList = businessRepository
+				.findAllByEmployeeEmpNumOrderByBusinessTripRequestDateDesc(empNum);
 		List<BusinessTripDTO> businessListDTO = new ArrayList<BusinessTripDTO>();
 
 		for (BusinessTrip businessEntity : businessList) {
@@ -50,7 +51,8 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 	// 출장 신청 리스트 (팀장)
 	@Override
 	public List<BusinessTripDTO> getAllTeamBusinessTrip(Long unitId) {
-		List<BusinessTrip> businessList = businessRepository.findAllByEmployeeUnitUnitId(unitId);
+		List<BusinessTrip> businessList = businessRepository
+				.findAllByEmployeeUnitUnitIdOrderByBusinessTripRequestDateDesc(unitId);
 		List<BusinessTripDTO> businessListDTO = new ArrayList<BusinessTripDTO>();
 
 		for (BusinessTrip businessEntity : businessList) {
