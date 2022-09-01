@@ -43,7 +43,7 @@ public class VacationServiceImpl implements VacationService {
 	@Override
 	public List<VacationDTO> getAllVacation(Long empNum) {
 
-		List<Vacation> vacations = vacationRepository.findAllByEmployeeEmpNum(empNum);
+		List<Vacation> vacations = vacationRepository.findAllByEmployeeEmpNumOrderByVacationRequestDateDesc(empNum);
 		List<VacationDTO> vacationDTO = new ArrayList<VacationDTO>();
 
 		for (Vacation vacationEntity : vacations) {
@@ -56,7 +56,7 @@ public class VacationServiceImpl implements VacationService {
 	// 휴가신청리스트(팀장)
 	@Override
 	public List<VacationDTO> getAllTeamVacation(Long unitId) {
-		List<Vacation> vacations = vacationRepository.findAllByEmployeeUnitUnitId(unitId);
+		List<Vacation> vacations = vacationRepository.findAllByEmployeeUnitUnitIdOrderByVacationRequestDateDesc(unitId);
 		List<VacationDTO> vacationDTO = new ArrayList<VacationDTO>();
 
 		for (Vacation vacationEntity : vacations) {

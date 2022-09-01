@@ -239,8 +239,8 @@ public class EmpolyServiceImpl implements EmployeeService {
 			save(dto.toEntity(dto));
 		});
 
-		List<Vacation> vacations = vacationRepo.findAllByEmployeeEmpNum(empNum);
-		List<BusinessTrip> businesses = businessRepo.findAllByEmployeeEmpNum(empNum);
+		List<Vacation> vacations = vacationRepo.findAllByEmployeeEmpNumOrderByVacationRequestDateDesc(empNum);
+		List<BusinessTrip> businesses = businessRepo.findAllByEmployeeEmpNumOrderByBusinessTripRequestDateDesc(empNum);
 		List<Long> fileIds = new ArrayList<Long>();
 		for (Vacation vacation : vacations) {
 			if (vacation.getFile().getFileId() != null) {
