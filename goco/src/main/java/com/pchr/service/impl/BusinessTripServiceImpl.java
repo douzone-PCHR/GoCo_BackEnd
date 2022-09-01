@@ -16,7 +16,6 @@ import com.pchr.config.SecurityUtil;
 import com.pchr.dto.ApproveEnum;
 import com.pchr.dto.BusinessTripDTO;
 import com.pchr.dto.FileDTO;
-import com.pchr.dto.VacationDTO;
 import com.pchr.entity.BusinessTrip;
 import com.pchr.repository.BusinessTripRepository;
 import com.pchr.service.BusinessTripService;
@@ -33,6 +32,8 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 	private final BusinessTripRepository businessRepository;
 
 	private final FileServiceImpl fileService;
+
+	private final S3Util s3Util;
 
 	// 출장 신청 리스트 (사원)
 	@Override
@@ -79,7 +80,7 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 					if (multipartFile.getSize() != 0) {
 						// fileDTO = S3에 Upload된
 						// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
-						FileDTO fileDTO = S3Util.S3Upload(multipartFile, "business/");
+						FileDTO fileDTO = s3Util.S3Upload(multipartFile, "business/");
 						// 파일을 넣었을 때
 						if (fileDTO != null) {
 							FileDTO newFileDTO = fileService.insertFile(fileDTO);
@@ -114,7 +115,7 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 		if (businessTripDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 
 			if (businessTripDTO.getFile() != null) {
-				S3Util.deleteFile("business/" + businessTripDTO.getFile().getFileName());
+				s3Util.deleteFile("business/" + businessTripDTO.getFile().getFileName());
 				fileService.deleteFile(businessTripDTO.getFile().getFileId());
 			}
 			businessRepository.deleteById(businessTripDTO.getBusinessTripId());
@@ -145,9 +146,10 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 
 		return approveMap;
 	}
-	
+
 	public List<BusinessTripDTO> vacationAndBusiness() {
-		List<BusinessTripDTO> businessTripList = businessRepository.findAllApprove(SecurityUtil.getCurrentMemberId()).stream().map(business -> business.toBusinessTripDTO(business)).collect(Collectors.toList()); 
+		List<BusinessTripDTO> businessTripList = businessRepository.findAllApprove(SecurityUtil.getCurrentMemberId())
+				.stream().map(business -> business.toBusinessTripDTO(business)).collect(Collectors.toList());
 		return businessTripList;
 	}
 

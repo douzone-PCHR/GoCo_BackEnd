@@ -2,9 +2,7 @@ package com.pchr.service.impl;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.ApproveEnum;
-import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.FileDTO;
 import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.VacationDTO;
@@ -39,6 +36,8 @@ public class VacationServiceImpl implements VacationService {
 	private final FileServiceImpl fileService;
 
 	private final EmployeeRepository employeeRepository;
+
+	private final S3Util s3Util;
 
 	// 휴가신청리스트(사원)
 	@Override
@@ -87,7 +86,7 @@ public class VacationServiceImpl implements VacationService {
 
 						// fileDTO = S3에 Upload된
 						// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
-						FileDTO fileDTO = S3Util.S3Upload(multipartFile, "vacation/");
+						FileDTO fileDTO = s3Util.S3Upload(multipartFile, "vacation/");
 						// 파일을 넣었을 때
 						if (fileDTO != null) {
 							FileDTO newFileDTO = fileService.insertFile(fileDTO);
@@ -157,7 +156,7 @@ public class VacationServiceImpl implements VacationService {
 	public void deleteVacation(VacationDTO vacationDTO) {
 		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 			if (vacationDTO.getFile() != null) {
-				S3Util.deleteFile("vacation/" + vacationDTO.getFile().getFileName());
+				s3Util.deleteFile("vacation/" + vacationDTO.getFile().getFileName());
 				fileService.deleteFile(vacationDTO.getFile().getFileId());
 			}
 			vacationRepository.deleteById(vacationDTO.getVacationId());
@@ -187,7 +186,7 @@ public class VacationServiceImpl implements VacationService {
 		return approveMap;
 	}
 
-	// 잔여 휴가 일수 check
+	// 잔여 휴가 일수 check/
 	@Override
 	public Float checkVacationCount(Long empNum) {
 		return employeeRepository.checkVacationCount(empNum);
@@ -196,21 +195,18 @@ public class VacationServiceImpl implements VacationService {
 	// 매니저 메인페이지 리스트
 	public List<VacationAndBusinessVO> vacationAndBusiness() {
 		List<VacationAndBusinessVO> list = new ArrayList<VacationAndBusinessVO>();
-		
+
 		List<Map<String, Object>> findAllApprove = vacationRepository.findAllApprove(SecurityUtil.getCurrentMemberId());
 		for (Map<String, Object> map : findAllApprove) {
-			
-			VacationAndBusinessVO va = VacationAndBusinessVO.builder()
-					.approveEnum((String) map.get("approve_yn"))
-					.name((String) map.get("ename"))
-					.vacationType((String) map.get("vacation_type"))
+
+			VacationAndBusinessVO va = VacationAndBusinessVO.builder().approveEnum((String) map.get("approve_yn"))
+					.name((String) map.get("ename")).vacationType((String) map.get("vacation_type"))
 					.clock_in(((Timestamp) map.get("vacation_start_date")).toLocalDateTime())
-					.clock_out(((Timestamp) map.get("vacation_end_date")).toLocalDateTime())
-					.build();
+					.clock_out(((Timestamp) map.get("vacation_end_date")).toLocalDateTime()).build();
 			list.add(va);
 		}
 
 		return list;
 	}
-	
+
 }
