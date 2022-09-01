@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import com.pchr.dto.CalendarVO;
 import com.pchr.dto.CommuteDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.WorkDTO;
+import com.pchr.response.Message;
 import com.pchr.service.impl.WorkServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -123,19 +125,18 @@ public class WorkRestController {
 	/**
 	 * 업무 추가
 	 * 
-	 * @return boolean
+	 * @return ResponseEntity<Message>
 	 */
 
 	@PostMapping(value = "/user/work",consumes = MediaType.APPLICATION_JSON_VALUE)
-	public boolean workAdd(@RequestBody WorkDTO workDTO) {
+	public ResponseEntity<Message> workAdd(@RequestBody WorkDTO workDTO) {
+		ResponseEntity<Message> workSave = null;
 		try {
-			workService.workSave(workDTO);
-			return true;
-
+			workSave = workService.workSave(workDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return workSave;
 	}
 
 	/**
@@ -160,36 +161,35 @@ public class WorkRestController {
 	/**
 	 * 업무 수정
 	 * 
-	 * @return boolean
+	 * @return ResponseEntity<Message>
 	 */
 
 	@PutMapping(value = "/user/work")
-	public boolean updateWork(@RequestBody WorkDTO workDTO) {
-		System.out.println(workDTO);
+	public ResponseEntity<Message> updateWork(@RequestBody WorkDTO workDTO) {
+		ResponseEntity<Message> workUpdate = null;
 		try {
-			workService.updateWork(workDTO);
-			return true;
+			workUpdate = workService.updateWork(workDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return workUpdate;
 	}
 
 	/**
 	 * 업무 삭제
 	 * 
-	 * @return List<WorkDTO>
+	 * @return ResponseEntity<Message>
 	 */
 
 	@DeleteMapping(value = "/user/work/{id}")
-	public boolean workDelete(@PathVariable Long id) {
+	public ResponseEntity<Message> workDelete(@PathVariable Long id) {
+		ResponseEntity<Message> deleteWork = null;
 		try {
-			workService.deleteWork(id);
-			return true;
+		 deleteWork = workService.deleteWork(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return false;
+		return deleteWork;
 	}
 
 }

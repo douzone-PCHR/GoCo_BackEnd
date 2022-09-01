@@ -149,7 +149,7 @@ public class CommuteServiceImpl implements CommuteService {
 		Map<String, Object> map = commuteRepository.findAllCommuteTime(SecurityUtil.getCurrentMemberId());
 		VacationAndBusinessVO vo = VacationAndBusinessVO.builder().startDate((Date) map.get("start_date"))
 				.endDate((Date) map.get("end_date")).commute_work_time((BigDecimal) map.get("commute_work_time"))
-				.vacation_count((int) map.get("vacation_count")).build();
+				.vacation_count2((Float) map.get("vacation_count")).build();
 		return vo;
 	}
 
@@ -177,25 +177,8 @@ public class CommuteServiceImpl implements CommuteService {
 	public List<VacationAndBusinessVO> findAllMyTeamWorkTime() {
 
 		List<Map<String, Object>> findList = commuteRepository.findAllMyTeamWorkTime(SecurityUtil.getCurrentMemberId());
-		List<VacationAndBusinessVO> list = new ArrayList<VacationAndBusinessVO>();
-
-		for (int i = 0; i < findList.size(); i++) {
-
-			VacationAndBusinessVO vo = VacationAndBusinessVO.builder()
-					.empNum((BigInteger) findList.get(i).get("emp_num")).name((String) findList.get(i).get("name"))
-					.vacation_approve((String) findList.get(i).get("vacation_approve"))
-					.business_approve((String) findList.get(i).get("business_approve"))
-					.clock_in(((Timestamp) findList.get(i).get("clock_in")).toLocalDateTime())
-					.clock_out(((Timestamp) findList.get(i).get("clock_out")).toLocalDateTime())
-					.vacation_start_date((Timestamp) findList.get(i).get("vacation_start_date"))
-					.vacation_end_date((Timestamp) findList.get(i).get("vacation_end_date"))
-					.business_trip_start_date((Timestamp) findList.get(i).get("business_trip_start_date"))
-					.business_trip_end_date((Timestamp) findList.get(i).get("business_trip_end_date"))
-					.commute_work_time((BigDecimal) findList.get(i).get("commute_work_time"))
-					.vacation_count((int) findList.get(i).get("vacation_count")).build();
-			list.add(vo);
-		}
-
+		VacationAndBusinessVO vo = new VacationAndBusinessVO();
+		List<VacationAndBusinessVO> list = vo.entityVo(findList);
 		return list;
 	}
 
