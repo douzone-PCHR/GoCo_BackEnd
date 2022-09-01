@@ -11,7 +11,7 @@ public interface WorkService {
 	
 	public List<WorkDTO> findAllByEmpId();
 	
-	public List<WorkDTO> findAllByDay(WorkDTO workDTO);
+	public List<CalendarVO> findAllByDay(WorkDTO workDTO);
 	
 	public void workSave(WorkDTO workDTO);
 	
