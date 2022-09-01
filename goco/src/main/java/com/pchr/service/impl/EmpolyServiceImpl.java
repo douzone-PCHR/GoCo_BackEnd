@@ -38,7 +38,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 	private final VacationRepository vacationRepo;
 	private final BusinessTripRepository businessRepo;
 	private final FileRepository fileRepo;
-	
+	private final S3Util s3Util;
 
 	@Override
 	public Optional<Employee> findByEmail(String email) {
@@ -244,14 +244,14 @@ public class EmpolyServiceImpl implements EmployeeService {
 		List<Long> fileIds = new ArrayList<Long>();
 		for (Vacation vacation : vacations) {
 			if (vacation.getFile().getFileId() != null) {
-				S3Util.deleteFile("vacation/" + vacation.getFile().getFileName()); //S3 데이터 삭제
+				s3Util.deleteFile("vacation/" + vacation.getFile().getFileName()); // S3 데이터 삭제
 				fileIds.add(vacation.getFile().getFileId());
 			}
 
 		}
 		for (BusinessTrip business : businesses) {
 			if (business.getFile().getFileId() != null) {
-				S3Util.deleteFile("buiness/" + business.getFile().getFileName()); //S3 데이터 삭제
+				s3Util.deleteFile("buiness/" + business.getFile().getFileName()); // S3 데이터 삭제
 				fileIds.add(business.getFile().getFileId());
 			}
 		}
