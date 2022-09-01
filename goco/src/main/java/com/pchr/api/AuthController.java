@@ -55,6 +55,7 @@ public class AuthController {
 //    		response.addCookie(cookie);
     		CookieGenerator cg = new CookieGenerator();
     		cg.setCookieName("accessToken");
+    		cg.setCookieMaxAge(60*60*24*30); // 60초 * 60분 * 24시간 * 30일
     		cg.addCookie(response, tokenDTO.getAccessToken());
     	}else {
     		throw new RuntimeException("토큰 생성 에러");
