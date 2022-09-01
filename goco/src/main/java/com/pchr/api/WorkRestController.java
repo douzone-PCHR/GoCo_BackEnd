@@ -107,8 +107,8 @@ public class WorkRestController {
 	 */
 
 	@PostMapping(value = "/user/work/detail")
-	public List<WorkDTO> detailFind(@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") @RequestBody WorkDTO workDTO) {
-		List<WorkDTO> result = null;
+	public List<CalendarVO> detailFind(@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") @RequestBody WorkDTO workDTO) {
+		List<CalendarVO> result = null;
 		try {
 			result = workService.findAllByDay(workDTO);
 			if (result.isEmpty()) {

@@ -1,5 +1,6 @@
 package com.pchr.service.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -45,22 +46,41 @@ public class WorkServiceImpl implements WorkService {
 
 	@Transactional(readOnly = true)
 	@Override
-	public List<WorkDTO> findAllByDay(WorkDTO workDTO) {
-		LocalDateTime day = workDTO.getWorkStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime(); 
+	public List<CalendarVO> findAllByDay(WorkDTO workDTO) {
+		LocalDateTime day = workDTO.getWorkStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		LocalDateTime startDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth(), 0, 0, 0);
 		LocalDateTime endDay = LocalDateTime.of(day.getYear(), day.getMonth(), day.getDayOfMonth(), 23, 59, 0);
-		List<WorkDTO> list = null;
-	
-		if(SecurityUtil.getCurrentMemberId().equals(workDTO.getEmployee().getEmpId())) {
-			list = workRepository.findAllByDay(startDay, endDay, SecurityUtil.getCurrentMemberId()).stream()
-					.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
-		}else {
-			list = workRepository.findAllByDay(startDay, endDay, workDTO.getEmployee().getEmpId()).stream()
-					.filter(work -> (work.isWorkType() == false))
-					.map(work -> work.toWorkDto(work)).collect(Collectors.toList());
+		List<CalendarVO> result = new ArrayList<CalendarVO>();
+		if (SecurityUtil.getCurrentMemberId().equals(workDTO.getEmployee().getEmpId())) {
+			List<Map<String, Object>> findList = workRepository.findAllByDay(startDay, endDay,
+					SecurityUtil.getCurrentMemberId(), 0);
+			for (int i = 0; i < findList.size(); i++) {
+				CalendarVO calenaderVO = CalendarVO.builder().id((BigInteger) findList.get(i).get("id"))
+						.title((String) findList.get(i).get("title"))
+						.start(((Timestamp) findList.get(i).get("start")).toLocalDateTime())
+						.end(((Timestamp) findList.get(i).get("end")).toLocalDateTime())
+						.workType((BigDecimal) findList.get(i).get("work_type"))
+						.build();
+
+				result.add(calenaderVO);
+			}
+
+		} else {
+			List<Map<String, Object>> findList = workRepository.findAllByDay(startDay, endDay,
+					workDTO.getEmployee().getEmpId(), 1);
+			for (int i = 0; i < findList.size(); i++) {
+				CalendarVO calenaderVO = CalendarVO.builder().id((BigInteger) findList.get(i).get("id"))
+						.title((String) findList.get(i).get("title"))
+						.start(((Timestamp) findList.get(i).get("start")).toLocalDateTime())
+						.end(((Timestamp) findList.get(i).get("end")).toLocalDateTime())
+						.workType((BigDecimal) findList.get(i).get("work_type"))
+						.build();
+						
+				result.add(calenaderVO);
+			}
 		}
-		
-		return list;
+
+		return result;
 	}
 
 	@Transactional
@@ -90,7 +110,6 @@ public class WorkServiceImpl implements WorkService {
 		workRepository.deleteById(id);
 	}
 
-
 	public List<EmployeeDTO> findAllWorkByEmp() {
 		List<EmployeeDTO> list = employeeRepository.findAllEmp(SecurityUtil.getCurrentMemberId()).stream()
 				.map(emp -> emp.toFKDTO(emp)).collect(Collectors.toList());
@@ -98,33 +117,33 @@ public class WorkServiceImpl implements WorkService {
 	}
 
 	public List<CalendarVO> findAllCalendar(String empId) {
-	
+
 		List<CalendarVO> result = new ArrayList<CalendarVO>();
 		if (SecurityUtil.getCurrentMemberId().equals(empId)) {
 			List<Map<String, Object>> findList = workRepository.findAllCalendarData(SecurityUtil.getCurrentMemberId());
 			
 			for (int i = 0; i < findList.size(); i++) {
-				CalendarVO calenaderVO = CalendarVO.builder()
-						.id((BigInteger) findList.get(i).get("id"))
+				
+				CalendarVO calenaderVO = CalendarVO.builder().id((BigInteger) findList.get(i).get("id"))
 						.title((String) findList.get(i).get("title"))
 						.start(((Timestamp) findList.get(i).get("start")).toLocalDateTime())
 						.end(((Timestamp) findList.get(i).get("end")).toLocalDateTime())
+						.workType((BigDecimal) findList.get(i).get("work_type"))
 						.build();
-				
+
 				result.add(calenaderVO);
 			}
-		
+
 		} else {
 			List<Map<String, Object>> findList = workRepository.findAllCalendarData(empId);
 			for (int i = 0; i < findList.size(); i++) {
-				CalendarVO calenaderVO = CalendarVO.builder()
-						.id((BigInteger) findList.get(i).get("id"))
+				CalendarVO calenaderVO = CalendarVO.builder().id((BigInteger) findList.get(i).get("id"))
 						.title((String) findList.get(i).get("title"))
 						.start(((Timestamp) findList.get(i).get("start")).toLocalDateTime())
 						.end(((Timestamp) findList.get(i).get("end")).toLocalDateTime())
-//						.end((LocalDateTime) findList.get(i).get("end"))
+						.workType((BigDecimal) findList.get(i).get("work_type"))
 						.build();
-				
+
 				result.add(calenaderVO);
 			}
 		}

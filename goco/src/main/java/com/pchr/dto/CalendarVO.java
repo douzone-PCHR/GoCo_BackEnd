@@ -1,8 +1,11 @@
 package com.pchr.dto;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,23 +23,20 @@ public class CalendarVO {
 	private String title;
 	private LocalDateTime start;
 	private LocalDateTime end;
+	private BigDecimal workType;
 	
 	
-//	public List<CalendarVO> entitytoVO(List<Map<String, Object>> list) {
-//		List<CalendarVO> result = new ArrayList<CalendarVO>();
-//		for (int i = 0; i < list.size(); i++) {
-//			CalendarVO calenaderVO = CalendarVO.builder()
-//					.id((BigInteger) list.get(i).get("id"))
-//					.title((String) list.get(i).get("title"))
-//					.start((LocalDateTime) list.get(i).get("start"))
-//					.end((LocalDateTime) list.get(i).get("end"))
-//					.build();
-//			
-//			result.add(calenaderVO);
-//		}
-//		
-//		return result;
-//	}
+	public CalendarVO entitytoVO(Map<String, Object> map) {
+		Map<String, Object> hashmap = new HashMap<String, Object>();
+			CalendarVO calenaderVO = CalendarVO.builder()
+					.id((BigInteger) hashmap.get("id"))
+					.title((String) hashmap.get("title"))
+					.start((LocalDateTime) hashmap.get("start"))
+					.end((LocalDateTime) hashmap.get("end"))
+					.build();
+			
+		return calenaderVO;
+	}
 	
 	
 	

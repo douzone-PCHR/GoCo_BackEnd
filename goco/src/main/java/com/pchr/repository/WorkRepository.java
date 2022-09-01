@@ -19,11 +19,9 @@ public interface WorkRepository extends JpaRepository<Work, Long>{
 	
 	public List<Work> findAllByEmpEmpId(String empId);
 	
-	@Query(value = "select * "
-			+ "from work "
-			+ "where work_start_date  >= :startDay  and  work_start_date <= :endDay and emp_num = (select emp_num from employee where emp_id = :empId ) " ,
+	@Query(value = "CALL second_schedule_list(:startDay, :endDay, :empId, :workType )",
 			nativeQuery = true)
-	public List<Work> findAllByDay(@Param("startDay") LocalDateTime startDay , @Param("endDay") LocalDateTime endDay , @Param("empId") String empId);
+	public List<Map<String, Object>> findAllByDay(@Param("startDay") LocalDateTime startDay , @Param("endDay") LocalDateTime endDay , @Param("empId") String empId , @Param("workType") int workType);
 	
 	@Query(value = "select * "
 			+ "from work "
