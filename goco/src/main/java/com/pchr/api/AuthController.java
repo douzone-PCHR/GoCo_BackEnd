@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.CookieGenerator;
 
 import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
@@ -49,9 +50,12 @@ public class AuthController {
     public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
     	TokenDTO tokenDTO = authService.login(employeeDTO);
     	if(tokenDTO != null) {
-    		Cookie cookie = new Cookie("accessToken", tokenDTO.getAccessToken());
-    		cookie.setMaxAge(60*60);
-    		response.addCookie(cookie);
+//    		Cookie cookie = new Cookie("accessToken", tokenDTO.getAccessToken());
+//    		cookie.setMaxAge(60*60);
+//    		response.addCookie(cookie);
+    		CookieGenerator cg = new CookieGenerator();
+    		cg.setCookieName("accessToken");
+    		cg.addCookie(response, tokenDTO.getAccessToken());
     	}else {
     		throw new RuntimeException("토큰 생성 에러");
     	}
