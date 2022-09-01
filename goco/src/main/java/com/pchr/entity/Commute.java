@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 public class Commute {
 	
 	@Id 
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "commute_id")
 	private Long commuteId;
 	
