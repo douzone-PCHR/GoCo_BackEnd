@@ -4,64 +4,90 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.pchr.dto.FileDTO;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
-import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.core.waiters.WaiterResponse;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
-import software.amazon.awssdk.services.s3.waiters.S3Waiter;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Component
 public class S3Util {
+
+	private final AmazonS3Client amazonS3Client;
+
+	private AmazonS3 s3Client;
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
+	@Value("${cloud.aws.credentials.accessKey}")
+	private String accessKey;
+
+	@Value("${cloud.aws.credentials.secretKey}")
+	private String secretKey;
+
+	@Value("${cloud.aws.region.static}")
+	private String region;
+
+	@PostConstruct
+	public void setS3Client() {
+		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+
+		s3Client = (AmazonS3Client) AmazonS3ClientBuilder.standard().withRegion(region)
+				.withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+	}
+
 	// S3 업로드
 	public void uploadFile(String fileName, InputStream inputStream)
 			throws S3Exception, AwsServiceException, SdkClientException, IOException {
-		S3Client client = S3Client.builder().build();
+//		S3Client client = S3Client.builder().build();
 
-		PutObjectRequest request = PutObjectRequest.builder().bucket(bucket).key(fileName).build();
+//		PutObjectRequest request = PutObjectRequest.builder().bucket(bucket).key(fileName).build();
 
-		client.putObject(request, RequestBody.fromInputStream(inputStream, inputStream.available()));
+		s3Client.putObject(bucket, fileName, inputStream, null);
+//		client.putObject(request, RequestBody.fromInputStream(inputStream, inputStream.available()));
 
-		S3Waiter waiter = client.waiter();
-		HeadObjectRequest waitRequest = HeadObjectRequest.builder().bucket(bucket).key(fileName).build();
-		WaiterResponse<HeadObjectResponse> waiterResponse = waiter.waitUntilObjectExists(waitRequest);
-
-		waiterResponse.matched().response().ifPresent(x -> {
-			System.out.println("The file " + fileName + " is now ready");
-		});
+//		S3Waiter waiter = client.waiter();
+//		HeadObjectRequest waitRequest = HeadObjectRequest.builder().bucket(bucket).key(fileName).build();
+//		WaiterResponse<HeadObjectResponse> waiterResponse = waiter.waitUntilObjectExists(waitRequest);
+//
+//		waiterResponse.matched().response().ifPresent(x -> {
+//			System.out.println("The file " + fileName + " is now ready");
+//		});
 	}
 
 	// S3 파일 삭제
 	public void deleteFile(String fileName) {
-		S3Client client = S3Client.builder().build();
+//		S3Client client = S3Client.builder().build();
+//
+//		DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(bucket).key(fileName).build();
+//
+//		client.deleteObject(deleteRequest);
+		boolean isExistObject = amazonS3Client.doesObjectExist(bucket, fileName);
+		if (isExistObject == true) {
+			amazonS3Client.deleteObject(bucket, fileName);
+		}
+		System.out.println(getFileUrl(fileName));
 
-		DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(bucket).key(fileName).build();
-
-		client.deleteObject(deleteRequest);
 	}
 
 	// URL 받아오기
 	private String getFileUrl(String fileName) {
-		AmazonS3Client amazonS3Client = (AmazonS3Client) AmazonS3Client.builder().build();
-		return amazonS3Client.getResourceUrl(bucket, fileName);
+		return amazonS3Client.getUrl(bucket, fileName).toString();
 	}
 
 	// S3 업로드 적용
@@ -85,7 +111,6 @@ public class S3Util {
 		}
 
 		return null;
-
 	}
 
 }
