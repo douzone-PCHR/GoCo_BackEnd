@@ -11,7 +11,6 @@ import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -50,15 +49,15 @@ public class VacationAndBusinessVO {
 	private BigDecimal commute_work_time;
 
 	private Float vacation_count;
-	
-	private String approveEnum;
+
+  private String approveEnum;
 
 	private String vacationType;
 
 	public List<VacationAndBusinessVO> entityVo(List<Map<String, Object>> list) {
 		List<VacationAndBusinessVO> result = new ArrayList<VacationAndBusinessVO>();
 		for (int i = 0; i < list.size(); i++) {
-			
+
 			VacationAndBusinessVO vo = VacationAndBusinessVO.builder().empNum((BigInteger) list.get(i).get("emp_num"))
 					.name((String) list.get(i).get("name"))
 					.vacation_approve((String) list.get(i).get("vacation_approve"))
