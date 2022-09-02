@@ -50,9 +50,7 @@ public class VacationAndBusinessVO {
 
 	private Float vacation_count;
 
-	private Float vacation_count2;
-
-	private String approveEnum;
+  private String approveEnum;
 
 	private String vacationType;
 
