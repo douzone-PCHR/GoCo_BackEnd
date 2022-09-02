@@ -29,7 +29,7 @@ public interface WorkRepository extends JpaRepository<Work, Long>{
 			nativeQuery = true)
 	public List<Work> findAllWithoutDate(@Param("empId") String empId);
 	
-	@Query(value = "CALL schedule_list(:PARAM_emp_id)", nativeQuery = true)
-	public List<Map<String, Object>> findAllCalendarData(@Param("PARAM_emp_id") String empId);
+	@Query(value = "CALL schedule_list(:PARAM_emp_id  , :PARAM_check)", nativeQuery = true)
+	public List<Map<String, Object>> findAllCalendarData(@Param("PARAM_emp_id") String PARAM_emp_id , @Param("PARAM_check") String PARAM_check);
 	
 }

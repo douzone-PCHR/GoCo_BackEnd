@@ -149,7 +149,7 @@ public class CommuteServiceImpl implements CommuteService {
 		Map<String, Object> map = commuteRepository.findAllCommuteTime(SecurityUtil.getCurrentMemberId());
 		VacationAndBusinessVO vo = VacationAndBusinessVO.builder().startDate((Date) map.get("start_date"))
 				.endDate((Date) map.get("end_date")).commute_work_time((BigDecimal) map.get("commute_work_time"))
-				.vacation_count2((Float) map.get("vacation_count")).build();
+				.vacation_count((Float) map.get("vacation_count")).build();
 		return vo;
 	}
 

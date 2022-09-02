@@ -49,10 +49,8 @@ public class VacationAndBusinessVO {
 
 	private BigDecimal commute_work_time;
 
-	private int vacation_count;
+	private Float vacation_count;
 	
-	private Float vacation_count2;
-
 	private String approveEnum;
 
 	private String vacationType;
@@ -72,7 +70,7 @@ public class VacationAndBusinessVO {
 					.business_trip_start_date((Timestamp) list.get(i).get("business_trip_start_date"))
 					.business_trip_end_date((Timestamp) list.get(i).get("business_trip_end_date"))
 					.commute_work_time((BigDecimal) list.get(i).get("commute_work_time"))
-					.vacation_count((int) list.get(i).get("vacation_count")).build();
+					.vacation_count((Float) list.get(i).get("vacation_count")).build();
 			result.add(vo);
 		}
 		return result;
