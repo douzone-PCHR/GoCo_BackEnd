@@ -55,6 +55,7 @@ public class AuthController {
 //    		response.addCookie(cookie);
     		CookieGenerator cg = new CookieGenerator();
     		cg.setCookieName("accessToken");
+    		cg.setCookieHttpOnly(true);// 보안을위해 http-only 사용
     		cg.setCookieMaxAge(60*60*24*30); // 60초 * 60분 * 24시간 * 30일
     		cg.addCookie(response, tokenDTO.getAccessToken());
     	}else {
