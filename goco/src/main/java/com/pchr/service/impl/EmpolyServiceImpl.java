@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -160,7 +160,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 	@Override // 내정보 반환 하는 메소드
 	public EmployeeResponseDTO getMyInfoBySecurity() {
 		return findByEmpId(SecurityUtil.getCurrentMemberId()).map(EmployeeResponseDTO::of)
-				.orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다"));
+				.orElseThrow(() -> new RuntimeException("403"));
 	}
 
 	@Override // 내정보 이메일변경
