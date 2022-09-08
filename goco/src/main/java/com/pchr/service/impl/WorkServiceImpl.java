@@ -138,6 +138,11 @@ public class WorkServiceImpl implements WorkService {
 			List<Map<String, Object>> findList = workRepository.findAllCalendarData(empId, check);
 			result = calendar.entityCalendartoVO(findList);
 		}
+		for (CalendarVO calendarVO : result) {
+			System.out.println(calendarVO);
+		}
+	
+		
 		return result;
 	}
 
