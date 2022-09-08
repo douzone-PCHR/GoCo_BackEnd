@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -32,5 +33,9 @@ public interface BusinessTripRepository extends JpaRepository<BusinessTrip, Long
 			+ "where unit_id = ( " + "select unit_id " + "from employee " + "where emp_id = :empId " + ") "
 			+ "and approve_yn = 'APPROVE_WAITTING' ", nativeQuery = true)
 	public List<BusinessTrip> findAllApprove(@Param("empId") String empId);
+
+	@Modifying
+	@Query(value = "delete from business_trip where emp_num = :empNum", nativeQuery = true)
+	void deleteByEmpNum(@Param("empNum") Long empNum);
 
 }

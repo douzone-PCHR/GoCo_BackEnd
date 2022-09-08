@@ -64,4 +64,10 @@ public interface CommuteRepository extends JpaRepository<Commute, Long> {
 			+ "and clock_in >= date_format(now(), '%Y-%m-%d 00:00:00') "
 			+ "and clock_out <= date_format(now(), '%Y-%m-%d 23:59:00') ", nativeQuery = true)
 	public List<Commute> findMenuCommuteStatus(@Param("currentMemberId") String currentMemberId);
+
+	
+	@Modifying
+	@Query(value = "delete from commute where emp_num = :empNum", nativeQuery = true)
+	public void deleteByEmpNum(@Param("empNum") Long empNum);
+	
 }

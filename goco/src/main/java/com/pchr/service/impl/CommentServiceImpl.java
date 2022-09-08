@@ -2,6 +2,8 @@ package com.pchr.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.pchr.dto.BoardDTO;
 import com.pchr.dto.CommentDTO;
 import com.pchr.dto.EmployeeDTO;
@@ -11,6 +13,7 @@ import com.pchr.service.CommentService;
 import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentServiceImpl implements CommentService{
 	private final CommentRepository commentRepo;
 	
@@ -44,5 +47,8 @@ public class CommentServiceImpl implements CommentService{
 		commentdto.setCommentContent(commentDto.getCommentContent());
 		Comment com = commentdto.toComment(commentdto);
 		commentRepo.save(com);
+	}
+	public void deleteCommentByEmpNum(Long empNum) {
+		commentRepo.deleteByEmpNum(empNum);
 	}
 }

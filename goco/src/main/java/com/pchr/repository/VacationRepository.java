@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -32,5 +33,9 @@ public interface VacationRepository extends JpaRepository<Vacation, Long> {
 	// 휴가 요청 대기 리스트
 	@Query(value = "Call vacation_business_trip(:PARAM_emp_id)", nativeQuery = true)
 	public List<Map<String, Object>> findAllApprove(@Param("PARAM_emp_id") String PARAM_emp_id);
+
+	@Modifying
+	@Query(value = "delete from vacation where emp_num = :empNum", nativeQuery = true)
+	void deleteByEmpNum(@Param("empNum") Long empNum);
 
 }
