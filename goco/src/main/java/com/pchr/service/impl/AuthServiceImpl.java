@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -68,13 +71,13 @@ public class AuthServiceImpl implements AuthService{
 	    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
 	    return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
 	}	
+	// 로그인시 토큰 만드는것 
 	@Override
     public TokenDTO login(EmployeeDTO employeeDTO) {
         UsernamePasswordAuthenticationToken authenticationToken = employeeDTO.toAuthentication();
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
         return tokenProvider.generateTokenDto(authentication);
-    }	
-
+    }
 	@Override
     // 아이디 찾기위해 메일 보내는 함수 
 	public String sendEmailForId(String name, String email) {
@@ -83,7 +86,7 @@ public class AuthServiceImpl implements AuthService{
 		}		
 		return emailAuthServiceImpl.save(email);
 	}	
-	
+
 	@Override
 	// 비밀번호 찾기 위해 메일보내는 함수
 	public String sendEmailForPwd(String id, String email) {
@@ -98,7 +101,6 @@ public class AuthServiceImpl implements AuthService{
 			return emailAuthServiceImpl.save(email);
 		}
 		throw new RuntimeException("이미 가입되어 있는 유저입니다.");
-		
 	}
 
 	@Override// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
@@ -165,5 +167,4 @@ public class AuthServiceImpl implements AuthService{
 	    job.setJobTitleId(1L);
 	    return job;
 	}
-	
 }

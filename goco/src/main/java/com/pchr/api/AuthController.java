@@ -1,13 +1,8 @@
 package com.pchr.api;
-
 import java.util.List;
 import java.util.Map;
-
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.CookieGenerator;
-
 import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.dto.UnitDTO;
 import com.pchr.service.impl.AuthServiceImpl;
 import com.pchr.service.impl.EmpolyServiceImpl;
+import com.pchr.service.impl.TokenDataImpl;
 import com.pchr.service.impl.UnitServiceImpl;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -36,6 +29,7 @@ public class AuthController {
 	private final AuthServiceImpl authService;
 	private final EmpolyServiceImpl empolyServiceImpl;
 	private final UnitServiceImpl unitImpl;
+	private final TokenDataImpl tokenDataImpl;
 	@PostMapping("/signup") // 회원가입
 	public ResponseEntity<?> signup(@Valid @RequestBody EmployeeDTO employeeDTO, Errors errors) {
 		if (errors.hasErrors()) {
@@ -50,15 +44,10 @@ public class AuthController {
     public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
     	TokenDTO tokenDTO = authService.login(employeeDTO);
     	if(tokenDTO != null) {
-//    		Cookie cookie = new Cookie("accessToken", tokenDTO.getAccessToken());
-//    		cookie.setMaxAge(60*60);
-//    		response.addCookie(cookie);
-    		CookieGenerator cg = new CookieGenerator();
-    		cg.setCookieName("accessToken");
-    		cg.setCookieHttpOnly(true);// 보안을위해 http-only 사용
-    		cg.setCookieMaxAge(60*60*24*30); // 60초 * 60분 * 24시간 * 30일
-    		cg.addCookie(response, tokenDTO.getAccessToken());
-    	}else {
+    		tokenDataImpl.insertCookies(response,tokenDTO.getAccessToken(),tokenDTO.getRefreshToken());
+    		tokenDataImpl.saveTokens(tokenDTO.getAccessToken(),tokenDTO.getRefreshToken(),employeeDTO.getEmpId());// db에 저장하는 것
+    	}
+    	else{
     		throw new RuntimeException("토큰 생성 에러");
     	}
         return ResponseEntity.ok(tokenDTO);
@@ -92,5 +81,4 @@ public class AuthController {
 	public List<UnitDTO> allUnit() {
 		return unitImpl.unitAll();
 	}
-
 }
