@@ -1,6 +1,7 @@
 package com.pchr.service.impl;
 
 import java.util.Date;
+import java.util.Random;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +21,7 @@ public class TokenDataImpl {
 	private final  TokenDataRepository tokenDataRepository;
 	private final TokenProvider tokenProvider;
 	private final EmpolyServiceImpl empolyServiceImpl;
+	Random random = new Random();
 	//로그인시 access , refresh 토큰 넣는 것 
 	public void insertCookies(HttpServletResponse response, String access , String refresh) {
 		saveCookieAccessToken(response,access); // 쿠키에 저장
@@ -67,40 +69,18 @@ public class TokenDataImpl {
 		// 토큰유효시간
 		tokenProvider.validateToken(tokenDataDTO.getRefreshToken());
 		
-//		emp에서 auth를 꺼내온다. 그리고 create토큰으로 2개를 만들어 준다. 
+//		emp에서 auth를 꺼낸 후 토큰과 쿠키를 각각 넣는다.
 		EmployeeDTO empDTO = empolyServiceImpl.findByEmpId(tokenDataDTO.getEmpId())
 												.map(emp->emp.toDTO(emp))
 												.orElseThrow(() -> new RuntimeException("저장된 유저 데이터가 없습니다."));
-		long timeDiff = tokenDataDTO.getExpireTime().getTime()-(new Date()).getTime();
-		System.out.println("time diff : "+timeDiff);
+		long randumNumber = random.nextInt()%30000; // -30초부터 +30초까지 사이랜덤 값생성으로 리프레쉬토큰의 값을 변경함
+		long timeDiff = tokenDataDTO.getExpireTime().getTime()-(new Date()).getTime()+randumNumber;// 밀리세컨드
 		tokenDataDTO.setAccessToken(tokenProvider.createAccessToken(empDTO.getEmpId(), String.valueOf(empDTO.getAuthority())));
 		tokenDataDTO.setRefreshToken(tokenProvider.createRefreshToken(empDTO.getEmpId(), String.valueOf(empDTO.getAuthority()), new Date((new Date().getTime())+timeDiff)));
 		saveCookieAccessToken(response,tokenDataDTO.getAccessToken());
-	//	saveCookieRefreshToken(response,tokenDataDTO.getRefreshToken(),);
-//		tokenProvider.createRefreshToken(empDTO.getEmpId(),
-//					String.valueOf(empDTO.getAuthority()),
-//					new Date((new Date()).getTime() + REFRESH_TOKEN_EXPIRE_TIME));
-		// 리프레시 시간 찾아야됨
-//		tokenDataDTO.setRefreshToken(tokenProvider.createRefreshToken(empDTO.getEmpId(), String.valueOf(empDTO.getAuthority()), tokenDataDTO.getExpireTime()));
-		//기존 리프레시 토큰의 만료날짜를 구한다 , 현재날자를 구한다. 둘을 뺀다. 뺀값을 현제에서 더한다.
-		
-		//System.out.println("이거임 : "+(new Date()).getTime() + ACCESS_TOKEN_EXPIRE_TIME);//16626189736891800000
-		
-		
-		
-		
-
-		System.out.println("현재 시간과 차이 : "+(tokenDataDTO.getExpireTime().getTime()-(new Date()).getTime()));
-		System.out.println("저장된 시간 : "+tokenDataDTO.getExpireTime());
-		System.out.println("계산된 시간 : "+new Date((new Date().getTime())+timeDiff));
-		
-		
+		saveCookieRefreshToken(response,tokenDataDTO.getRefreshToken(),Long.valueOf(timeDiff/1000).intValue());
 		tokenDataRepository.save(tokenDataDTO.toEntity(tokenDataDTO));
+
 		}
-//	System.out.println("refreshToken.getName() : "+refreshToken.getName()); // 리프레쉬토큰 이라고 뜸 
-//	System.out.println("refreshToken.getMaxAge() : "+refreshToken.getMaxAge()); // -1이라고 뜸 
-//	System.out.println("refreshToken.getValue() : "+refreshToken.getValue()); // 쿠키의 길다란코드가 뜸  eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJreWo
-//	System.out.println("refreshToken.getSecure() : "+refreshToken.getSecure()); // false 뜸 보안인듯 ? 
-//	System.out.println("refreshToken.getVersion() : "+refreshToken.getVersion()); // 0 이라고 뜸 
-//	System.out.println("refreshToken.getClass() : "+refreshToken.getClass()); // class javax.servlet.http.Cookie 뜸 
+
 }
