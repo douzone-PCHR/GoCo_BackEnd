@@ -146,4 +146,8 @@ public class WorkServiceImpl implements WorkService {
 		return result;
 	}
 
+	public void deleteWorkByEmpNum(Long empNum) {
+		workRepository.deleteByEmpNum(empNum);
+	}
+
 }

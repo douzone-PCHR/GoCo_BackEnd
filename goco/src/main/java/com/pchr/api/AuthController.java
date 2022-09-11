@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+
 import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
@@ -46,6 +48,7 @@ public class AuthController {
     	if(tokenDTO != null) {
     		tokenDataImpl.insertCookies(response,tokenDTO.getAccessToken(),tokenDTO.getRefreshToken());
     		tokenDataImpl.saveTokens(tokenDTO.getAccessToken(),tokenDTO.getRefreshToken(),employeeDTO.getEmpId());// db에 저장하는 것
+    		tokenDTO.setRefreshToken("");
     	}
     	else{
     		throw new RuntimeException("토큰 생성 에러");
@@ -81,4 +84,9 @@ public class AuthController {
 	public List<UnitDTO> allUnit() {
 		return unitImpl.unitAll();
 	}
+	@GetMapping("/logOut")
+	public int logOut(HttpServletResponse response) {
+		return authService.logOut(response);
+	}
+	
 }

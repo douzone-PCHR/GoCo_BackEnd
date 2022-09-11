@@ -1,5 +1,7 @@
 package com.pchr.service;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.JobTitleDTO;
@@ -24,4 +26,5 @@ public interface AuthService {
 	public int count(String email);
 	public TeamPositionDTO getTeamPositionDTO();
 	public JobTitleDTO getJobTitleDTO();
+	public int logOut(HttpServletResponse response);
 }

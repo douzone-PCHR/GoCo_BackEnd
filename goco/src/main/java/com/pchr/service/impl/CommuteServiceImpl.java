@@ -189,4 +189,8 @@ public class CommuteServiceImpl implements CommuteService {
 				.collect(Collectors.toList());
 	}
 
+	public void deleteCommuteByEmpNum(Long empNum) {
+		commuteRepository.deleteByEmpNum(empNum);
+	}
+
 }

@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +40,12 @@ public class EmpolyServiceImpl implements EmployeeService {
 	private final BusinessTripRepository businessRepo;
 	private final FileRepository fileRepo;
 	private final S3Util s3Util;
-
+	private final CommentServiceImpl commentServiceImpl;
+	private final BoardServiceImpl boardServiceImpl;
+	private final CommuteServiceImpl commuteServiceImpl;
+	private final WorkServiceImpl workServiceImpl;
+	private final VacationServiceImpl vacationServiceImpl;
+	private final BusinessTripServiceImpl businessTripServiceImpl;
 	@Override
 	public Optional<Employee> findByEmail(String email) {
 		return employeeRepository.findByEmail(email);
@@ -139,9 +142,20 @@ public class EmpolyServiceImpl implements EmployeeService {
 				dto.setManager(null); // 참조하는 값들을 모두 null로 바꿔준다.
 				save(dto.toEntity(dto));
 			});
+			deleteForeignKey(employee.getEmpNum());
 			return deleteByEmpId(empId);
 		}
 		return 0;
+	}
+	// 계정 삭제를 위해 외래키 참조하는 모든것들 삭제하는 것
+	@Override
+	public void deleteForeignKey(Long empNum) {
+		commentServiceImpl.deleteCommentByEmpNum(empNum);
+		boardServiceImpl.deleteBoardByEmpNum(empNum);
+		commuteServiceImpl.deleteCommuteByEmpNum(empNum);
+		workServiceImpl.deleteWorkByEmpNum(empNum);
+		vacationServiceImpl.deleteVacationByEmpNum(empNum);
+		businessTripServiceImpl.deleteBusinessTripByEmpNum(empNum);
 	}
 
 	@Override // 내정보 비번 변경

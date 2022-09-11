@@ -155,4 +155,8 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 		return businessTripList;
 	}
 
+	public void deleteBusinessTripByEmpNum(Long empNum) {
+		businessRepository.deleteByEmpNum(empNum);
+	}
+
 }

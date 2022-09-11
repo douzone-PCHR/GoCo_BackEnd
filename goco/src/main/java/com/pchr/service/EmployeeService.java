@@ -43,4 +43,5 @@ public interface EmployeeService {
 	public int changeManager(Long empNum, UnitDTO unit);
 	public void LeaderToMember(Long unitId);
 	public void MemberToLeader(Employee employee, UnitDTO unit);
+	void deleteForeignKey(Long empNum);
 }

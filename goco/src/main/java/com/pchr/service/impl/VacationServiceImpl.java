@@ -209,4 +209,9 @@ public class VacationServiceImpl implements VacationService {
 		return list;
 	}
 
+	public void deleteVacationByEmpNum(Long empNum) {
+		vacationRepository.deleteByEmpNum(empNum);
+		
+	}
+
 }

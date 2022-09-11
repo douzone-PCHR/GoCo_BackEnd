@@ -15,6 +15,6 @@ public interface TokenDataRepository extends JpaRepository<TokenData, Long>{
 	int deleteByRefreshToken(String refreshToken);
 	int deleteByEmpId(String empId);
 	Optional<TokenData> findByRefreshToken(String refreshToken);
-	
-	
+	boolean existsByRefreshToken(String refreshToken);
+	boolean existsByAccessToken(String accessToken);
 }

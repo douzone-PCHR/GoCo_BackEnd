@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.web.util.CookieGenerator;
 
+import com.pchr.config.SecurityUtil;
 import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
@@ -166,5 +168,17 @@ public class AuthServiceImpl implements AuthService{
 		JobTitleDTO job = new JobTitleDTO();
 	    job.setJobTitleId(1L);
 	    return job;
+	}
+	@Override
+	public int logOut(HttpServletResponse response) {
+		CookieGenerator cg = new CookieGenerator();
+		cg.setCookieName("refreshToken");
+		cg.setCookieMaxAge(0);
+		cg.addCookie(response, "1");
+		cg.setCookieName("accessToken");
+		cg.setCookieMaxAge(0);
+		cg.addCookie(response, "1");
+		SecurityUtil.contextReset();
+		return 1;
 	}
 }
