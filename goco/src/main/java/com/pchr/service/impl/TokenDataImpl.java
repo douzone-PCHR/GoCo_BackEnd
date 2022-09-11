@@ -63,6 +63,7 @@ public class TokenDataImpl implements TokenData {
 	}
 	@Override
 	public void newToken(Cookie refreshToken, HttpServletResponse response) {
+		System.out.println("드감드감");
 		if(refreshToken==null) // 리프레쉬토큰을 못불러올경우 에러임
 		{
 			throw new RuntimeException("403");
@@ -96,6 +97,14 @@ public class TokenDataImpl implements TokenData {
 				tokenDataRepository.deleteByEmpId(e.getEmpId());
 			}
 		});
+	}
+	
+	public boolean existsByRefreshToken(String refreshToken) {
+		return tokenDataRepository.existsByRefreshToken(refreshToken);
+	}
+	
+	public boolean existsByAccessToken(String accessToken) {
+		return tokenDataRepository.existsByAccessToken(accessToken);
 	}
 
 }
