@@ -67,6 +67,10 @@ public class BoardServiceImpl implements BoardService {
 	public void deleteBoardByEmpNum(Long empNum) {
 		boardRepo.deleteByEmpNum(empNum);
 	}
+	@Override
+	public List<Long> findAllByBoardId(Long empNum) {
+		return boardRepo.findAllByBoardId(empNum);
+	}
 	
 	
 }

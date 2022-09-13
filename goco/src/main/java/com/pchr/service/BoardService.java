@@ -10,4 +10,5 @@ public interface BoardService {
 	void removeBoard(long id);
 	BoardDTO getBoard(Long id);
 	public void deleteBoardByEmpNum(Long empNum);
+	public List<Long> findAllByBoardId(Long empNum);
 }

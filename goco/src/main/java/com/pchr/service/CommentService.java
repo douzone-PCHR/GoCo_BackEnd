@@ -7,4 +7,5 @@ public interface CommentService {
 		public void insertComment(Long id,CommentDTO commentDto,Long empId);
 		public void deleteComment(Long commentId);
 		public void deleteCommentByEmpNum(Long empNum);
+		public List<Long> findByBoardId(Long boardId);
 }
