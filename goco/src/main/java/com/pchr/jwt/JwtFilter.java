@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 public class JwtFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
     private final  TokenDataRepository tokenDataRepository;
-
+    private String[] exceptURL = {"/api/user/menu/commute","/api/auth/login","/api/auth/logOut","/api/auth/getAllUnit","/api/auth/checkInfo",
+    		"/api/auth/sendEmailForEmail","/api/auth/find/1","/api/auth/signup","/api/auth/sendEmailForId","/api/auth/find/2",
+    		"/api/auth/sendEmailForPwd","/api/auth/find/3"};
     // 엑세스 토큰 받아오기 
     private String getAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -49,16 +51,48 @@ public class JwtFilter extends OncePerRequestFilter {
     }
     // 엑세스 + 리프레쉬 없을 때 로그인으로 보내느 것
     private void redirectedToLogin(HttpServletRequest request, HttpServletResponse response) {
-        // 엑세스, 리프레쉬 둘다없으면 login으로넘겨야되는데, 그때 제어해야될 url이 : /user/menu/commute   + /auth/login
-     	if(!request.getRequestURI().equals("/api/user/menu/commute")) {
-     		if(!request.getRequestURI().equals("/api/auth/login")) {
-     			if(!request.getRequestURI().equals("/api/auth/logOut")) {
-     				tokenProvider.cookieReset(response);
-     				response.addHeader("refresh", "false");
-     				throw new RuntimeException("redirectedToLogin");        				
-     			}
-     		}
-     	}
+        int check =0;
+    	// 엑세스, 리프레쉬 둘다없으면 login으로넘겨야되는데, 그때 제어해야될 url이 : /user/menu/commute   + /auth/login
+    	for (String string : exceptURL) {
+			if(!request.getRequestURI().equals(string)) {
+				++check;
+			}
+		}
+    	if(check!=11) {
+			System.out.println("URL : "+request.getRequestURI());
+				tokenProvider.cookieReset(response);
+				response.addHeader("refresh", "false");
+				throw new RuntimeException("redirectedToLogin");  
+    	}
+//     	if(!request.getRequestURI().equals("/api/user/menu/commute")) {
+//     		if(!request.getRequestURI().equals("/api/auth/login")) {
+//     			if(!request.getRequestURI().equals("/api/auth/logOut")) {
+//     				if(!request.getRequestURI().equals("/api/auth/getAllUnit")) {
+//     					if(!request.getRequestURI().equals("/api/auth/checkInfo")) {
+//     						if(!request.getRequestURI().equals("/api/auth/sendEmailForEmail")) {
+//     							if(!request.getRequestURI().equals("/api/auth/find/1")) {
+//     								if(!request.getRequestURI().equals("/api/auth/signup")) {
+//     									if(!request.getRequestURI().equals("/api/auth/sendEmailForId")) {
+//     										if(!request.getRequestURI().equals("/api/auth/find/2")) {
+//     											if(!request.getRequestURI().equals("/api/auth/sendEmailForPwd")) {
+//     												if(!request.getRequestURI().equals("/api/auth/find/3")) {
+//     													System.out.println("URL : "+request.getRequestURI());
+//     													tokenProvider.cookieReset(response);
+//     													response.addHeader("refresh", "false");
+//     													throw new RuntimeException("redirectedToLogin");     													
+//     												}
+//     											}
+//     										}
+//     									}
+//     								}
+//     							}
+//     						}
+//     						
+//     					}
+//     				}
+//     			}
+//     		}
+//     	}
     }
     private void CookieCheck(String accessToken,String refreshToken,HttpServletRequest request, HttpServletResponse response) {
     	if(accessToken==null&&refreshToken==null||refreshToken==null&&accessToken.length()<110) {

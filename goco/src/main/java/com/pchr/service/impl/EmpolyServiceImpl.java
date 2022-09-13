@@ -143,19 +143,24 @@ public class EmpolyServiceImpl implements EmployeeService {
 				save(dto.toEntity(dto));
 			});
 			deleteForeignKey(employee.getEmpNum());
-			return deleteByEmpId(empId);
+//			return deleteByEmpId(empId);
+			return 1;
 		}
 		return 0;
 	}
 	// 계정 삭제를 위해 외래키 참조하는 모든것들 삭제하는 것
 	@Override
 	public void deleteForeignKey(Long empNum) {
-		commentServiceImpl.deleteCommentByEmpNum(empNum);
+		deleteComment(empNum);
 		boardServiceImpl.deleteBoardByEmpNum(empNum);
 		commuteServiceImpl.deleteCommuteByEmpNum(empNum);
 		workServiceImpl.deleteWorkByEmpNum(empNum);
 		vacationServiceImpl.deleteVacationByEmpNum(empNum);
 		businessTripServiceImpl.deleteBusinessTripByEmpNum(empNum);
+	}
+	public void deleteComment(Long empNum) {
+		commentServiceImpl.deleteCommentByEmpNum(empNum);
+		// 처리해야됨
 	}
 
 	@Override // 내정보 비번 변경
