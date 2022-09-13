@@ -1,10 +1,61 @@
 language: java
+
 jdk:
 - openjdk8
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  keep-history: true
+  github-token: $GITHUB_TOKEN
+  local_dir: public
+  on:
+    branch: main
 branches:
-  only:
-  - main
+  only: main
 before_install:
-- openssl aes-256-cbc -K $encrypted_2f692484526a_key -iv $encrypted_2f692484526a_iv
-  -in application.properties.enc -out application.properties -d
+- openssl aes-256-cbc -K $encrypted_2f692484526a_key -iv $encrypted_2f692484526a_iv -in application.properties.enc -out application.properties -d
+- mkdir -p goco/src/main/resources
+- mv application.properties goco/src/main/resources
+- cd goco
 - chmod +x mvnw
+script:
+  - ./mvnw clean package
+  - mkdir -p ~/beforeBackBuild ~/backBuild
+  - cp ../appspec.yml ~/beforeBackBuild
+  - cp ../deploy.sh ~/beforeBackBuild
+  - cp target/*.jar ~/beforeBackBuild
+  - cd ~/beforeBackBuild
+  - zip -r ~/backBuild/back.zip *
+  - cd ~
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # 여기
+    secret_access_key: $AWS_SECRET_KEY # 여기
+    bucket: pchr-goco
+    skip_cleanup: true
+    acl: private
+    region: ap-northeast-2
+    wait-until-deploy: true
+    local_dir: backBuild
+    on:
+      all_branches: true
+
+  - provider: codedeploy 
+    access_key_id: $AWS_ACCESS_KEY # 여기
+    secret_access_key: $AWS_SECRET_KEY # 여기
+    bucket: pchr-goco
+    key : back.zip
+    bundle_type : zip
+    application : goco-codedeploy
+    deployment_group: goco-codedeploy-group
+    region: ap-northeast-2
+    wait-until-deployed: true
+    on:
+      all_branches: true
+
+# CI 실행 완료 시 작성한 이메일로 알람.???
+notifications:
+  email:
+    recipients:
+      - qortjdwns120712@gmail.com
