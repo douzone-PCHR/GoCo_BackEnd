@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -75,9 +76,10 @@ public class WorkServiceImpl implements WorkService {
 
 	@Transactional
 	@Override
-	public ResponseEntity<Message> workSave(WorkDTO workDTO) {
+	public ResponseEntity<Message> workSave(WorkDTO workDTO) throws DataIntegrityViolationException {
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
+        
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 		Work entity = workDTO.toEntityWork(workDTO);
 		workRepository.save(entity);
