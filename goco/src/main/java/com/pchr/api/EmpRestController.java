@@ -1,14 +1,7 @@
 package com.pchr.api;
-
 import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,13 +9,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
-import com.pchr.entity.Employee;
 import com.pchr.entity.Resignation;
 import com.pchr.service.impl.EmpolyServiceImpl;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -58,8 +48,6 @@ public class EmpRestController {
 		EmployeeResponseDTO myInfoBySecurity = empolyServiceImpl.getMyInfoBySecurity();
 		return ResponseEntity.ok((myInfoBySecurity));
 	} // http://localhost:8080/user/me
-		///////////////////////////////// 메니저 권한 ////////////////////////////////////
-		// 내가 팀장이면 내 팀원
 
 	///////////////////////////////// 어드민 권한 ////////////////////////////////////
 	@PutMapping("/admin/role") // 권한변경

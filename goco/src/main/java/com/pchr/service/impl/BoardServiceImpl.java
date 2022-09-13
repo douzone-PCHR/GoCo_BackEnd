@@ -63,6 +63,7 @@ public class BoardServiceImpl implements BoardService {
 		boardRepo.save(updateBoard);
 		return boardDto;
 	}
+	@Override
 	public void deleteBoardByEmpNum(Long empNum) {
 		boardRepo.deleteByEmpNum(empNum);
 	}

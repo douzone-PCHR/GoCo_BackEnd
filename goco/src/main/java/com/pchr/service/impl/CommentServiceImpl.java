@@ -48,6 +48,7 @@ public class CommentServiceImpl implements CommentService{
 		Comment com = commentdto.toComment(commentdto);
 		commentRepo.save(com);
 	}
+	@Override
 	public void deleteCommentByEmpNum(Long empNum) {
 		commentRepo.deleteByEmpNum(empNum);
 	}
