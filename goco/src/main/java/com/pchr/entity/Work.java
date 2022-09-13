@@ -34,8 +34,7 @@ public class Work {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "work_id")
 	private Long workId;
-	
-	@Column(name = "work_title",nullable = false)
+	@Column(name = "work_title" , length=255 ,nullable = false)
 	private String workTitle;
 	
 	@Column(name = "work_content")

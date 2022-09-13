@@ -28,9 +28,11 @@ import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.JobTitleDTO;
 import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.TokenDTO;
+import com.pchr.entity.Commute;
 import com.pchr.entity.EmailAuth;
 import com.pchr.entity.Employee;
 import com.pchr.jwt.TokenProvider;
+import com.pchr.repository.CommuteRepository;
 import com.pchr.service.AuthService;
 import lombok.RequiredArgsConstructor;
 
@@ -46,6 +48,8 @@ public class AuthServiceImpl implements AuthService{
     private final TokenProvider tokenProvider;
     private final EmailAuthServiceImpl emailAuthServiceImpl;// 메일보내는 함수
     private final TokenDataImpl tokenDataImpl;
+    private final CommuteRepository commuteRepository;
+    
 // static이라 오버라이드 안됨
     //회원 가입시 유효성 검사 중 오류 있으면 반환해주는 것
 	public static Map<String, String> validateHandling(Errors errors) {
@@ -71,9 +75,18 @@ public class AuthServiceImpl implements AuthService{
 	    }
 	    employeeDTO.setJobTitle(getJobTitleDTO());// 사원직급 자동지정
 	    employeeDTO.setTeamPosition(getTeamPositionDTO());// 팀원으로 자동 지정 
-	    
 	    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
-	    return EmployeeResponseDTO.of(empolyServiceImpl.save(employee));
+	    Employee commuteEmployee = empolyServiceImpl.save(employee);
+	 
+	    Commute commute = Commute.builder()
+	    		.clockIn(LocalDateTime.now())
+	    		.clockOut(LocalDateTime.now())
+	    		.commuteStatus("0")
+	    		.employee(commuteEmployee)
+	    		.commuteCheck(0)
+	    		.build();
+	    commuteRepository.save(commute);
+	    return  EmployeeResponseDTO.of(commuteEmployee);
 	}	
 	// 로그인시 토큰 만드는것 
 	@Override
