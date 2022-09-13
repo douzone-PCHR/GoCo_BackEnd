@@ -1,6 +1,8 @@
 package com.pchr.api;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -85,8 +87,8 @@ public class AuthController {
 		return unitImpl.unitAll();
 	}
 	@GetMapping("/logOut")
-	public int logOut(HttpServletResponse response) {
-		return authService.logOut(response);
+	public int logOut(HttpServletRequest request,HttpServletResponse response) {
+		return authService.logOut(request,response);
 	}
 	
 }

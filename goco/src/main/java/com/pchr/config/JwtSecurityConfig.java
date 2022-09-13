@@ -7,6 +7,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.pchr.jwt.JwtFilter;
 import com.pchr.jwt.TokenProvider;
+import com.pchr.repository.TokenDataRepository;
+import com.pchr.service.impl.TokenDataImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,12 +17,13 @@ import lombok.RequiredArgsConstructor;
 //직접 만든 TokenProvider와 JwtFilter를 SecurityConfig에 적용할 때 사용한다.
 public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     private final TokenProvider tokenProvider;
-
+    private final  TokenDataRepository tokenDataRepository;
 //메인 메소드인 configure은TokenProvider를 주입받아서 JwtFilter를 통해 
 //SecurityConfig 안에 필터를 등록하게 되고, 스프링 시큐리티 전반적인 필터에 적용된다.
     @Override
     public void configure(HttpSecurity http) {
-        JwtFilter customFilter = new JwtFilter(tokenProvider);
+    	JwtFilter customFilter = new JwtFilter(tokenProvider,tokenDataRepository);
+//    	JwtFilter customFilter = new JwtFilter(tokenProvider);
         http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

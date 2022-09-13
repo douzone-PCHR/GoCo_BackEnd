@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.util.CookieGenerator;
@@ -43,7 +45,7 @@ public class AuthServiceImpl implements AuthService{
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final EmailAuthServiceImpl emailAuthServiceImpl;// 메일보내는 함수
-
+    private final TokenDataImpl tokenDataImpl;
 // static이라 오버라이드 안됨
     //회원 가입시 유효성 검사 중 오류 있으면 반환해주는 것
 	public static Map<String, String> validateHandling(Errors errors) {
@@ -170,7 +172,9 @@ public class AuthServiceImpl implements AuthService{
 	    return job;
 	}
 	@Override
-	public int logOut(HttpServletResponse response) {
+	public int logOut(HttpServletRequest request,HttpServletResponse response) {
+		tokenDataImpl.deleteByAccessToken(getAccessToken(request));
+		tokenDataImpl.deleteByRefreshToken(getRefreshToken(request));
 		CookieGenerator cg = new CookieGenerator();
 		cg.setCookieName("refreshToken");
 		cg.setCookieMaxAge(0);
@@ -181,4 +185,26 @@ public class AuthServiceImpl implements AuthService{
 		SecurityUtil.contextReset();
 		return 1;
 	}
+	
+    // 엑세스 토큰 받아오기 
+    private String getAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+    // 리프레쉬 토큰 받아오기 
+    private String getRefreshToken(HttpServletRequest request) {
+    	if(request.getCookies()!=null) {
+	    	 for (Cookie eachCookie : request.getCookies()) {
+	    		 if(eachCookie.getName().equals("refreshToken")) {
+	    			 return eachCookie.getValue();
+	    		 }
+	         }
+    	}
+    	return null;
+    }
+	
+	
 }
