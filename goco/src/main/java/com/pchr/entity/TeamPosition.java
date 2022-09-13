@@ -26,12 +26,12 @@ public class TeamPosition {
 	private Long teamPositionId;
 	
 	@Column(name = "team_position_name")
-	private String teampPositionName;
+	private String teamPositionName;
 	
 	public TeamPositionDTO toDTO(TeamPosition teamPosition) {
 		TeamPositionDTO teamPositionDTO=TeamPositionDTO.builder()
 										.teamPositionId(teamPosition.getTeamPositionId())
-										.teampPositionName(teamPosition.getTeampPositionName())
+										.teamPositionName(teamPosition.getTeamPositionName())
 										.build();
 		return teamPositionDTO;
 	}
