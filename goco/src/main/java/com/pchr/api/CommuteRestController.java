@@ -1,6 +1,7 @@
 package com.pchr.api;
 
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -173,7 +174,7 @@ public class CommuteRestController {
 	public List<CommuteDTO> findAllCommuteAdmin() {
 		return commuteService.findAllCommuteAdmin();
 	}
-	
+
 	/**
 	 * 로그인 한 직원 근무 상태
 	 * 
@@ -183,11 +184,11 @@ public class CommuteRestController {
 	public List<CommuteDTO> findMenuCommuteStatus() {
 		List<CommuteDTO> result = null;
 		try {
-		 result = commuteService.findMenuCommuteStatus();
-		} catch (Exception e) {
-			e.printStackTrace();
+			result = commuteService.findMenuCommuteStatus();
+		} catch (NullPointerException e) {
+			return Collections.emptyList();
 		}
 		return result;
 	}
-	
+
 }
