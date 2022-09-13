@@ -17,4 +17,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
 	@Modifying
 	@Query(value = "delete from comment where emp_num = :empNum", nativeQuery = true)
 	void deleteByEmpNum(@Param("empNum") Long empNum);
+	
+	@Query(value = "select comment_id from comment where board_id = :boardId", nativeQuery = true)
+	List<Long> findByBoardId(@Param("boardId") Long boardId);
 }

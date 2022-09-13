@@ -52,4 +52,9 @@ public class CommentServiceImpl implements CommentService{
 	public void deleteCommentByEmpNum(Long empNum) {
 		commentRepo.deleteByEmpNum(empNum);
 	}
+	@Override
+	public List<Long> findByBoardId(Long boardId) {
+		return commentRepo.findByBoardId(boardId);
+	}
+	
 }
