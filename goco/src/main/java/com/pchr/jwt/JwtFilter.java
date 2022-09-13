@@ -60,34 +60,33 @@ public class JwtFilter extends OncePerRequestFilter {
      		}
      	}
     }
-
+    private void CookieCheck(String accessToken,String refreshToken,HttpServletRequest request, HttpServletResponse response) {
+    	if(refreshToken==null&&accessToken.length()<110) {// 엑세스 + 리프레쉬 둘다 업을 때 로그인 넘기기
+        	redirectedToLogin(request,response);
+        }
+    }
     // 필터링 실행 메소드 , 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     	String refreshToken = getRefreshToken(request);
         String accessToken = getAccessToken(request);
+        CookieCheck(accessToken,refreshToken,request,response);
         if(refreshToken!=null) {
 	        if(accessToken.equals("undefined")&&tokenDataRepository.existsByRefreshToken(refreshToken)) {
 	        	createCookie(request,response, refreshToken);// 리프레쉬가 있고, 디비에도 있으며, 엑세스가 없어서 리프레쉬로 엑세스를 받아야될 때
 	        }
-	        else if(!tokenDataRepository.existsByRefreshToken(refreshToken)||!tokenDataRepository.existsByAccessToken(accessToken)) {
-	        	//리프레쉬,엑세스가 있지만 디비에 없는 경우 쿠키 삭제 및 로그인 페이지 이동 
+	        else if(!tokenDataRepository.existsByRefreshToken(refreshToken)) {
+	        	//리프레쉬가 있지만 디비에 없는 경우 쿠키 삭제 및 로그인 페이지 이동 
 	        	redirectedToLogin(request,response);
 	        }
         }
-        // 둘다 업을 때 로그인 넘기기  
-        else if(refreshToken==null&&accessToken.length()<110) {
-        	redirectedToLogin(request,response);
-        }
-
-//validateToken으로 토큰이 유효한지 검사를 해서,만약 유효하다면 Authentication을 가져와서 SecurityContext에 저장한다
-//SecurityContext에서 허가된 uri 이외의 모든 Request 요청은 전부 이 필터를 거치게 되며, 토큰 정보가 없거나 유효치않으면 정상적으로 수행되지 않는다.
-//반대로 Request가 정상적으로 Controller까지 도착했으면 SecurityContext에 Member ID가 존재한다는 것이 보장이 된다.
+		//validateToken으로 토큰이 유효한지 검사를 해서,만약 유효하다면 Authentication을 가져와서 SecurityContext에 저장한다
+		//SecurityContext에서 허가된 uri 이외의 모든 Request 요청은 전부 이 필터를 거치게 되며, 토큰 정보가 없거나 유효치않으면 정상적으로 수행되지 않는다.
+		//반대로 Request가 정상적으로 Controller까지 도착했으면 SecurityContext에 Member ID가 존재한다는 것이 보장이 된다.
         if (tokenProvider.validateToken(response,accessToken)&&tokenDataRepository.existsByAccessToken(accessToken)) {
             Authentication authentication = tokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-        else if(!tokenDataRepository.existsByAccessToken(accessToken)&&accessToken.length()>110) {//엑세스 토큰이 전달되었으나 db에 없는 경우 로그인 페이지 이동   
+        }else if(!tokenDataRepository.existsByAccessToken(accessToken)&&accessToken.length()>110) {//엑세스 토큰이 전달되었으나 db에 없는 경우 로그인 페이지 이동   
         	redirectedToLogin(request,response);
         }
         filterChain.doFilter(request, response);
