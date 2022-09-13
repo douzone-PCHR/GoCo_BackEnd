@@ -52,9 +52,11 @@ public class JwtFilter extends OncePerRequestFilter {
         // 엑세스, 리프레쉬 둘다없으면 login으로넘겨야되는데, 그때 제어해야될 url이 : /user/menu/commute   + /auth/login
      	if(!request.getRequestURI().equals("/api/user/menu/commute")) {
      		if(!request.getRequestURI().equals("/api/auth/login")) {
-     			tokenProvider.cookieReset(response);
-     			response.addHeader("refresh", "false");
-     			throw new RuntimeException("redirectedToLogin");        				
+     			if(!request.getRequestURI().equals("/api/auth/logOut")) {
+     				tokenProvider.cookieReset(response);
+     				response.addHeader("refresh", "false");
+     				throw new RuntimeException("redirectedToLogin");        				
+     			}
      		}
      	}
     }
@@ -72,6 +74,10 @@ public class JwtFilter extends OncePerRequestFilter {
 	        	//리프레쉬,엑세스가 있지만 디비에 없는 경우 쿠키 삭제 및 로그인 페이지 이동 
 	        	redirectedToLogin(request,response);
 	        }
+        }
+        // 둘다 업을 때 로그인 넘기기  
+        else if(refreshToken==null&&accessToken.length()<110) {
+        	redirectedToLogin(request,response);
         }
 
 //validateToken으로 토큰이 유효한지 검사를 해서,만약 유효하다면 Authentication을 가져와서 SecurityContext에 저장한다
