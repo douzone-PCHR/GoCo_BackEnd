@@ -98,13 +98,20 @@ public class TokenDataImpl implements TokenData {
 			}
 		});
 	}
-	
+	@Override
 	public boolean existsByRefreshToken(String refreshToken) {
 		return tokenDataRepository.existsByRefreshToken(refreshToken);
 	}
-	
+	@Override
 	public boolean existsByAccessToken(String accessToken) {
 		return tokenDataRepository.existsByAccessToken(accessToken);
 	}
-
+	@Override
+	public int deleteByAccessToken(String accessToken) {
+		return tokenDataRepository.deleteByAccessToken(accessToken);
+	}
+	@Override
+	public int deleteByRefreshToken(String refreshToken) {
+		return tokenDataRepository.deleteByRefreshToken(refreshToken);
+	}	
 }

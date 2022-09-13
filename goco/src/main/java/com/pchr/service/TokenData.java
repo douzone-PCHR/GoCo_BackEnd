@@ -10,4 +10,8 @@ public interface TokenData {
 	 void saveTokens(String accessToken, String refreshToken, String empId);
 	 void newToken(Cookie refreshToken, HttpServletResponse response);
 	 void deleteData();
+	 boolean existsByRefreshToken(String refreshToken);
+	 boolean existsByAccessToken(String accessToken);
+	 int deleteByAccessToken(String accessToken);
+	 int deleteByRefreshToken(String refreshToken);
 }
