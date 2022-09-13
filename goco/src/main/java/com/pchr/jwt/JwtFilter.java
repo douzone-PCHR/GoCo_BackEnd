@@ -61,9 +61,9 @@ public class JwtFilter extends OncePerRequestFilter {
      	}
     }
     private void CookieCheck(String accessToken,String refreshToken,HttpServletRequest request, HttpServletResponse response) {
-    	if(refreshToken==null&&accessToken.length()<110) {// 엑세스 + 리프레쉬 둘다 업을 때 로그인 넘기기
-        	redirectedToLogin(request,response);
-        }
+    	if(accessToken==null&&refreshToken==null||refreshToken==null&&accessToken.length()<110) {
+    		redirectedToLogin(request,response);
+    	}
     }
     // 필터링 실행 메소드 , 
     @Override
