@@ -38,6 +38,7 @@ public class WebSecurityConfig {
     			.authorizeRequests()
     	//모든 Requests에 있어서 /auth/**를 제외한 모든 uri의 request는 토큰이 필요하다. /auth/**는 로그인 페이지를 뜻한다.
     	        .antMatchers("/api/auth/**").permitAll()
+    	        .antMatchers("/api/user/newtoken").permitAll()
     	     //   .antMatchers("/api/**").permitAll()
     	        .antMatchers("/api/user/**").access("hasRole('ADMIN') or hasRole('USER')or hasRole('MANAGER')")
     	        .antMatchers("/api/manager/**").access("hasRole('ADMIN') or hasRole('MANAGER')")
