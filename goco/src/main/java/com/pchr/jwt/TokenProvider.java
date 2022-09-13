@@ -15,6 +15,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.CookieGenerator;
+
+import com.pchr.config.SecurityUtil;
 import com.pchr.dto.TokenDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -41,7 +44,7 @@ public class TokenProvider {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-// 엑세스토큰 만드는것 
+    // 엑세스토큰 만드는것 
     public TokenDTO generateTokenDto(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -96,7 +99,7 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-//토큰을 검증하기 위한 메소드다.
+    //토큰을 검증하기 위한 메소드다.
     public boolean validateToken(HttpServletResponse response,String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -114,7 +117,7 @@ public class TokenProvider {
         return false;
     }
 
-//토큰을 claims형태로 만드는 메소드다. 이를 통해 위에서 권한 정보가 있는지 없는지 체크가 가능하다.
+    //토큰을 claims형태로 만드는 메소드다. 이를 통해 위에서 권한 정보가 있는지 없는지 체크가 가능하다.
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
@@ -122,6 +125,16 @@ public class TokenProvider {
             return e.getClaims();
         }
     }
-    
+    // 쿠키 리셋 
+    public void cookieReset(HttpServletResponse response) {
+		CookieGenerator cg = new CookieGenerator();
+		cg.setCookieName("refreshToken");
+		cg.setCookieMaxAge(0);
+		cg.addCookie(response, "1");
+		cg.setCookieName("accessToken");
+		cg.setCookieMaxAge(0);
+		cg.addCookie(response, "1");
+		SecurityUtil.contextReset();
+    }
     
 }
