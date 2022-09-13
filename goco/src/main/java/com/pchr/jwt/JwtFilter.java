@@ -38,7 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
     }
     // 리프레쉬토큰으로 엑세스 생성 
     private void createCookie(HttpServletRequest request, HttpServletResponse response,String refreshToken) {
-         if(tokenProvider.validateToken(refreshToken)) {//리프레쉬 만료일 체크, 
+         if(tokenProvider.validateToken(response,refreshToken)) {//리프레쉬 만료일 체크, 
          	if(!request.getRequestURI().equals("/api/user/newtoken")) {
          		if(!request.getRequestURI().equals("/api/auth/logOut")) {
          			response.addHeader("refresh", "true");
@@ -53,7 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
      	if(!request.getRequestURI().equals("/api/user/menu/commute")) {
      		if(!request.getRequestURI().equals("/api/auth/login")) {
      			response.addHeader("refresh", "false");
-     			throw new RuntimeException("getTwoToken");        				
+     			throw new RuntimeException("redirectedToLogin");        				
      		}
      	}
     }
@@ -71,14 +71,11 @@ public class JwtFilter extends OncePerRequestFilter {
 	        	//리프레쉬가 있는데 디비에 없는 경우 + 엑세스가 있는데 디비에 없는 경우
 	        	redirectedToLogin(request,response);
 	        }
-        }else if(!tokenDataRepository.existsByAccessToken(accessToken)){// 리프레쉬없고 엑세스는 있는데 엑세스가 디비에 없을 때      	
-        	redirectedToLogin(request,response); 
         }
-       
 //validateToken으로 토큰이 유효한지 검사를 해서,만약 유효하다면 Authentication을 가져와서 SecurityContext에 저장한다
 //SecurityContext에서 허가된 uri 이외의 모든 Request 요청은 전부 이 필터를 거치게 되며, 토큰 정보가 없거나 유효치않으면 정상적으로 수행되지 않는다.
 //반대로 Request가 정상적으로 Controller까지 도착했으면 SecurityContext에 Member ID가 존재한다는 것이 보장이 된다.
-        if (tokenProvider.validateToken(accessToken)&&tokenDataRepository.existsByAccessToken(accessToken)) {
+        if (tokenProvider.validateToken(response,accessToken)&&tokenDataRepository.existsByAccessToken(accessToken)) {
             Authentication authentication = tokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

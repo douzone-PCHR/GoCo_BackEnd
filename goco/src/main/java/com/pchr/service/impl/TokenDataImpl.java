@@ -72,7 +72,7 @@ public class TokenDataImpl implements TokenData {
 												.map(token-> token.toDTO(token))
 												.orElseThrow(() -> new RuntimeException("403"));
 		// 토큰유효시간 지났나 안지났나 확인
-		tokenProvider.validateToken(tokenDataDTO.getRefreshToken());
+		tokenProvider.validateToken(response,tokenDataDTO.getRefreshToken());
 		
 //		emp에서 auth를 꺼낸 후 토큰과 쿠키를 각각 넣는다.
 		EmployeeDTO empDTO = empolyServiceImpl.findByEmpId(tokenDataDTO.getEmpId())
