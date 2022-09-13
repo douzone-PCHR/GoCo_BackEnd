@@ -79,8 +79,10 @@ public class AuthServiceImpl implements AuthService{
 	    Employee commuteEmployee = empolyServiceImpl.save(employee);
 	 
 	    Commute commute = Commute.builder()
-	    		.clockIn(LocalDateTime.now())
-	    		.clockOut(LocalDateTime.now())
+	    		.clockIn(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
+						LocalDateTime.now().getDayOfMonth(), 0, 0))
+	    		.clockOut(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
+						LocalDateTime.now().getDayOfMonth(), 0, 0))
 	    		.commuteStatus("0")
 	    		.employee(commuteEmployee)
 	    		.commuteCheck(0)
