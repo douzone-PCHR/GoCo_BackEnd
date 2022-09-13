@@ -1,12 +1,9 @@
 package com.pchr.jwt;
-
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,10 +13,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import com.pchr.dto.TokenDTO;
-import com.pchr.repository.TokenDataRepository;
-import com.pchr.service.impl.EmpolyServiceImpl;
-import com.pchr.service.impl.TokenDataImpl;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -28,10 +21,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+
 
 @Component
-
 public class TokenProvider {
 	
     private static final String AUTHORITIES_KEY = "auth";//토큰 생성, 검증할 때 쓰이는 값

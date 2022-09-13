@@ -185,17 +185,18 @@ public class AuthServiceImpl implements AuthService{
 		SecurityUtil.contextReset();
 		return 1;
 	}
-	
+	@Override
     // 엑세스 토큰 받아오기 
-    private String getAccessToken(HttpServletRequest request) {
+	public String getAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;
     }
+	@Override
     // 리프레쉬 토큰 받아오기 
-    private String getRefreshToken(HttpServletRequest request) {
+	public String getRefreshToken(HttpServletRequest request) {
     	if(request.getCookies()!=null) {
 	    	 for (Cookie eachCookie : request.getCookies()) {
 	    		 if(eachCookie.getName().equals("refreshToken")) {

@@ -2,7 +2,6 @@ package com.pchr.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.JobTitleDTO;
@@ -28,4 +27,6 @@ public interface AuthService {
 	public TeamPositionDTO getTeamPositionDTO();
 	public JobTitleDTO getJobTitleDTO();
 	public int logOut(HttpServletRequest request,HttpServletResponse response);
+	public String getAccessToken(HttpServletRequest request);
+	public String getRefreshToken(HttpServletRequest request);
 }

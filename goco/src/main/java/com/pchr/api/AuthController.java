@@ -1,7 +1,6 @@
 package com.pchr.api;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-
 import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
@@ -44,7 +41,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.signup(employeeDTO));
 	}  
 
-  @PostMapping("/login")
+	@PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
     	TokenDTO tokenDTO = authService.login(employeeDTO);
     	if(tokenDTO != null) {
