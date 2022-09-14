@@ -2,12 +2,10 @@ package com.pchr.jwt;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.pchr.repository.TokenDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,25 +17,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private String[] exceptURL = {"/api/user/menu/commute","/api/auth/login","/api/auth/logOut","/api/auth/getAllUnit","/api/auth/checkInfo",
     		"/api/auth/sendEmailForEmail","/api/auth/find/1","/api/auth/signup","/api/auth/sendEmailForId","/api/auth/find/2",
     		"/api/auth/sendEmailForPwd","/api/auth/find/3"};
-    // 엑세스 토큰 받아오기 
-    private String getAccessToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-    // 리프레쉬 토큰 받아오기 
-    private String getRefreshToken(HttpServletRequest request) {
-    	if(request.getCookies()!=null) {
-	    	 for (Cookie eachCookie : request.getCookies()) {
-	    		 if(eachCookie.getName().equals("refreshToken")) {
-	    			 return eachCookie.getValue();
-	    		 }
-	         }
-    	}
-    	return null;
-    }
+
     // 리프레쉬토큰으로 엑세스 생성 
     private void createCookie(HttpServletRequest request, HttpServletResponse response,String refreshToken) {
          if(tokenProvider.validateToken(response,refreshToken)) {//리프레쉬 만료일 체크, 
@@ -73,8 +53,8 @@ public class JwtFilter extends OncePerRequestFilter {
     // 필터링 실행 메소드 , 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-    	String refreshToken = getRefreshToken(request);
-        String accessToken = getAccessToken(request);
+    	String refreshToken = tokenProvider.getRefreshToken(request);
+        String accessToken = tokenProvider.getAccessToken(request);
         CookieCheck(accessToken,refreshToken,request,response);
         if(refreshToken!=null) {
 	        if(accessToken.equals("undefined")&&tokenDataRepository.existsByRefreshToken(refreshToken)) {

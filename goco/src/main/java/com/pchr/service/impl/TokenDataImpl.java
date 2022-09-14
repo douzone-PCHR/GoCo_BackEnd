@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.CookieGenerator;
 import com.pchr.dto.EmployeeDTO;
+import com.pchr.dto.TokenDTO;
 import com.pchr.dto.TokenDataDTO;
 import com.pchr.jwt.TokenProvider;
 import com.pchr.repository.TokenDataRepository;
@@ -113,5 +114,11 @@ public class TokenDataImpl implements TokenData {
 	@Override
 	public int deleteByRefreshToken(String refreshToken) {
 		return tokenDataRepository.deleteByRefreshToken(refreshToken);
+	}
+	@Override
+	public void cookiesSave(HttpServletResponse response, TokenDTO tokenDTO, EmployeeDTO employeeDTO) {
+		insertCookies(response,tokenDTO.getAccessToken(),tokenDTO.getRefreshToken()); // 브라우저 쿠키에 쿠키저장
+		saveTokens(tokenDTO.getAccessToken(),tokenDTO.getRefreshToken(),employeeDTO.getEmpId());// db에 저장하는 것
+		tokenDTO.setRefreshToken("");
 	}	
 }
