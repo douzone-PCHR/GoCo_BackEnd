@@ -48,8 +48,8 @@ deploy:
     bucket: pchr-goco
     key : back.zip
     bundle_type : zip
-    application : goco-codedeploy
-    deployment_group: goco-codedeploy-group
+    application : goco-codedeploy-webservice
+    deployment_group: goco-codedeploy-webservice
     region: ap-northeast-2
     wait-until-deployed: true
     on:
