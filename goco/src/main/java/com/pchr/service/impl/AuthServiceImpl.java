@@ -1,27 +1,19 @@
 package com.pchr.service.impl;
 
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import org.springframework.web.util.CookieGenerator;
-
-import com.pchr.config.SecurityUtil;
 import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
@@ -77,7 +69,11 @@ public class AuthServiceImpl implements AuthService{
 	    employeeDTO.setTeamPosition(getTeamPositionDTO());// 팀원으로 자동 지정 
 	    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
 	    Employee commuteEmployee = empolyServiceImpl.save(employee);
-	 
+	    insertCommute(commuteEmployee);
+	    return  EmployeeResponseDTO.of(commuteEmployee);
+	}	
+	@Override
+	public void insertCommute(Employee commuteEmployee) {
 	    Commute commute = Commute.builder()
 	    		.clockIn(LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
 						LocalDateTime.now().getDayOfMonth(), 0, 0))
@@ -88,8 +84,8 @@ public class AuthServiceImpl implements AuthService{
 	    		.commuteCheck(0)
 	    		.build();
 	    commuteRepository.save(commute);
-	    return  EmployeeResponseDTO.of(commuteEmployee);
-	}	
+	}
+
 	// 로그인시 토큰 만드는것 
 	@Override
     public TokenDTO login(EmployeeDTO employeeDTO) {
@@ -188,39 +184,9 @@ public class AuthServiceImpl implements AuthService{
 	}
 	@Override
 	public int logOut(HttpServletRequest request,HttpServletResponse response) {
-		tokenDataImpl.deleteByAccessToken(getAccessToken(request));
-		tokenDataImpl.deleteByRefreshToken(getRefreshToken(request));
-		CookieGenerator cg = new CookieGenerator();
-		cg.setCookieName("refreshToken");
-		cg.setCookieMaxAge(0);
-		cg.addCookie(response, "1");
-		cg.setCookieName("accessToken");
-		cg.setCookieMaxAge(0);
-		cg.addCookie(response, "1");
-		SecurityUtil.contextReset();
+		tokenDataImpl.deleteByAccessToken(tokenProvider.getAccessToken(request));
+		tokenDataImpl.deleteByRefreshToken(tokenProvider.getRefreshToken(request));
+		tokenProvider.cookieReset(response);
 		return 1;
 	}
-	@Override
-    // 엑세스 토큰 받아오기 
-	public String getAccessToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-	@Override
-    // 리프레쉬 토큰 받아오기 
-	public String getRefreshToken(HttpServletRequest request) {
-    	if(request.getCookies()!=null) {
-	    	 for (Cookie eachCookie : request.getCookies()) {
-	    		 if(eachCookie.getName().equals("refreshToken")) {
-	    			 return eachCookie.getValue();
-	    		 }
-	         }
-    	}
-    	return null;
-    }
-	
-	
 }

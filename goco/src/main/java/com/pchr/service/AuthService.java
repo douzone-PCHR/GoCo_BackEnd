@@ -7,6 +7,7 @@ import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.JobTitleDTO;
 import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.TokenDTO;
+import com.pchr.entity.Employee;
 
 
 
@@ -27,6 +28,5 @@ public interface AuthService {
 	public TeamPositionDTO getTeamPositionDTO();
 	public JobTitleDTO getJobTitleDTO();
 	public int logOut(HttpServletRequest request,HttpServletResponse response);
-	public String getAccessToken(HttpServletRequest request);
-	public String getRefreshToken(HttpServletRequest request);
+	void insertCommute(Employee commuteEmployee);
 }

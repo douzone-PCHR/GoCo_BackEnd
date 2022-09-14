@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.CookieGenerator;
 
 import com.pchr.config.SecurityUtil;
@@ -136,5 +139,22 @@ public class TokenProvider {
 		cg.addCookie(response, "1");
 		SecurityUtil.contextReset();
     }
+	public String getAccessToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+	}
+	public String getRefreshToken(HttpServletRequest request) {
+		if(request.getCookies()!=null) {
+		    	 for (Cookie eachCookie : request.getCookies()) {
+		    		 if(eachCookie.getName().equals("refreshToken")) {
+		    			 return eachCookie.getValue();
+		    		 }
+		         }
+	   	}
+	   	return null;
+	}
     
 }

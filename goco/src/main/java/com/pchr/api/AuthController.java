@@ -45,9 +45,7 @@ public class AuthController {
     public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
     	TokenDTO tokenDTO = authService.login(employeeDTO);
     	if(tokenDTO != null) {
-    		tokenDataImpl.insertCookies(response,tokenDTO.getAccessToken(),tokenDTO.getRefreshToken());
-    		tokenDataImpl.saveTokens(tokenDTO.getAccessToken(),tokenDTO.getRefreshToken(),employeeDTO.getEmpId());// db에 저장하는 것
-    		tokenDTO.setRefreshToken("");
+    		tokenDataImpl.cookiesSave(response,tokenDTO,employeeDTO);
     	}
     	else{
     		throw new RuntimeException("토큰 생성 에러");
