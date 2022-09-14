@@ -60,7 +60,7 @@ public class Commute {
 					.clockIn(commute.getClockIn())
 					.clockOut(commute.getClockOut())
 					.commuteStatus(commute.getCommuteStatus())
-					.employee(commute.getEmployee().toFKDTO(commute.getEmployee()))
+					.employee(commute.getEmployee().toDTO(commute.getEmployee()))
 					.commuteCheck(commute.getCommuteCheck())
 					.build();
 			

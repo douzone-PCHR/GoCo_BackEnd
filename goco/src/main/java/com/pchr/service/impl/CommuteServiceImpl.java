@@ -183,10 +183,18 @@ public class CommuteServiceImpl implements CommuteService {
 	}
 
 	public List<CommuteDTO> findMenuCommuteStatus() {
+		List<CommuteDTO> list = null;
+		if(!"anonymousUser".equals(SecurityUtil.getCurrentMemberId())) {
+			list = commuteRepository.findMenuCommuteStatus(SecurityUtil.getCurrentMemberId())
+					.stream().map(commute -> commute.toCommuteDto(commute))
+					.collect(Collectors.toList());
+		}
+		return list;
 		
-		return commuteRepository.findMenuCommuteStatus(SecurityUtil.getCurrentMemberId())
-		.stream().map(commute -> commute.toCommuteDto(commute))
-				.collect(Collectors.toList());
+	}
+
+	public void deleteCommuteByEmpNum(Long empNum) {
+		commuteRepository.deleteByEmpNum(empNum);
 	}
 
 }

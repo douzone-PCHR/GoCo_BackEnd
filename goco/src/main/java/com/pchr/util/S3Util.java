@@ -98,7 +98,7 @@ public class S3Util {
 		if (originalFileName.length() != 0) {
 			String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
 			try {
-
+				System.out.println(multipart.getInputStream());
 				uploadFile(directory + fileName, multipart.getInputStream()); // S3 File Upload 부분 신경 안써도 됨.
 				String filePath = getFileUrl(directory + fileName); // S3 url 값 받아오기
 				FileDTO fileDTO = FileDTO.builder().fileName(fileName).originalName(originalFileName).filePath(filePath)

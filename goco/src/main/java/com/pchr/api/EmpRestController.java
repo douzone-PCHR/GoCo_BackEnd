@@ -1,14 +1,7 @@
 package com.pchr.api;
-
 import java.util.HashMap;
 import java.util.List;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,13 +9,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
-import com.pchr.entity.Employee;
 import com.pchr.entity.Resignation;
 import com.pchr.service.impl.EmpolyServiceImpl;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,80 +21,105 @@ import lombok.RequiredArgsConstructor;
 public class EmpRestController {
 	private final EmpolyServiceImpl empolyServiceImpl;
 
-	/////////////////////////////////// 유저 권한 이하 회원 정보 수정
-	/////////////////////////////////// //////////////////////////////
-	@DeleteMapping("/user/delete") // 아이디 삭제
+	/**
+	 * 회원탈퇴
+	 * 
+	 * @return int
+	 */
+	@DeleteMapping("/user/delete")
 	public int delete() {
 		return empolyServiceImpl.delete();
-	} // http://localhost:8080/user/delete
+	} 
 
-	@PutMapping("/user/changePwd") // 비번변경
-	public int setPassword(@RequestBody HashMap<String, String> map) {/////// ★★★
+	/**
+	 * 비번변경
+	 * 
+	 * @return int
+	 */
+	@PutMapping("/user/changePwd")
+	public int setPassword(@RequestBody HashMap<String, String> map) {
 		return empolyServiceImpl.setPassword(map.get("password"), map.get("password2"));
-	} // http://localhost:8080/user/changePwd
+	}
 
-	@PutMapping("/user/changeEmail") // 메일변경
+	/**
+	 * 메일변경
+	 * 
+	 * @return int
+	 */
+	@PutMapping("/user/changeEmail")
 	public int setEmail(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.emailChange(e.getEmail());
-	} // http://localhost:8080/user/changeEmail
+	}
 
-	@PutMapping("/user/changePhone") // 폰번호변경
+	/**
+	 * 번호변경
+	 * 
+	 * @return int
+	 */
+	@PutMapping("/user/changePhone")
 	public int setPhone(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.setPhone(e.getPhoneNumber());
-	} // http://localhost:8080/user/changePhone
+	}
 
-	@GetMapping("/user/me") // 메일, id, unit 반환 해줌
+	/**
+	 * userMe
+	 * 
+	 * @return ResponseEntity<EmployeeResponseDTO>
+	 */
+	@GetMapping("/user/me") 
 	public ResponseEntity<EmployeeResponseDTO> getMyMemberInfo() {
 		EmployeeResponseDTO myInfoBySecurity = empolyServiceImpl.getMyInfoBySecurity();
 		return ResponseEntity.ok((myInfoBySecurity));
-	} // http://localhost:8080/user/me
-		///////////////////////////////// 메니저 권한 ////////////////////////////////////
-		// 내가 팀장이면 내 팀원
+	}
 
 	///////////////////////////////// 어드민 권한 ////////////////////////////////////
+	/**
+	 * 권한변경
+	 * 
+	 * @return int
+	 */
 	@PutMapping("/admin/role") // 권한변경
-//    public int setRol(@RequestParam Authority authority,@RequestParam String empId) {
 	public int setRol(@RequestBody EmployeeDTO e) {
 		System.out.println("e.getAuthority() = " + e.getAuthority());
 		return empolyServiceImpl.changeRole(e.getAuthority(), e.getEmpId());
-	} // http://localhost:8080/admin/role
-//    {
-//        "empId":"kyj",
-//        "authority":"ROLE_ADMIN"
-//    }
+	}
+
+
 	@GetMapping("/admin/findmanager/{unitid}")
 	public List<EmployeeDTO> findManager(@PathVariable("unitid") Long unitId){
 		return empolyServiceImpl.findManager(unitId);
 	}
-	@GetMapping("/admin/findAll") // 직원전체조회
+	
+	/**
+	 * 직원전체조회
+	 * 
+	 * @return List<EmployeeDTO>
+	 */
+	@GetMapping("/admin/findAll")
 	public List<EmployeeDTO> findAll() {
 		return empolyServiceImpl.findAll();
-	} // http://localhost:8080/admin/findAll
+	} 
 
-	@GetMapping("/admin/ResignationAll") // 퇴사자 전체 조회
+	/**
+	 * 퇴사자 전체 조회
+	 * 
+	 * @return List<Resignation>
+	 */
+	@GetMapping("/admin/ResignationAll")
 	public List<Resignation> ResignationAll() {
 		return empolyServiceImpl.ResignationAll();
-	} // http://localhost:8080/admin/ResignationAll
+	}
 
 	@PutMapping("/admin/changeData/{number}") // 1휴가 , 2메일 , 3아이디, 4입사일, 5이름 , 6핸드폰 번호 변경
 	public int changeData(@PathVariable(name = "number") int number, @RequestBody HashMap<Object, String> map) {
 		return empolyServiceImpl.changeData(number, map.get("empNum"), map.get("data"));
 	} // http://localhost:8080/admin/changeData/1
-//    {
-//        "empNum":"25",
-//        "data":"10"
-//    }   
+
 
 	@PutMapping("/admin/changeManager") // 메니저 변경
 	public int changeManager(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.changeManager(e.getEmpNum(), e.getUnit());
 	}// http://localhost:8080/admin/changeManager
-//    {
-//        "empNum":"26",
-//        "unit":{
-//               "unitId" : "3"
-//           }
-//    }
 
 	@PutMapping("/admin/changUnitId") // Unit_id 변경 메소드
 	public int changUnitId(@RequestBody EmployeeDTO e) {
@@ -124,9 +139,7 @@ public class EmpRestController {
 		System.out.println(id);
 		return empolyServiceImpl.adminDelete(id);
 	} // http://localhost:8080/admin/delete?empNum=14
-//    {
-//        "empNum":"22"
-//    }   
+  
 
 	@PutMapping("/admin/emp/jobtitle/{id}/{type}/{value}")
 	public boolean updateEmpJobTitle(@PathVariable("id") Long id, @PathVariable("type") int type,

@@ -1,37 +1,29 @@
 package com.pchr.service.impl;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.pchr.config.SecurityUtil;
 import com.pchr.dto.CalendarVO;
 import com.pchr.dto.EmployeeDTO;
-import com.pchr.dto.VacationAndBusinessVO;
 import com.pchr.dto.WorkDTO;
-import com.pchr.entity.Employee;
 import com.pchr.entity.Work;
 import com.pchr.repository.EmployeeRepository;
 import com.pchr.repository.WorkRepository;
 import com.pchr.response.Message;
 import com.pchr.response.StatusEnum;
 import com.pchr.service.WorkService;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -75,9 +67,10 @@ public class WorkServiceImpl implements WorkService {
 
 	@Transactional
 	@Override
-	public ResponseEntity<Message> workSave(WorkDTO workDTO) {
+	public ResponseEntity<Message> workSave(WorkDTO workDTO) throws DataIntegrityViolationException {
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
+        
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 		Work entity = workDTO.toEntityWork(workDTO);
 		workRepository.save(entity);
@@ -144,6 +137,10 @@ public class WorkServiceImpl implements WorkService {
 	
 		
 		return result;
+	}
+
+	public void deleteWorkByEmpNum(Long empNum) {
+		workRepository.deleteByEmpNum(empNum);
 	}
 
 }

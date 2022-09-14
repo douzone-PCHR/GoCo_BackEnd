@@ -1,9 +1,6 @@
 package com.pchr.service;
-
 import java.util.List;
 import java.util.Optional;
-
-import com.pchr.config.SecurityUtil;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.UnitDTO;
@@ -43,4 +40,6 @@ public interface EmployeeService {
 	public int changeManager(Long empNum, UnitDTO unit);
 	public void LeaderToMember(Long unitId);
 	public void MemberToLeader(Employee employee, UnitDTO unit);
+	void deleteForeignKey(Long empNum);
+	public void deleteComment(Long empNum);
 }
