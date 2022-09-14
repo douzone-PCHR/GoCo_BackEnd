@@ -125,17 +125,11 @@ public class WorkServiceImpl implements WorkService {
 		if (SecurityUtil.getCurrentMemberId().equals(empId)) {
 			List<Map<String, Object>> findList = workRepository.findAllCalendarData(SecurityUtil.getCurrentMemberId(), check);
 			result = calendar.entityCalendartoVO(findList);
-
 		} else {
 			check = "1"; 
 			List<Map<String, Object>> findList = workRepository.findAllCalendarData(empId, check);
 			result = calendar.entityCalendartoVO(findList);
 		}
-		for (CalendarVO calendarVO : result) {
-			System.out.println(calendarVO);
-		}
-	
-		
 		return result;
 	}
 
