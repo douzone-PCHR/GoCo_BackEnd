@@ -17,6 +17,7 @@ import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.dto.UnitDTO;
+import com.pchr.response.Message;
 import com.pchr.service.impl.AuthServiceImpl;
 import com.pchr.service.impl.EmpolyServiceImpl;
 import com.pchr.service.impl.TokenDataImpl;
@@ -31,7 +32,13 @@ public class AuthController {
 	private final EmpolyServiceImpl empolyServiceImpl;
 	private final UnitServiceImpl unitImpl;
 	private final TokenDataImpl tokenDataImpl;
-	@PostMapping("/signup") // 회원가입
+	
+	/**
+	 * 회원가입
+	 * 
+	 * @return ResponseEntity<?>
+	 */
+	@PostMapping("/signup")
 	public ResponseEntity<?> signup(@Valid @RequestBody EmployeeDTO employeeDTO, Errors errors) {
 		if (errors.hasErrors()) {
 			/* 유효성 통과 못한 필드와 메시지를 핸들링 */
@@ -41,13 +48,16 @@ public class AuthController {
         return ResponseEntity.ok(authService.signup(employeeDTO));
 	}  
 
+	/**
+	 * 로그인
+	 * 
+	 * @return ResponseEntity<?>
+	 */
 	@PostMapping("/login")
-    public ResponseEntity<TokenDTO> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
     	TokenDTO tokenDTO = authService.login(employeeDTO);
     	if(tokenDTO != null) {
-    		tokenDataImpl.insertCookies(response,tokenDTO.getAccessToken(),tokenDTO.getRefreshToken());
-    		tokenDataImpl.saveTokens(tokenDTO.getAccessToken(),tokenDTO.getRefreshToken(),employeeDTO.getEmpId());// db에 저장하는 것
-    		tokenDTO.setRefreshToken("");
+    		tokenDataImpl.cookiesSave(response,tokenDTO,employeeDTO);
     	}
     	else{
     		throw new RuntimeException("토큰 생성 에러");
@@ -55,34 +65,77 @@ public class AuthController {
         return ResponseEntity.ok(tokenDTO);
     }
     
-    @GetMapping("checkInfo") // 아이디와 이메일 이미 가입되어있는지 확인하는 것
+	/**
+	 * ID or Email 기존 가입자 체크
+	 * 
+	 * @return boolean
+	 */
+    @GetMapping("checkInfo")
     public boolean checkInfo(@RequestParam String info) {
     	return empolyServiceImpl.idCheck(info);
-    }   
-    @PostMapping("/sendEmailForEmail") // 회원가입시 이메일 인증을위해 이메일 보내는 부분
+    }  
+    
+	/**
+	 * 회원가입시 이메일 인증번호 발송 코드
+	 * 
+	 * @return String
+	 */
+    @PostMapping("/sendEmailForEmail")
 	public String sendEmailForEmail(@RequestBody EmployeeDTO e) {
 		return authService.sendEmailForEmail(e.getEmail());
 	} 
 
-    @PostMapping("/sendEmailForId") // id 찾기위해 이메일 보내는함수
+	/**
+	 * ID 찾기, 이메일 인증번호 발송 코드
+	 * 
+	 * @return String
+	 */
+    @PostMapping("/sendEmailForId")
     public String sendemail(@RequestBody EmployeeDTO e) {
     	return authService.sendEmailForId(e.getName(),e.getEmail());
     }  
     
-    @PostMapping("/sendEmailForPwd") // 비번 찾기위해 이메일 보내는 함수 
+	/**
+	 * 비번 찾기, 이메일 인증번호 발송 코드
+	 * 
+	 * @return String
+	 */
+    @PostMapping("/sendEmailForPwd") 
     public String findPassword(@RequestBody EmployeeDTO e) {
     	return authService.sendEmailForPwd(e.getEmpId(),e.getEmail());
     } 
     
-    @PostMapping("/find/{number}") // 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
-	public String find(@PathVariable("number") int number, @RequestBody EmailAuthDTO emailAuthDTO) {
-		return authService.find(number,emailAuthDTO.getEmail(),emailAuthDTO.getAuthenticationNumber());
+	/**
+	 * 인증 번호 확인 함수
+	 * 
+	 * @return ResponseEntity<?>
+	 */
+    @PostMapping("/find/{number}")
+	public ResponseEntity<?> find(@PathVariable("number") int number, @RequestBody EmailAuthDTO emailAuthDTO) {
+    	ResponseEntity<?> result = null;
+		try {
+			result = authService.find(number,emailAuthDTO.getEmail(),emailAuthDTO.getAuthenticationNumber());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	} 
-    
-	@GetMapping("/getAllUnit") // 회원 가입시 모든 유닛 받아오기 
+
+	/**
+	 * 회원 가입시 부서 search code
+	 * 
+	 * @return List<UnitDTO>
+	 */
+	@GetMapping("/getAllUnit") 
 	public List<UnitDTO> allUnit() {
 		return unitImpl.unitAll();
 	}
+	
+	/**
+	 * 로그아웃
+	 * 
+	 * @return int
+	 */
 	@GetMapping("/logOut")
 	public int logOut(HttpServletRequest request,HttpServletResponse response) {
 		return authService.logOut(request,response);
