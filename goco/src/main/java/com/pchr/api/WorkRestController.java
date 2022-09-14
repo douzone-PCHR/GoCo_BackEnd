@@ -3,7 +3,9 @@ package com.pchr.api;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +25,7 @@ import com.pchr.dto.CommuteDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.WorkDTO;
 import com.pchr.response.Message;
+import com.pchr.response.StatusEnum;
 import com.pchr.service.impl.WorkServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -131,10 +134,14 @@ public class WorkRestController {
 	@PostMapping(value = "/user/work",consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Message> workAdd(@RequestBody WorkDTO workDTO) {
 		ResponseEntity<Message> workSave = null;
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
 		try {
 			workSave = workService.workSave(workDTO);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (DataIntegrityViolationException e) {
+			message.setStatus(StatusEnum.OK);
+			message.setMessage("문자열 길이가 맞지 않습니다.");
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		}
 		return workSave;
 	}

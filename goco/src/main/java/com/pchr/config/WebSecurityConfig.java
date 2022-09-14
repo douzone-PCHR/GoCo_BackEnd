@@ -30,30 +30,27 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//WebSecurityConfigurerAdapter는 22년 해당 기능을 deprecated했다.
-//대신 HttpSecurity를 Configuring해서 사용하라는 대안방식을 제시
+	//WebSecurityConfigurerAdapter는 22년 해당 기능을 deprecated했다.
+	//대신 HttpSecurity를 Configuring해서 사용하라는 대안방식을 제시
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     	http
     			.authorizeRequests()
-    	//모든 Requests에 있어서 /auth/**를 제외한 모든 uri의 request는 토큰이 필요하다. /auth/**는 로그인 페이지를 뜻한다.
     	        .antMatchers("/api/auth/**").permitAll()
-    	        .antMatchers("/api/**").permitAll()
-    	              //.antMatchers("/api/user/**").access("hasRole('ADMIN') or hasRole('USER')or hasRole('MANAGER')")
-    	              //.antMatchers("/api/manager/**").access("hasRole('ADMIN') or hasRole('MANAGER')")
-    	              //.antMatchers("/api/admin/**").access("hasRole('ADMIN')")
+    	        .antMatchers("/api/user/newtoken").permitAll()
+    	        .antMatchers("/api/user/**").access("hasRole('ADMIN') or hasRole('USER')or hasRole('MANAGER')")
+    	        .antMatchers("/api/manager/**").access("hasRole('ADMIN') or hasRole('MANAGER')")
+    	        .antMatchers("/api/admin/**").access("hasRole('ADMIN')")
     	        .anyRequest().authenticated()
     	        .and()
-    	//마지막으로 전에 설정한 JwtSecurityConfig클래스를 통해 tokenProvider와tokenDataRepository 를 적용시킨다.
     	        .apply(new JwtSecurityConfig(tokenProvider,tokenDataRepository));
         http
-//우리는 리액트에서 token을 localstorage에 저장할 것이기 때문에 csrf 방지또한 disable했다.
                 .csrf().disable()
-//또한 우리는 REST API를 통해 세션 없이 토큰을 주고받으며 데이터를 주고받기 때문에 세션설정또한 STATELESS로 설정했다.                
+                //또한 우리는 REST API를 통해 세션 없이 토큰을 주고받으며 데이터를 주고받기 때문에 세션설정또한 STATELESS로 설정했다.                
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
-//이후 예외를 핸들링하는 것에서는 이전에 작성했던 JwtAuthenticationEntryPoint와 JwtAccessDeniedHandler를 넣었다.
+                //이후 예외를 핸들링하는 것에서는 이전에 작성했던 JwtAuthenticationEntryPoint와 JwtAccessDeniedHandler를 넣었다.
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler);
         return http.build();

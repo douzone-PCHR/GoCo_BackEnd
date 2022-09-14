@@ -144,18 +144,30 @@ public class EmpolyServiceImpl implements EmployeeService {
 			});
 			deleteForeignKey(employee.getEmpNum());
 			return deleteByEmpId(empId);
+			//return 1;
 		}
 		return 0;
 	}
 	// 계정 삭제를 위해 외래키 참조하는 모든것들 삭제하는 것
 	@Override
 	public void deleteForeignKey(Long empNum) {
-		commentServiceImpl.deleteCommentByEmpNum(empNum);
+		deleteComment(empNum);
 		boardServiceImpl.deleteBoardByEmpNum(empNum);
 		commuteServiceImpl.deleteCommuteByEmpNum(empNum);
 		workServiceImpl.deleteWorkByEmpNum(empNum);
 		vacationServiceImpl.deleteVacationByEmpNum(empNum);
 		businessTripServiceImpl.deleteBusinessTripByEmpNum(empNum);
+	}
+	@Override
+	public void deleteComment(Long empNum) {// 게시글을 참조하는 모든 댓글을 같이 삭제 해야되기 때문에 만들어진 함수
+		commentServiceImpl.deleteCommentByEmpNum(empNum);
+		List<Long> boardIdData = boardServiceImpl.findAllByBoardId(empNum);
+		for (Long boardId : boardIdData) {
+			List<Long> commentIdData = commentServiceImpl.findByBoardId(boardId);
+			for(Long commentId : commentIdData) {
+				commentServiceImpl.deleteComment(commentId);
+			}
+		}
 	}
 
 	@Override // 내정보 비번 변경

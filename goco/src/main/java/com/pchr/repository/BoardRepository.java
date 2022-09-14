@@ -13,4 +13,8 @@ public interface BoardRepository extends JpaRepository<Board, Long>{
 	@Modifying
 	@Query(value = "delete from board where emp_num = :empNum", nativeQuery = true)
 	void deleteByEmpNum(@Param("empNum") Long empNum);
+
+	@Modifying
+	@Query(value = "select board_id from board where emp_num = :empNum", nativeQuery = true)
+	List<Long> findAllByBoardId(@Param("empNum") Long empNum);
 }

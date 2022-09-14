@@ -29,7 +29,7 @@ public class BusinessTripRestController {
 	private final BusinessTripServiceImpl businessTripService;
 
 	// 출장 신청 리스트 (사원)
-	@GetMapping(value = "/businesslist/{empNum}")
+	@GetMapping(value = "/user/businesslist/{empNum}")
 	public List<BusinessTripDTO> findBusinessTripByEmployeeEmpNum(@PathVariable Long empNum) {
 		List<BusinessTripDTO> businessTripList = businessTripService.getAllBusinessTrip(empNum);
 		System.out.println(businessTripList);
@@ -37,7 +37,7 @@ public class BusinessTripRestController {
 	}
 
 	// 출장 신청 리스트 (팀장)
-	@GetMapping(value = "/businesslist/approve/{unitId}")
+	@GetMapping(value = "/manager/businesslist/approve/{unitId}")
 	public List<BusinessTripDTO> findBusinessTripByEmployeeUnitId(@PathVariable Long unitId) {
 		List<BusinessTripDTO> businessTripList = businessTripService.getAllTeamBusinessTrip(unitId);
 		System.out.println(businessTripList);
@@ -45,14 +45,14 @@ public class BusinessTripRestController {
 	}
 
 	// 출장 상세
-	@GetMapping(value = "/business/{businessTripId}")
+	@GetMapping(value = "/user/business/{businessTripId}")
 	public BusinessTripDTO findBusinessTripByBusinessTripId(@PathVariable Long businessTripId) {
 		return businessTripService.getBusinessTrip(businessTripId);
 	}
 
 	// 출장 신청
 	@Transactional
-	@PostMapping(value = "/business", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PostMapping(value = "/user/business", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public Map<String, List<BusinessTripDTO>> insertBusinessTrip(
 			@RequestPart("businessTripDTO") BusinessTripDTO businessTripDTO,
 			@RequestPart("file") MultipartFile multipartFile) {
@@ -61,27 +61,27 @@ public class BusinessTripRestController {
 
 	// 출장 결재 (팀장)
 	@Transactional
-	@PutMapping(value = "/business/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/manager/business/approve", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void approveBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
 		businessTripService.approveBusiness(businessTripDTO);
 	}
 
 	// 출장 삭제
 	@Transactional
-	@PostMapping(value = "/business/del", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/user/business/del", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void deleteBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
 		businessTripService.deleteBusinessTrip(businessTripDTO);
 	}
 
 	// check date
-	@PostMapping(value = "/business/check", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/user/business/check", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, List<BusinessTripDTO>> checkBusiness(@RequestBody BusinessTripDTO businessTripDTO) {
 
 		return businessTripService.checkBusiness(businessTripDTO);
 	}
 
 	// 매니저페이지 메인 리스트
-	@GetMapping(value = "/business/list")
+	@GetMapping(value = "/manager/business/list")
 	public List<BusinessTripDTO> vacationAndBusiness() {
 
 		return businessTripService.vacationAndBusiness();
