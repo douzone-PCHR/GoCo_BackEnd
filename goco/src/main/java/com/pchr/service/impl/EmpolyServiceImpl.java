@@ -497,7 +497,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 	}
 	
 	public List<EmployeeDTO> findManager(Long unitId){
-		List<Employee> managers = employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitParentUnitUnitId(1L,unitId);
+		List<Employee> managers = employeeRepository.findAllByUnitParentUnitId(unitId);
 		List<EmployeeDTO> managersDto = new ArrayList<EmployeeDTO>();
 		for(Employee manager : managers) {
 			System.out.println(manager.getEmpId());

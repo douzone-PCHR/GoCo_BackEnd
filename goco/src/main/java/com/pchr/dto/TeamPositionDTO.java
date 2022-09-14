@@ -16,7 +16,7 @@ public class TeamPositionDTO {
 	
 	private Long teamPositionId;
 	
-	private String teampPositionName;
+	private String teamPositionName;
 	public TeamPosition toEntity(TeamPositionDTO teamPositionDTO) {
 		TeamPosition teamPosition=TeamPosition.builder()
 										.teamPositionId(teamPositionDTO.getTeamPositionId())

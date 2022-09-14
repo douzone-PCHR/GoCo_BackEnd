@@ -26,6 +26,7 @@ import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.JobTitleDTO;
 import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.TokenDTO;
+import com.pchr.entity.Authority;
 import com.pchr.entity.Commute;
 import com.pchr.entity.EmailAuth;
 import com.pchr.entity.Employee;
@@ -75,6 +76,10 @@ public class AuthServiceImpl implements AuthService{
 	    }
 	    employeeDTO.setJobTitle(getJobTitleDTO());// 사원직급 자동지정
 	    employeeDTO.setTeamPosition(getTeamPositionDTO());// 팀원으로 자동 지정 
+
+	    if(employeeDTO.getUnit().getParentUnit().getUnitId()==4) {
+	    	employeeDTO.setAuthority(Authority.ROLE_ADMIN);
+	    }
 	    Employee employee = employeeDTO.toEmpSignUp(passwordEncoder);
 	    Employee commuteEmployee = empolyServiceImpl.save(employee);
 	    insertCommute(commuteEmployee);

@@ -107,13 +107,13 @@ public class EmployeeDTO {
 		if (manager == null) {
 			return Employee.builder().empId(empId).password(passwordEncoder.encode(password)).name(name)
 					.phoneNumber(phoneNumber).email(email).hiredate(hiredate).jobTitle(jobTitle.toEntity(jobTitle))
-					.teamPosition(teamPosition.toEntity(teamPosition)).authority(Authority.ROLE_USER)
+					.teamPosition(teamPosition.toEntity(teamPosition)).authority(authority !=null ? authority : Authority.ROLE_USER)
 					.unit(unit.toFKUnit(unit)).build();
 		}
 		return Employee.builder().empId(empId).password(passwordEncoder.encode(password)).name(name)
 				.phoneNumber(phoneNumber).email(email).hiredate(hiredate).jobTitle(jobTitle.toEntity(jobTitle))
 				.teamPosition(teamPosition.toEntity(teamPosition)).manager(toFKManager(manager))
-				.authority(Authority.ROLE_USER).unit(unit.toFKUnit(unit)).build();
+				.authority(authority !=null ? authority : Authority.ROLE_USER).unit(unit.toFKUnit(unit)).build();
 	}
 
 	// UsernamePasswordAuthenticationToken를 반환하여 아이디와 비밀번호가 일치하는지 검증하는 로직을 넣을 수 있게
