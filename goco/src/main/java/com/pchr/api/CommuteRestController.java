@@ -135,10 +135,10 @@ public class CommuteRestController {
 		return result;
 	}
 
-//	/**
-//	 * 근태 업데이트
-//	 * @return boolean
-//	 */
+	/**
+	 * 근태 업데이트
+	 * @return ResponseEntity<Message>
+	 */
 	@PutMapping(value = "/user/commute")
 	public ResponseEntity<Message> update(@RequestBody CommuteDTO commuteDTO) {
 

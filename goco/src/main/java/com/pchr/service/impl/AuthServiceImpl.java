@@ -1,11 +1,17 @@
 package com.pchr.service.impl;
 
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -25,6 +31,8 @@ import com.pchr.entity.EmailAuth;
 import com.pchr.entity.Employee;
 import com.pchr.jwt.TokenProvider;
 import com.pchr.repository.CommuteRepository;
+import com.pchr.response.Message;
+import com.pchr.response.StatusEnum;
 import com.pchr.service.AuthService;
 import lombok.RequiredArgsConstructor;
 
@@ -119,21 +127,42 @@ public class AuthServiceImpl implements AuthService{
 	}
 
 	@Override// 1 회원가입시 이메일 인증 번호확인 , 2 아이디찾기 인증번호 반환 , 3 비밀번호 인증번호 확인
-	public String find(int number,String email,String authenticationNumber) {
-		if(count(email)==-1) {
-			return "인증 번호가 3회이상 잘못 입력되었습니다. 재인증 바랍니다.";
+	public ResponseEntity<?> find(int number,String email,String authenticationNumber) {
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        int checkNum = count(email);
+		if(checkNum==-1) {
+			message.setStatus(StatusEnum.BAD_REQUEST);
+			message.setMessage("인증 번호가 3회이상 잘못 입력되었습니다. 재인증 바랍니다.");
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//			return "인증 번호가 3회이상 잘못 입력되었습니다. 재인증 바랍니다.";
+		}else if(checkNum==0) {
+			message.setStatus(StatusEnum.BAD_REQUEST);
+			message.setMessage("해당 메일로 발송된 인증번호가 없습니다.");
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		}
+		
 		EmailAuth emailAuth = emailAuthServiceImpl.findByEmailAndAuthenticationNumber(email,authenticationNumber);// 인증 번호로 테이블을 불러온다.
 		if(emailAuth==null) {
-			return "올바른 인증번호를 입력하세요.";
+			message.setStatus(StatusEnum.BAD_REQUEST);
+			message.setMessage("올바른 인증번호를 입력하세요.");
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//			return "올바른 인증번호를 입력하세요.";
 		}
 		if(authenticationNumber.equals(emailAuth.getAuthenticationNumber())){	
 			if(LocalDateTime.now().compareTo(emailAuth.getValidTime())<0) {// 시간 비교해서 유효할 경우 실행됨
 				switch(number) {
 				case 1:
-					return  authenticationNumber;
+					message.setStatus(StatusEnum.OK);
+					message.setMessage(authenticationNumber);
+					return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//					return  authenticationNumber;
 				case 2:
-					return empolyServiceImpl.findByEmail(emailAuth.getEmail()).get().getEmpId(); // id값 반환
+					message.setStatus(StatusEnum.OK);
+					message.setMessage(empolyServiceImpl.findByEmail(emailAuth.getEmail()).get().getEmpId());
+					return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//					return empolyServiceImpl.findByEmail(emailAuth.getEmail()).get().getEmpId(); // id값 반환
 				case 3:
 					// 1) 랜덤 함수로 임시 비번을 생성하고 고객에게 임시 비번을 전송한다.
 					String password = emailAuthServiceImpl.passwordText(emailAuth.getEmail());//임시 패스워드 문자열 발행
@@ -144,21 +173,32 @@ public class AuthServiceImpl implements AuthService{
 					
 					employeeDTO.setPassword(passwordEncoder.encode((password)));
 					empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
-					return "이메일로 비밀번호가 발송 되었습니다.";
+					
+					message.setStatus(StatusEnum.OK);
+					message.setMessage("이메일로 비밀번호가 발송 되었습니다.");
+					return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//					return "이메일로 비밀번호가 발송 되었습니다.";
 				default :
-					throw new RuntimeException("잘못된 정보가 입력되었습니다.");
+					message.setStatus(StatusEnum.BAD_REQUEST);
+					message.setMessage("잘못된 정보가 입력되었습니다.");
+					return new ResponseEntity<>(message, headers, HttpStatus.OK);
 				}
 			}else {
-				throw new RuntimeException("시간 초과 다시 인증 바랍니다.");
+				message.setStatus(StatusEnum.BAD_REQUEST);
+				message.setMessage("시간 초과 다시 인증 바랍니다.");
+				return new ResponseEntity<>(message, headers, HttpStatus.OK);
 			}
 		}
-		throw new RuntimeException("에러 발생");
+		message.setStatus(StatusEnum.BAD_REQUEST);
+		message.setMessage("에러 발생");
+		return new ResponseEntity<>(message, headers, HttpStatus.OK);
 	}
+	
 	@Override// 인증 번호 반환 해주는 서비스 코드 간결화를 위해 분할
 	public int count(String email) {
 		EmailAuth emailAuthThree = emailAuthServiceImpl.findByEmail(email);
 		if(emailAuthThree==null) {
-			throw new RuntimeException("해당 메일로 발송된 인증번호가 없습니다.");
+			return 0;
 		}
 		if(emailAuthThree.getCount()>3) {
 			emailAuthServiceImpl.deleteByEmail(email);
