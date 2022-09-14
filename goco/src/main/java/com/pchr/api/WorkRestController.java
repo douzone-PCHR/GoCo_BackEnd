@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -132,16 +133,14 @@ public class WorkRestController {
 	 */
 
 	@PostMapping(value = "/user/work",consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Message> workAdd(@RequestBody WorkDTO workDTO) {
-		ResponseEntity<Message> workSave = null;
+	public ResponseEntity<?> workAdd(@Validated @RequestBody WorkDTO workDTO) {
+		ResponseEntity<?> workSave = null;
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
 		try {
 			workSave = workService.workSave(workDTO);
-		} catch (DataIntegrityViolationException e) {
-			message.setStatus(StatusEnum.OK);
-			message.setMessage("문자열 길이가 맞지 않습니다.");
-			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<WorkDTO>(HttpStatus.BAD_REQUEST);
 		}
 		return workSave;
 	}
@@ -172,12 +171,12 @@ public class WorkRestController {
 	 */
 
 	@PutMapping(value = "/user/work")
-	public ResponseEntity<Message> updateWork(@RequestBody WorkDTO workDTO) {
-		ResponseEntity<Message> workUpdate = null;
+	public ResponseEntity<?> updateWork(@Validated @RequestBody WorkDTO workDTO) {
+		ResponseEntity<?> workUpdate = null;
 		try {
 			workUpdate = workService.updateWork(workDTO);
 		} catch (Exception e) {
-			e.printStackTrace();
+			return new ResponseEntity<WorkDTO>(HttpStatus.BAD_REQUEST);
 		}
 		return workUpdate;
 	}

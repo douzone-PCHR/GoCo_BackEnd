@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -34,7 +35,8 @@ public class Work {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "work_id")
 	private Long workId;
-	@Column(name = "work_title" , length=255 ,nullable = false)
+	
+	@Column(name = "work_title" ,nullable = false)
 	private String workTitle;
 	
 	@Column(name = "work_content")

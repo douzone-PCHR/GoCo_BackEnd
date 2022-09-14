@@ -7,6 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.pchr.entity.Work;
 
@@ -25,14 +28,16 @@ public class WorkDTO {
 	
 	private Long workId;
 	
+	@Size(max = 50)
+	@NotEmpty(message = "제목을 입력해주세요. ")
 	private String workTitle;
-	
+	@Size(max = 255 , message = "내용은 255자 이내로 입력해주세요. ")
 	private String workContent;
 	
 	private Date workStartDate;
 	
 	private Date workEndDate;
-	
+
 	private boolean workType;
 	
 	private EmployeeDTO employee;
