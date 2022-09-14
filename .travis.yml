@@ -33,7 +33,7 @@ deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY # 여기
     secret_access_key: $AWS_SECRET_KEY # 여기
-    bucket: pchr-goco
+    bucket: goco-pchr
     skip_cleanup: true
     acl: private
     region: ap-northeast-2
