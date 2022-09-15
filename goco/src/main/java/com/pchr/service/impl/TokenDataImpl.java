@@ -1,8 +1,15 @@
 package com.pchr.service.impl;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Random;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +19,8 @@ import com.pchr.dto.TokenDTO;
 import com.pchr.dto.TokenDataDTO;
 import com.pchr.jwt.TokenProvider;
 import com.pchr.repository.TokenDataRepository;
+import com.pchr.response.Message;
+import com.pchr.response.StatusEnum;
 import com.pchr.service.TokenData;
 import lombok.RequiredArgsConstructor;
 
@@ -63,11 +72,15 @@ public class TokenDataImpl implements TokenData {
 		tokenDataRepository.save(tokenDataDTO.toEntity(tokenDataDTO));		
 	}
 	@Override
-	public void newToken(Cookie refreshToken, HttpServletResponse response) {
-		System.out.println("드감드감");
+	public ResponseEntity<?> newToken(Cookie refreshToken, HttpServletResponse response) {
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 		if(refreshToken==null) // 리프레쉬토큰을 못불러올경우 에러임
 		{
-			throw new RuntimeException("403");
+			message.setStatus(StatusEnum.BAD_REQUEST);
+			message.setMessage("Refresh 토큰을 불러올 수 없습니다.");
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		}
 		TokenDataDTO tokenDataDTO = tokenDataRepository.findByRefreshToken(refreshToken.getValue())
 												.map(token-> token.toDTO(token))
@@ -84,15 +97,17 @@ public class TokenDataImpl implements TokenData {
 		tokenDataDTO.setAccessToken(tokenProvider.createAccessToken(empDTO.getEmpId(), String.valueOf(empDTO.getAuthority())));
 		tokenDataDTO.setRefreshToken(tokenProvider.createRefreshToken(empDTO.getEmpId(), String.valueOf(empDTO.getAuthority()), new Date((new Date().getTime())+timeDiff)));
 		saveCookieAccessToken(response,tokenDataDTO.getAccessToken());
-		saveCookieRefreshToken(response,tokenDataDTO.getRefreshToken(),Long.valueOf(timeDiff/1000).intValue());
+		saveCookieRefreshToken(response,tokenDataDTO.getRefreshToken(),Long.valueOf(timeDiff/1000).intValue());//쿠키는 나누기 1000을 해줘야 1초가됨
 		tokenDataRepository.save(tokenDataDTO.toEntity(tokenDataDTO));
+		message.setStatus(StatusEnum.OK);
+		message.setMessage("재발송 완료");
+		return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		}
 
 	@Override
 	@Scheduled(cron = "0 */5 * * * *")//5분마다실행
 	//@Scheduled(fixedDelay=10000) // 1초마다실행
 	public void deleteData() {
-		System.out.println("new date : "+new Date());
 		tokenDataRepository.findAll().forEach(e->{
 			if(e.getExpireTime().before(new Date())) {// 만료시간이 지난 것들 삭제 
 				tokenDataRepository.deleteByEmpId(e.getEmpId());
