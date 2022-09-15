@@ -45,7 +45,7 @@ deploy:
   - provider: codedeploy 
     access_key_id: $AWS_ACCESS_KEY # 여기
     secret_access_key: $AWS_SECRET_KEY # 여기
-    bucket: pchr-goco
+    bucket: goco-pchr
     key : back.zip
     bundle_type : zip
     application : goco-codedeploy-webservice
