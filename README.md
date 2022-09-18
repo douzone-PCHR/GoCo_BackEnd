@@ -38,13 +38,12 @@
 
 ## 💡 서비스 소개
 
-### 근태와 일정 결재 관리를 한번에! 
+### 근태와 업무, 결재 관리를 한번에! 
 
-> 학교에 가지 않고 등교를 하는 세상이 찾아왔습니다. <br />
-코로나-19가 앞당긴 비대면 시대, 이제는 너무나 익숙해져 버린 우리의 일상입니다. <br />
-드로잉 드림은 단순한 비대면 수업 플랫폼을 넘어서 학생들의 생활 공간이 되는 학교라는 “공간”에 초점을 맞추었습니다.
+> 이번 달 내 근무 시간은 얼마나 될까? 이번 주에 누가 출장이지? 내 휴가 신청이 승인됐을까? <br />
+GoCo는 근태와 내 일정관리, 같은 팀원의 출장 / 휴가 / 사내업무 일정확인 , 결재 관리를 캘린더를 통해 한번에 확인 할 수 있습니다.<br />
 >
-#### 모두에게 필요한 맞춤형 학습 도우미, Drawing Dream에서 출근부터 퇴근까지 함께 하세요! 
+#### 모두에게 편리한 GoCo, Go Company! 출근부터 퇴근까지 함께 하세요! 
 
 <br/>
 
@@ -61,40 +60,32 @@
 
 | 구분       | 기술스택                    | 상세내용                 | 버전          |
 | -------- | ----------------------- | -------------------- | ----------- |
-| 공통     | 형상관리                    | Gitlab               | \-          |
-|          | 이슈관리                    | Jira                 | \-          |
-|          | 커뮤니케이션                  | Mattermost, Notion   | \-          |
-| BackEnd  | DB                      | MySQL                | 5.7         |
+| 공통     | 형상관리                    | Github               | \-          |
+|          | 이슈관리                   | Notion               | \-          |
+|          | 커뮤니케이션                | Notion, Slack        | \-          |
+| BackEnd  | DB                      | MySQL                | 8.0.28      |
 |          |                         | JPA                  | \-          |
 |          |                         | QueryDSL             | \-          |
-|          | Java                    | Zulu                 | 8.33.0.1    |
-|          | Spring                  | Spring               | 5.3.6       |
-|          |                         | Spring Boot          | 2.4.5       |
-|          | IDE                     | Eclipse              | JEE 2020-06 |
+|          | Java                    | JDK                  | 8           |
+|          | Spring                  | Spring Boot          | 2.7.0       |
+|          | IDE                     | STS                  | 3.9.15      |
 |          | Cloud Storage           | AWS S3               | \-          |
-|          | Build                   | Gradle               | 7.3.2       |
-|          | WebRTC                  | Kurento Media Server | 6.16        |
-|          | WebRTC                  | Kurento              | \-          |
-|          | API Docs                | Swagger2             | 3.0.0       |
+|          | Build                   | Maven                | 4.0.0       |
 | FrontEnd | HTML5                   |                      | \-          |
 |          | CSS3                    |                      | \-          |
-|          | JavaScript(ES6)         |                      |\-           |
-|          | React                   | React                | 17.0.2      |
-|          | React                   | Redux                | 7.2.6       |
-|          | React                   | Redux-thunk          | 2.4.1       |
-|          |                         | styled-components    | 5.3.3       |
-|          |                         | framer-motion        | 6.0.0       |
-|          |                         | apexcharts           | 3.33.0      |
-|          |                         | toast-ui/react-editor      | 3.1.2       |
-|          |                         | toast-ui/react-calendar    | 1.0.6       |
-|          | WebSocket               | @stomp/stompjs       | 6.1.2       |
-|          | WebSocket               | stompjs              | 2.3.3       |
-|          | WebSocket               | sockjs-client        | 1.5.2       |
-|          | IDE                     | Visual Studio Code   | 1.63.2      |
-| Server   | 서버                      | AWS EC2              | \-          |
-|          | 플랫폼                     | Ubuntu               | 20.04.3 LTS |
-|          | 배포                      | Docker               | 20.10.12    |
-|          | 배포                      | Jenkins              | 2.319.2     |
+|          | JavaScript(ES8)         |                      | \-          |
+|          | 		             | Axios                | 0.27.2      |
+|          | React                   | React                | 18.2.0      |
+|          | 	                     | React-Router-Dom	    | 6.3.0       |	
+|          |                         | Meterial UI          | 5.10.2      |
+|          |                         | SweetAlert2          | 11.4.26     |
+|          |                         | FullCalendar         | 5.11.2      |
+|          | IDE                     | Visual Studio Code   | 1.66.2      |
+| Server   | 서버                     | AWS EC2              | \-          |
+|          | 플랫폼                    | Ubuntu               | 22.04       |
+|          | 배포                     | Travis ci            | \-          |
+|          |                         | Ruby                 | 3.0.2       |
+|          |                         | AWS CodeDeploy       | \-          |
 
 </details>
 
@@ -123,9 +114,10 @@
 
 ## 🖥️ 주요기능
 
-### 온라인수업
-- 선생님이 수업을 개설하면 해당 수업을 수강하는 학생이 수업에 참여할 수 있습니다.
-- 사용자는 비디오, 오디오 ON/OFF를 설정할 수 있습니다.
+### 근태 관리
+- 로그인 후 출근 버튼을 누르면 출근 상태로 전환 되고, 퇴근을 누르면 퇴근 상태로 전환 됩니다.
+- 현재 출/퇴근 , 지각,  휴가 , 출장 여부는 헤더에서 확인 할 수 있습니다.
+- 사원은 .
 - 선생님은 원활한 수업진행을 위해 화면공유를 할 수 있습니다. 
 
 ### 수업 알림
