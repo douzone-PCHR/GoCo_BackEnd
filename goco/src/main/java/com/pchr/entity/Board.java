@@ -1,7 +1,5 @@
 package com.pchr.entity;
-
 import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -10,16 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.pchr.dto.BoardDTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -67,17 +62,7 @@ public class Board {
 	@JoinColumn(name = "emp_num", nullable = false)
 	private Employee employee;
 
-//	@OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-//	@JsonIgnore
-//	private List<Comment> comments = new ArrayList<Comment>();
-
-	//Entity -> DTO 빌더 (Update /Select 시)
 	public static BoardDTO toBoardDto(Board board) {
-//		List<CommentDTO> commentsDto = new ArrayList<CommentDTO>();
-//		//board의 Comment 리스트들을 DTO로 변환
-//		for (Comment comment : board.getComments()) {
-//			commentsDto.add(comment.toCommentDto(comment));
-//		}
 		//Builder
 		BoardDTO boardDto = BoardDTO.builder()
 				.boardId(board.getBoardId())
@@ -87,7 +72,6 @@ public class Board {
 				.boardContent(board.getBoardContent())
 				.employee(board.getEmployee().toFKDTO(board.getEmployee()))
 				.registeredDate(board.getRegisteredDate())
-//				.comments(commentsDto)
 				.modifiedDate(board.getModifiedDate()).build();
 		return boardDto;
 	}

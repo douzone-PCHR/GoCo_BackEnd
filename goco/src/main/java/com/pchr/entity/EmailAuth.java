@@ -1,16 +1,9 @@
 package com.pchr.entity;
-
-
 import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import org.hibernate.annotations.DynamicInsert;
-
 import com.pchr.dto.EmailAuthDTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

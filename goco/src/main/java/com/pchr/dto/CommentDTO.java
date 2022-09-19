@@ -1,7 +1,6 @@
 package com.pchr.dto;
 import java.util.Date;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import com.pchr.entity.Comment;
 import lombok.AllArgsConstructor;

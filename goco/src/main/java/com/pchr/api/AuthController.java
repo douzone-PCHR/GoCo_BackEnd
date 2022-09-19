@@ -1,14 +1,9 @@
 package com.pchr.api;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +17,6 @@ import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.dto.UnitDTO;
-import com.pchr.response.Message;
-import com.pchr.response.StatusEnum;
 import com.pchr.service.impl.AuthServiceImpl;
 import com.pchr.service.impl.EmpolyServiceImpl;
 import com.pchr.service.impl.TokenDataImpl;
