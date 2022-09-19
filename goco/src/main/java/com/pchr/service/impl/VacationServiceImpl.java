@@ -90,7 +90,6 @@ public class VacationServiceImpl implements VacationService {
 						// 파일을 넣었을 때
 						if (fileDTO != null) {
 							FileDTO newFileDTO = fileService.insertFile(fileDTO);
-							System.out.println(newFileDTO.getFileId());
 							vacationDTO.setFile(newFileDTO);
 						}
 					}
@@ -118,7 +117,6 @@ public class VacationServiceImpl implements VacationService {
 
 				count = (float) (((vacationDTO.getVacationEndDate().getTime()
 						- vacationDTO.getVacationStartDate().getTime())) / (60 * 60 * 24 * 1000));
-				System.out.println(count);
 				employeeRepository.updateVacationCount(vacationDTO.getEmployee().getEmpNum(), count + 1.0F);
 			} else if (vacationDTO.getVacationType().equals("반차")) {
 				count = 0.5F;
