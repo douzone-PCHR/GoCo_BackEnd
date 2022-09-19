@@ -126,10 +126,14 @@ public class Employee {
 		if (employee.getManager() != null) {
 
 			EmployeeDTO employeeDTO = EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
-					.password(employee.getPassword()).email(employee.getEmail()).name(employee.getName())
-					.phoneNumber(employee.getPhoneNumber()).updateDatetime(employee.getUpdateDatetime())
-					.hiredate(employee.getHiredate()).authority(employee.getAuthority())
-					.vacationCount(employee.getVacationCount()).manager(toManagerDTO(employee.getManager()))
+					.password(employee.getPassword()).email(employee.getEmail() == null ? null : employee.getEmail())
+					.name(employee.getName() == null ? null : employee.getName())
+					.phoneNumber(employee.getPhoneNumber() == null ? null : employee.getPhoneNumber())
+					.updateDatetime(employee.getUpdateDatetime())
+					.hiredate(employee.getHiredate() == null ? null : employee.getHiredate())
+					.authority(employee.getAuthority())
+					.vacationCount(employee.getVacationCount() == null ? null : employee.getVacationCount())
+					.manager(employee.getManager() == null ? null : toManagerDTO(employee.getManager()))
 					.jobTitle(employee.getTeamPosition() != null ? employee.getJobTitle().toDTO(employee.getJobTitle())
 							: null)
 					.teamPosition(employee.getTeamPosition() != null
@@ -163,14 +167,20 @@ public class Employee {
 	public EmployeeDTO toManagerDTO(Employee employee) {
 
 		return EmployeeDTO.builder().empNum(employee.getEmpNum()).empId(employee.getEmpId())
-				.password(employee.getPassword()).email(employee.getEmail()).name(employee.getName())
-				.phoneNumber(employee.getPhoneNumber()).updateDatetime(employee.getUpdateDatetime())
-				.hiredate(employee.getHiredate()).authority(employee.getAuthority())
-				.vacationCount(employee.getVacationCount())
-				// .manager(toManagerDTO(employee.getManager()))
-				.jobTitle(employee.getJobTitle().toDTO(employee.getJobTitle()))
-				.teamPosition(employee.getTeamPosition().toDTO(employee.getTeamPosition()))
-				.unit(employee.getUnit() == null ? null : employee.getUnit().toUnitDTO(employee.getUnit())).build();
+				.password(employee.getPassword()).email(employee.getEmail() == null ? null : employee.getEmail())
+				.name(employee.getName() == null ? null : employee.getName())
+				.phoneNumber(employee.getPhoneNumber() == null ? null : employee.getPhoneNumber())
+				.updateDatetime(employee.getUpdateDatetime())
+				.hiredate(employee.getHiredate() == null ? null : employee.getHiredate())
+				.authority(employee.getAuthority())
+				.vacationCount(employee.getVacationCount() == null ? null : employee.getVacationCount())
+				.manager(employee.getManager() == null ? null : toManagerDTO(employee.getManager()))
+				.jobTitle(employee.getTeamPosition() != null ? employee.getJobTitle().toDTO(employee.getJobTitle())
+						: null)
+				.teamPosition(employee.getTeamPosition() != null
+						? employee.getTeamPosition().toDTO(employee.getTeamPosition())
+						: null)
+				.unit(employee.getUnit() != null ? employee.getUnit().toUnitDTO(employee.getUnit()) : null).build();
 	}
 
 	public Resignation toResignation(Employee employee) {
