@@ -1,5 +1,7 @@
 package com.pchr.api;
 import java.util.List;
+
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,26 +19,42 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CommentRestController {
 	private final CommentServiceImpl commentService;
-	// 전체 데이터 조회
+	/**
+	 * 전체데이터조회
+	 * 
+	 * @return List<CommentDTO>
+	 */
 	@GetMapping("/{boardid}")
 	public List<CommentDTO> getAllComment(@PathVariable(name = "boardid") Long boardId) {
 		return commentService.getCommentList(boardId);
 	}
-	// 추가
+	/**
+	 * 추가
+	 * 
+	 * @return void
+	 */
 	@PostMapping("/{empid}/{boardid}")
 	public void insertComment(@PathVariable("empid") Long empid, @PathVariable("boardid") Long boardid,
-			@RequestBody CommentDTO commentDto) {
+			@Validated @RequestBody CommentDTO commentDto) {
 		commentService.insertComment(boardid, commentDto, empid);
 	}
-	// 삭제
+	/**
+	 * 삭제
+	 * 
+	 * @return void
+	 */
 	@DeleteMapping("/{commentid}")
 	public void deleteComment(@PathVariable("commentid") Long commentId) {
 		System.out.println("전달된 값 : "+commentId);
 		commentService.deleteComment(commentId);
 	}
-	// 수정
+	/**
+	 * 수정
+	 * 
+	 * @return void
+	 */
 	@PutMapping("/{commentid}")
-	public void updateComment(@PathVariable("commentid") Long commentId, @RequestBody CommentDTO commentDto) {
+	public void updateComment(@PathVariable("commentid") Long commentId,@Validated @RequestBody CommentDTO commentDto) {
 		commentService.updateComment(commentId, commentDto);
 	}
 }

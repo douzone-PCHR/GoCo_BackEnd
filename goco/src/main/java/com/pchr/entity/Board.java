@@ -40,7 +40,7 @@ public class Board {
 	@Column(name = "board_id",nullable = false)
 	private Long boardId;
 	
-	@Column(name = "board_title", nullable = false)
+	@Column(name = "board_title", nullable = false,length=255)
 	private String boardTitle;
 
 	@Column(name = "board_content", length=10000)

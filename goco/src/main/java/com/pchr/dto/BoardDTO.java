@@ -2,6 +2,8 @@ package com.pchr.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import com.pchr.entity.Board;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +19,13 @@ import lombok.ToString;
 public class BoardDTO {
 
 	private Long boardId;
-
+	
+	@Size(max = 255,message = "게시글 제목은 255자 이내로 입력해주세요.")
+	@NotBlank(message = "게시글 제목을 입력해주세요.")
 	private String boardTitle;
-
+	
+	@Size(max = 10000,message = "게시글 내용은 10,000자 이내로 입력해주세요.")
+	@NotBlank(message = "게시글 내용을 입력해주세요.")
 	private String boardContent;
 
 	private LocalDateTime registeredDate;

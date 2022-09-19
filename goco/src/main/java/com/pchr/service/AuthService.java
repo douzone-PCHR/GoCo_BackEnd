@@ -20,7 +20,7 @@ public interface AuthService {
 	// 회원가입시 이메일 인증번호 보내는 것
 	public String sendEmailForEmail(String email);
 	//로그인
-	public TokenDTO login(EmployeeDTO employeeDTO);
+	public TokenDTO login(EmployeeDTO employeeDTO,HttpServletResponse response);
     // 아이디 찾기위해 메일 보내는 함수 
 	public String sendEmailForId(String name, String email);
 	// 비밀번호 찾기 위해 메일보내는 함수
@@ -32,4 +32,6 @@ public interface AuthService {
 	public JobTitleDTO getJobTitleDTO();
 	public int logOut(HttpServletRequest request,HttpServletResponse response);
 	void insertCommute(Employee commuteEmployee);
+	public void failLogin(EmployeeDTO employeeDTO);
+	public void failLoginCheckNum(EmployeeDTO employeeDTO,HttpServletResponse response);
 }
