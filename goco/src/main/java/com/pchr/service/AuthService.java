@@ -1,18 +1,13 @@
 package com.pchr.service;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.ResponseEntity;
-
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.JobTitleDTO;
 import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.entity.Employee;
-
-
 
 public interface AuthService {    
 	// 회원가입

@@ -1,10 +1,6 @@
 package com.pchr.dto;
-
 import java.time.LocalDateTime;
-
 import com.pchr.entity.EmailAuth;
-import com.pchr.entity.Employee;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

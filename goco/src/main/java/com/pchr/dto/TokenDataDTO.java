@@ -1,10 +1,6 @@
 package com.pchr.dto;
-
 import java.util.Date;
-
-import com.pchr.entity.Board;
 import com.pchr.entity.TokenData;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

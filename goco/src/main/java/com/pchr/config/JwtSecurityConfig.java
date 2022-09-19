@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
     private final TokenProvider tokenProvider;
     private final  TokenDataRepository tokenDataRepository;
-//메인 메소드인 configure은TokenProvider를 주입받아서 JwtFilter를 통해 
+//메인 메소드인 configure은TokenProvider , tokenDataRepository를 주입받아서 JwtFilter를 통해 
 //SecurityConfig 안에 필터를 등록하게 되고, 스프링 시큐리티 전반적인 필터에 적용된다.
     @Override
     public void configure(HttpSecurity http) {

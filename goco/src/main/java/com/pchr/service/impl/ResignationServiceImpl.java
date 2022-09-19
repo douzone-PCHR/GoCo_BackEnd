@@ -1,22 +1,16 @@
 package com.pchr.service.impl;
 
-
-
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.pchr.entity.Resignation;
 import com.pchr.repository.ResignationRepository;
 import com.pchr.service.ResignationService;
-
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor

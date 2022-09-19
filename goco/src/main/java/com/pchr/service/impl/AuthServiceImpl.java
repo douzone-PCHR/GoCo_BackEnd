@@ -1,5 +1,4 @@
 package com.pchr.service.impl;
-
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -7,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +24,6 @@ import com.pchr.dto.EmployeeResponseDTO;
 import com.pchr.dto.JobTitleDTO;
 import com.pchr.dto.TeamPositionDTO;
 import com.pchr.dto.TokenDTO;
-import com.pchr.entity.Authority;
 import com.pchr.entity.Commute;
 import com.pchr.entity.EmailAuth;
 import com.pchr.entity.Employee;
