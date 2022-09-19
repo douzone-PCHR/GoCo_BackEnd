@@ -46,7 +46,10 @@ public class VacationAndBusinessVO {
 
 	private Timestamp business_trip_end_date;
 
-	private BigDecimal commute_work_time;
+	private BigDecimal commute_work_hour;
+	
+	private BigDecimal commute_work_min;
+
 
 	private Float vacation_count;
 
@@ -68,7 +71,8 @@ public class VacationAndBusinessVO {
 					.vacation_end_date((Timestamp) list.get(i).get("vacation_end_date"))
 					.business_trip_start_date((Timestamp) list.get(i).get("business_trip_start_date"))
 					.business_trip_end_date((Timestamp) list.get(i).get("business_trip_end_date"))
-					.commute_work_time((BigDecimal) list.get(i).get("commute_work_time"))
+					.commute_work_hour((BigDecimal) list.get(i).get("commute_work_hour"))
+					.commute_work_min((BigDecimal) list.get(i).get("commute_work_min"))
 					.vacation_count((Float) list.get(i).get("vacation_count")).build();
 			result.add(vo);
 		}

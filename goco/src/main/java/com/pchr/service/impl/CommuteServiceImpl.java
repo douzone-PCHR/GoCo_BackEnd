@@ -53,7 +53,6 @@ public class CommuteServiceImpl implements CommuteService {
 
 // 우리팀원 - 팀원에 대한 오늘 일자중 출근한 사람들 다 가져옴.
 	@Transactional(readOnly = true)
-	@Override
 	public List<CommuteDTO> findById(Long empnum) {
 		LocalDateTime startDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
 				LocalDateTime.now().getDayOfMonth(), 0, 0);
@@ -148,7 +147,9 @@ public class CommuteServiceImpl implements CommuteService {
 
 		Map<String, Object> map = commuteRepository.findAllCommuteTime(SecurityUtil.getCurrentMemberId());
 		VacationAndBusinessVO vo = VacationAndBusinessVO.builder().startDate((Date) map.get("start_date"))
-				.endDate((Date) map.get("end_date")).commute_work_time((BigDecimal) map.get("commute_work_time"))
+				.endDate((Date) map.get("end_date"))
+				.commute_work_hour((BigDecimal) map.get("commute_work_hour"))
+				.commute_work_min((BigDecimal)	map.get("commute_work_min")) 
 				.vacation_count((Float) map.get("vacation_count")).build();
 		return vo;
 	}

@@ -19,8 +19,6 @@ public interface CommuteService {
 	
 	public List<CommuteDTO> findAll();
 	
-	public List<CommuteDTO> findById(Long commuteId);
-	
 	public ResponseEntity<Message> updateCommute(CommuteDTO commuteDTO);
 	
 	public void deleteCommute(CommuteDTO commuteDTO);
