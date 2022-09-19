@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +45,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 	private final WorkServiceImpl workServiceImpl;
 	private final VacationServiceImpl vacationServiceImpl;
 	private final BusinessTripServiceImpl businessTripServiceImpl;
-	
+
 	@Override
 	public Optional<Employee> findByEmail(String email) {
 		return employeeRepository.findByEmail(email);
@@ -145,10 +144,11 @@ public class EmpolyServiceImpl implements EmployeeService {
 			});
 			deleteForeignKey(employee.getEmpNum());
 			return deleteByEmpId(empId);
-			//return 1;
+			// return 1;
 		}
 		return 0;
 	}
+
 	// 계정 삭제를 위해 외래키 참조하는 모든것들 삭제하는 것
 	@Override
 	public void deleteForeignKey(Long empNum) {
@@ -159,13 +159,14 @@ public class EmpolyServiceImpl implements EmployeeService {
 		vacationServiceImpl.deleteVacationByEmpNum(empNum);
 		businessTripServiceImpl.deleteBusinessTripByEmpNum(empNum);
 	}
+
 	@Override
 	public void deleteComment(Long empNum) {// 게시글을 참조하는 모든 댓글을 같이 삭제 해야되기 때문에 만들어진 함수
 		commentServiceImpl.deleteCommentByEmpNum(empNum);
 		List<Long> boardIdData = boardServiceImpl.findAllByBoardId(empNum);
 		for (Long boardId : boardIdData) {
 			List<Long> commentIdData = commentServiceImpl.findByBoardId(boardId);
-			for(Long commentId : commentIdData) {
+			for (Long commentId : commentIdData) {
 				commentServiceImpl.deleteComment(commentId);
 			}
 		}
@@ -409,7 +410,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 				// 팀원 저장
 				employeeRepository.saveAll(updateEmpMembers);
 
-				// 직급을 1로 바꿔준다(팀원으로 초기화 시켜줌)
+				// 직급을 2로 바꿔준다(팀원으로 초기화 시켜줌)
 				empDto.getTeamPosition().setTeamPositionId(2L);
 
 				// 팀원으로 됐기 때문에 유저로 바꿔줌
@@ -423,67 +424,53 @@ public class EmpolyServiceImpl implements EmployeeService {
 			// 부서 지정
 			empDto.getUnit().setUnitId(unitId);
 			employeeRepository.save(empDto.toEntity(empDto));
-			System.out.println("true");
 			return true;
 		}
-		System.out.println("false");
 		return false;
 
 	}
 
 	public boolean updateAdminTeamPosition(EmployeeDTO empDto, Long teamPositionId) {
-		System.out.println("메소드 드렁옴");
-		// 같은 직급으로 변경 시
+		List<Employee> updateEmpMembers = new ArrayList<Employee>();
+
 		if (empDto.getTeamPosition().getTeamPositionId() == teamPositionId) {
-			System.out.println("같은직급");
-			System.out.println("false");
 			return false;
 		}
-		// 팀장이었을 경우
+
 		if (empDto.getTeamPosition().getTeamPositionId() == 1L) {
-			System.out.println("팀장=> 팀원");
 			List<Employee> empMembers = employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitUnitId(2L,
 					empDto.getUnit().getUnitId());
-			List<Employee> updateEmpMembers = new ArrayList<Employee>();
 			for (Employee empMember : empMembers) {
 				EmployeeDTO empDtoMember = empMember.toDTO(empMember);
-				// 매니저를 전부 null로 처리
 				empDtoMember.setManager(null);
 				updateEmpMembers.add(empDtoMember.toEntity(empDtoMember));
 			}
-			// 팀원 저장
-			employeeRepository.saveAll(updateEmpMembers);
-
-			// 팀원으로 변경
-			empDto.getTeamPosition().setTeamPositionId(2L);
-			// 팀원으로 됐기 때문에 유저로 바꿔줌
+			empDto.getTeamPosition().setTeamPositionId(teamPositionId);
 			empDto.setAuthority(Authority.ROLE_USER);
 
-		} else {
+		} else { // 팀원 -> 팀장으로 변경될 경우
 			empDto.getTeamPosition().setTeamPositionId(teamPositionId);
-			System.out.println("팀원 => 팀장");
-			List<Employee> empMembers = employeeRepository.findAllByTeamPositionTeamPositionIdAndUnitUnitId(2L,
-					empDto.getUnit().getUnitId());
-			List<Employee> updateEmpMembers = new ArrayList<Employee>();
+			List<Employee> empMembers = employeeRepository.findAllByUnitUnitId(empDto.getUnit().getUnitId());
 			for (Employee empMember : empMembers) {
 				if (empMember.getEmpNum() != empDto.getEmpNum()) {
-
 					EmployeeDTO empDtoMember = empMember.toDTO(empMember);
-					// 매니저를 전부 들어온 팀장으로 로 처리
 					empDtoMember.setManager(empDto);
+					if (empDtoMember.getTeamPosition().getTeamPositionId() == 1L) {
+						empDtoMember.getTeamPosition().setTeamPositionId(2L); // 기존 팀장을 팀원으로 변경
+						empDtoMember.setManager(empDto);
+					}
 					updateEmpMembers.add(empDtoMember.toEntity(empDtoMember));
 				}
 			}
-			// 팀원 저장
-			employeeRepository.saveAll(updateEmpMembers);
 
-			// 팀장으로 변경
 			empDto.getTeamPosition().setTeamPositionId(1L);
-			// 팀장으로 됐기 때문에 매니저로 바꿔줌
+			empDto.setManager(null);
 			empDto.setAuthority(Authority.ROLE_MANAGER);
 		}
-		employeeRepository.save(empDto.toEntity(empDto));
-		System.out.println("true");
+		updateEmpMembers.add(empDto.toEntity(empDto));
+
+		employeeRepository.saveAll(updateEmpMembers);
+
 		return true;
 
 	}
@@ -494,14 +481,14 @@ public class EmpolyServiceImpl implements EmployeeService {
 		}
 		empDto.getJobTitle().setJobTitleId(jobTitleId);
 		employeeRepository.save(empDto.toEntity(empDto));
+
 		return true;
 	}
-	
-	public List<EmployeeDTO> findManager(Long unitId){
+
+	public List<EmployeeDTO> findManager(Long unitId) {
 		List<Employee> managers = employeeRepository.findAllByUnitParentUnitId(unitId);
 		List<EmployeeDTO> managersDto = new ArrayList<EmployeeDTO>();
-		for(Employee manager : managers) {
-			System.out.println(manager.getEmpId());
+		for (Employee manager : managers) {
 			managersDto.add(manager.toDTO(manager));
 		}
 		return managersDto;

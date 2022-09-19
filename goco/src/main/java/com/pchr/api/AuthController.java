@@ -70,7 +70,7 @@ public class AuthController {
 	 * 
 	 * @return boolean
 	 */
-    @GetMapping("checkInfo")
+    @GetMapping("checkinfo")
     public boolean checkInfo(@RequestParam String info) {
     	return empolyServiceImpl.idCheck(info);
     }  
@@ -80,7 +80,7 @@ public class AuthController {
 	 * 
 	 * @return String
 	 */
-    @PostMapping("/sendEmailForEmail")
+    @PostMapping("/sendemailforemail")
 	public String sendEmailForEmail(@RequestBody EmployeeDTO e) {
 		return authService.sendEmailForEmail(e.getEmail());
 	} 
@@ -90,7 +90,7 @@ public class AuthController {
 	 * 
 	 * @return String
 	 */
-    @PostMapping("/sendEmailForId")
+    @PostMapping("/sendemailforid")
     public String sendemail(@RequestBody EmployeeDTO e) {
     	return authService.sendEmailForId(e.getName(),e.getEmail());
     }  
@@ -100,7 +100,7 @@ public class AuthController {
 	 * 
 	 * @return String
 	 */
-    @PostMapping("/sendEmailForPwd") 
+    @PostMapping("/sendemailforpwd") 
     public String findPassword(@RequestBody EmployeeDTO e) {
     	return authService.sendEmailForPwd(e.getEmpId(),e.getEmail());
     } 
@@ -126,7 +126,7 @@ public class AuthController {
 	 * 
 	 * @return List<UnitDTO>
 	 */
-	@GetMapping("/getAllUnit") 
+	@GetMapping("/getallunit") 
 	public List<UnitDTO> allUnit() {
 		return unitImpl.unitAll();
 	}
@@ -136,7 +136,7 @@ public class AuthController {
 	 * 
 	 * @return int
 	 */
-	@GetMapping("/logOut")
+	@GetMapping("/logout")
 	public int logOut(HttpServletRequest request,HttpServletResponse response) {
 		return authService.logOut(request,response);
 	}

@@ -36,7 +36,7 @@ public class EmpRestController {
 	 * 
 	 * @return int
 	 */
-	@PutMapping("/user/changePwd")
+	@PutMapping("/user/changepwd")
 	public int setPassword(@RequestBody HashMap<String, String> map) {
 		return empolyServiceImpl.setPassword(map.get("password"), map.get("password2"));
 	}
@@ -46,7 +46,7 @@ public class EmpRestController {
 	 * 
 	 * @return int
 	 */
-	@PutMapping("/user/changeEmail")
+	@PutMapping("/user/changeemail")
 	public int setEmail(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.emailChange(e.getEmail());
 	}
@@ -56,7 +56,7 @@ public class EmpRestController {
 	 * 
 	 * @return int
 	 */
-	@PutMapping("/user/changePhone")
+	@PutMapping("/user/changephone")
 	public int setPhone(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.setPhone(e.getPhoneNumber());
 	}
@@ -95,7 +95,7 @@ public class EmpRestController {
 	 * 
 	 * @return List<EmployeeDTO>
 	 */
-	@GetMapping("/admin/findAll")
+	@GetMapping("/admin/findall")
 	public List<EmployeeDTO> findAll() {
 		return empolyServiceImpl.findAll();
 	} 
@@ -105,23 +105,23 @@ public class EmpRestController {
 	 * 
 	 * @return List<Resignation>
 	 */
-	@GetMapping("/admin/ResignationAll")
+	@GetMapping("/admin/resignationall")
 	public List<Resignation> ResignationAll() {
 		return empolyServiceImpl.ResignationAll();
 	}
 
-	@PutMapping("/admin/changeData/{number}") // 1휴가 , 2메일 , 3아이디, 4입사일, 5이름 , 6핸드폰 번호 변경
+	@PutMapping("/admin/changedata/{number}") // 1휴가 , 2메일 , 3아이디, 4입사일, 5이름 , 6핸드폰 번호 변경
 	public int changeData(@PathVariable(name = "number") int number, @RequestBody HashMap<Object, String> map) {
 		return empolyServiceImpl.changeData(number, map.get("empNum"), map.get("data"));
 	} // http://localhost:8080/admin/changeData/1
 
 
-	@PutMapping("/admin/changeManager") // 메니저 변경
+	@PutMapping("/admin/changemanager") // 메니저 변경
 	public int changeManager(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.changeManager(e.getEmpNum(), e.getUnit());
 	}// http://localhost:8080/admin/changeManager
 
-	@PutMapping("/admin/changUnitId") // Unit_id 변경 메소드
+	@PutMapping("/admin/changunitid") // Unit_id 변경 메소드
 	public int changUnitId(@RequestBody EmployeeDTO e) {
 		return empolyServiceImpl.changUnitId(e.getEmpNum(), e.getUnit());
 	}// http://localhost:8080/admin/changUnitId
