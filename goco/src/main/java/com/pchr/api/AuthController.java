@@ -17,7 +17,6 @@ import com.pchr.dto.EmailAuthDTO;
 import com.pchr.dto.EmployeeDTO;
 import com.pchr.dto.TokenDTO;
 import com.pchr.dto.UnitDTO;
-import com.pchr.response.Message;
 import com.pchr.service.impl.AuthServiceImpl;
 import com.pchr.service.impl.EmpolyServiceImpl;
 import com.pchr.service.impl.TokenDataImpl;
@@ -32,7 +31,6 @@ public class AuthController {
 	private final EmpolyServiceImpl empolyServiceImpl;
 	private final UnitServiceImpl unitImpl;
 	private final TokenDataImpl tokenDataImpl;
-	
 	/**
 	 * 회원가입
 	 * 
@@ -55,7 +53,7 @@ public class AuthController {
 	 */
 	@PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody EmployeeDTO employeeDTO, HttpServletResponse response) {
-    	TokenDTO tokenDTO = authService.login(employeeDTO);
+    	TokenDTO tokenDTO = authService.login(employeeDTO,response);
     	if(tokenDTO != null) {
     		tokenDataImpl.cookiesSave(response,tokenDTO,employeeDTO);
     	}

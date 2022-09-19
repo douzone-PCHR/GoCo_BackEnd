@@ -41,6 +41,7 @@ public class TokenDataImpl implements TokenData {
 	// access토큰 쿠키 저장 
 	@Override
 	public void saveCookieAccessToken(HttpServletResponse response, String accessToken) {
+		System.out.println("엑세스 : "+accessToken);
 		CookieGenerator cg = new CookieGenerator();
 		cg.setCookieName("accessToken");
 		cg.setCookieMaxAge(60*30); // 60초 * 30분
@@ -50,12 +51,12 @@ public class TokenDataImpl implements TokenData {
 	// refresh 토큰 쿠키 저장 
 	@Override
 	public void saveCookieRefreshToken(HttpServletResponse response, String refreshToken, int time) {
-		CookieGenerator cg2 = new CookieGenerator();
-		cg2.setCookieName("refreshToken");
-		cg2.setCookieSecure(true); // https로만 통신할 때만 쿠키를 전송한다는 옵션
-		cg2.setCookieHttpOnly(true);// 보안을위해 http-only 사용
-		cg2.setCookieMaxAge(time); // 60초 * 60분 * 24시간 * 7일
-		cg2.addCookie(response, refreshToken);
+		CookieGenerator cg = new CookieGenerator();
+		cg.setCookieName("refreshToken");
+		cg.setCookieSecure(true); // https로만 통신할 때만 쿠키를 전송한다는 옵션
+		cg.setCookieHttpOnly(true);// 보안을위해 http-only 사용
+		cg.setCookieMaxAge(time); // 60초 * 60분 * 24시간 * 7일
+		cg.addCookie(response, refreshToken);
 	}
 
 	//로그인시 db에 토큰 저장하는 것

@@ -43,7 +43,7 @@ public class Comment {
 	@Column(name = "comment_id")
 	private Long commentId;
 
-	@Column(name = "comment_content")
+	@Column(name = "comment_content", length=10000)
 	private String commentContent;
 
 	@Column(name = "registered_date")	

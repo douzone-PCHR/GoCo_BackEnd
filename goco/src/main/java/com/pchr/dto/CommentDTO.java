@@ -1,10 +1,9 @@
 package com.pchr.dto;
-
-
 import java.util.Date;
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import com.pchr.entity.Comment;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +18,9 @@ import lombok.Setter;
 public class CommentDTO {
 
 	private Long commentId;
-
-	private String commentContent;//
+	@Size(max = 10000,message = "댓글 내용은 10,000자 이내로 입력해주세요.")
+	@NotBlank(message = "댓글 내용을 입력해주세요.")
+	private String commentContent;
 
 	private Date registeredDate;
 

@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService{
     private final EmailAuthServiceImpl emailAuthServiceImpl;// 메일보내는 함수
     private final TokenDataImpl tokenDataImpl;
     private final CommuteRepository commuteRepository;
-    
+    private final RedisServiceImpl redisServiceImpl;
 // static이라 오버라이드 안됨
     //회원 가입시 유효성 검사 중 오류 있으면 반환해주는 것
 	public static Map<String, String> validateHandling(Errors errors) {
@@ -98,14 +98,42 @@ public class AuthServiceImpl implements AuthService{
 	    		.build();
 	    commuteRepository.save(commute);
 	}
-
+////////////////////////////////////////////////////////////////////////////////////////////
 	// 로그인시 토큰 만드는것 
 	@Override
-    public TokenDTO login(EmployeeDTO employeeDTO) {
+    public TokenDTO login(EmployeeDTO employeeDTO,HttpServletResponse response) { 
+		failLoginCheckNum(employeeDTO,response);
         UsernamePasswordAuthenticationToken authenticationToken = employeeDTO.toAuthentication();
-        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-        return tokenProvider.generateTokenDto(authentication);
+        try {
+        	Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+        	redisServiceImpl.deleteRedisValue(employeeDTO.getEmpId());
+        	return tokenProvider.generateTokenDto(authentication);
+        }catch(Exception e) {
+        	failLogin(employeeDTO);         	
+        	return null;
+        }
     }
+	@Override
+	public void failLoginCheckNum(EmployeeDTO employeeDTO,HttpServletResponse response) {
+		String value = redisServiceImpl.getRedisValue(employeeDTO.getEmpId());//키값 가져오기
+		if(value==null) {
+			return;
+		}else if(Integer.parseInt(value)>=5) {
+			response.addHeader("loginFail", "true");
+			throw new RuntimeException("5분간 로그인이 금지 됩니다.");
+		}
+	}
+
+	@Override
+	public void failLogin(EmployeeDTO employeeDTO) {
+		String value = redisServiceImpl.getRedisValue(employeeDTO.getEmpId());//키값 가져오기
+		if(value==null) {
+			redisServiceImpl.setRedisValue(employeeDTO.getEmpId(),"1");
+		}else {
+			redisServiceImpl.increment(employeeDTO.getEmpId());
+		}
+	}
+
 	@Override
     // 아이디 찾기위해 메일 보내는 함수 
 	public String sendEmailForId(String name, String email) {
@@ -178,7 +206,8 @@ public class AuthServiceImpl implements AuthService{
 					
 					employeeDTO.setPassword(passwordEncoder.encode((password)));
 					empolyServiceImpl.save(employeeDTO.toEntity(employeeDTO));
-					
+					// redis에 저장되어있는 empID 삭제
+					redisServiceImpl.deleteRedisValue(employeeDTO.getEmpId());
 					message.setStatus(StatusEnum.OK);
 					message.setMessage("이메일로 비밀번호가 발송 되었습니다.");
 					return new ResponseEntity<>(message, headers, HttpStatus.OK);
