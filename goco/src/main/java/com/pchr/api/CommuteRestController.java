@@ -98,25 +98,6 @@ public class CommuteRestController {
 		return result;
 	}
 
-	/**
-	 * 사원 별 근태 불러오기
-	 * 
-	 * @return CommuteDTO
-	 */
-	@GetMapping(value = "/commute/{id}")
-	public List<CommuteDTO> findbyId(@PathVariable Long id) {
-		List<CommuteDTO> findbyComment = null;
-		try {
-			findbyComment = commuteService.findById(id);
-			if (findbyComment.isEmpty()) {
-				new Exception("출퇴근 기록이 없습니다.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return findbyComment;
-	}
 
 	/**
 	 * 실제 근로 시간 검색
@@ -146,7 +127,9 @@ public class CommuteRestController {
 		try {
 			updateCommute = commuteService.updateCommute(commuteDTO);
 
-		} catch (Exception e) {
+		} catch (IndexOutOfBoundsException e) {
+//			updateCommute.
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return updateCommute;

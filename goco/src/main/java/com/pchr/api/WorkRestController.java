@@ -140,7 +140,7 @@ public class WorkRestController {
 		try {
 			workSave = workService.workSave(workDTO);
 		} catch (Exception e) {
-			return new ResponseEntity<WorkDTO>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<WorkDTO>(HttpStatus.OK);
 		}
 		return workSave;
 	}

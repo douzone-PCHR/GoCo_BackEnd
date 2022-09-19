@@ -46,6 +46,7 @@ public class EmpolyServiceImpl implements EmployeeService {
 	private final WorkServiceImpl workServiceImpl;
 	private final VacationServiceImpl vacationServiceImpl;
 	private final BusinessTripServiceImpl businessTripServiceImpl;
+	
 	@Override
 	public Optional<Employee> findByEmail(String email) {
 		return employeeRepository.findByEmail(email);
