@@ -32,6 +32,7 @@ public interface AuthService {
 	public JobTitleDTO getJobTitleDTO();
 	public int logOut(HttpServletRequest request,HttpServletResponse response);
 	void insertCommute(Employee commuteEmployee);
-	public void failLogin(EmployeeDTO employeeDTO);
-	public void failLoginCheckNum(EmployeeDTO employeeDTO,HttpServletResponse response);
+	public ResponseEntity<?> tokenError();
+//	public void failLogin(EmployeeDTO employeeDTO);
+//	public void failLoginCheckNum(EmployeeDTO employeeDTO,HttpServletResponse response);
 }
