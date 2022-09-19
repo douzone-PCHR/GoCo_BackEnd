@@ -14,15 +14,15 @@ import lombok.RequiredArgsConstructor;
 public class JwtFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
     private final  TokenDataRepository tokenDataRepository;
-    private String[] exceptURL = {"/api/user/menu/commute","/api/auth/login","/api/auth/logOut","/api/auth/getAllUnit","/api/auth/checkInfo",
-    		"/api/auth/sendEmailForEmail","/api/auth/find/1","/api/auth/signup","/api/auth/sendEmailForId","/api/auth/find/2",
-    		"/api/auth/sendEmailForPwd","/api/auth/find/3"};
+    private String[] exceptURL = {"/api/user/menu/commute","/api/auth/login","/api/auth/logout","/api/auth/getallunit","/api/auth/checkinfo",
+    		"/api/auth/sendemailforemail","/api/auth/find/1","/api/auth/signup","/api/auth/sendemailforid","/api/auth/find/2",
+    		"/api/auth/sendemailforpwd","/api/auth/find/3"};
 
     // 리프레쉬토큰으로 엑세스 생성 
     private void createCookie(HttpServletRequest request, HttpServletResponse response,String refreshToken) {
          if(tokenProvider.validateToken(response,refreshToken)) {//리프레쉬 만료일 체크, 
          	if(!request.getRequestURI().equals("/api/user/newtoken")) {
-         		if(!request.getRequestURI().equals("/api/auth/logOut")) {
+         		if(!request.getRequestURI().equals("/api/auth/logout")) {
          			response.addHeader("refresh", "true");
          			throw new RuntimeException("getAccessToken");        				
          		}
