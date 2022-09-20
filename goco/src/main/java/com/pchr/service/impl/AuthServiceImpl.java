@@ -96,36 +96,42 @@ public class AuthServiceImpl implements AuthService{
 	// 로그인시 토큰 만드는것 
 	@Override
     public TokenDTO login(EmployeeDTO employeeDTO,HttpServletResponse response) { 
-		failLoginCheckNum(employeeDTO,response);
+		if(failLoginCheckNum(employeeDTO,response)) {
+			return null;
+		}
         UsernamePasswordAuthenticationToken authenticationToken = employeeDTO.toAuthentication();
         try {
         	Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
         	redisServiceImpl.deleteRedisValue(employeeDTO.getEmpId());
         	return tokenProvider.generateTokenDto(authentication);
         }catch(Exception e) {
-        	failLogin(employeeDTO);         	
+        	failLogin(employeeDTO,response);         	
         	return null;
         }
     }
 	@Override
-	public void failLoginCheckNum(EmployeeDTO employeeDTO,HttpServletResponse response) {
+	public boolean failLoginCheckNum(EmployeeDTO employeeDTO,HttpServletResponse response) {
 		String value = redisServiceImpl.getRedisValue(employeeDTO.getEmpId());//키값 가져오기
 		if(value==null) {
-			return;
+			return false;
 		}else if(Integer.parseInt(value)>=5) {
-			response.addHeader("loginFail", "true");
-			throw new RuntimeException("5분간 로그인이 금지 됩니다.");
+			response.addHeader("loginFail", "true");//5분간 금지될 때 true리턴
+			return true;
 		}
+		return false;
 	}
 
 	@Override
-	public void failLogin(EmployeeDTO employeeDTO) {
+	public TokenDTO failLogin(EmployeeDTO employeeDTO,HttpServletResponse response) {
 		String value = redisServiceImpl.getRedisValue(employeeDTO.getEmpId());//키값 가져오기
 		if(value==null) {
 			redisServiceImpl.setRedisValue(employeeDTO.getEmpId(),"1");
 		}else {
 			redisServiceImpl.increment(employeeDTO.getEmpId());
 		}
+		response.addHeader("loginFail", "");
+		return null;
+
 	}
 
 	@Override
@@ -263,7 +269,7 @@ public class AuthServiceImpl implements AuthService{
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 		message.setStatus(StatusEnum.BAD_REQUEST);
-		message.setMessage("토큰 생성 에러 ");
+		message.setMessage("토큰 생성 에러");
 		return new ResponseEntity<>(message, headers, HttpStatus.OK);
 	}
 
