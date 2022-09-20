@@ -125,17 +125,17 @@
 		</dependency>
 		
 		<!-- 이하 redis 추가  -->
-<!-- 		<dependency>
+		<dependency>
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency> -->
+		</dependency>
 
 		<!-- 이하 redis로 세션 공유할 때 필요한 것 추가 	 -->
-<!-- 		<dependency>
+		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-redis</artifactId>
 			<version>2.3.1.RELEASE</version>
-		</dependency> -->	
+		</dependency>
 		
 		
 		
