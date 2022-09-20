@@ -81,7 +81,6 @@ public class CommuteServiceImpl implements CommuteService {
 		List<CommuteDTO> findCommute = findById(commuteEntity.getEmployee().getEmpNum());
 		int ClockInhour = LocalDateTime.now().getHour();
 		int ClockOuthour = LocalDateTime.now().getHour();
-		
 		commuteDTO.setCommuteId(findCommute.get(0).getCommuteId());
 		commuteDTO.setEmployee(findCommute.get(0).getEmployee());
 		if(commuteDTO.getClockIn() != null && findCommute.get(0).getCommuteCheck() != 2 && findCommute.get(0).getClockIn().getHour() == 0 ) {
@@ -101,17 +100,21 @@ public class CommuteServiceImpl implements CommuteService {
 			
 		
 		}else if(commuteDTO.getClockOut() != null && findCommute.get(0).getCommuteCheck() != 1 && findCommute.get(0).getClockOut().getHour() == 0) {
-			commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지 
-			commuteDTO.setClockIn(findCommute.get(0).getClockIn());
-			commuteDTO.setClockOut(LocalDateTime.now());
-			commuteDTO.setCommuteStatus("5");
-			
-			message.setMessage("퇴근 처리 되었습니다.");
-			message.setStatus(StatusEnum.OK);
-			
-			Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
-			commuteRepository.save(entity);
-			
+			if(commuteDTO.getCommuteStatus() == "1" && commuteDTO.getCommuteStatus() == "2") {
+				commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지 
+				commuteDTO.setClockIn(findCommute.get(0).getClockIn());
+				commuteDTO.setClockOut(LocalDateTime.now());
+				commuteDTO.setCommuteStatus("5");
+				
+				message.setMessage("퇴근 처리 되었습니다.");
+				message.setStatus(StatusEnum.OK);
+				
+				Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
+				commuteRepository.save(entity);
+			}else {
+				message.setMessage("출근 후 퇴근 버튼을 클릭 할 수 있습니다.");
+				message.setStatus(StatusEnum.OK);
+			}
 			
 		}else if(commuteDTO.getClockIn() != null && (findCommute.get(0).getCommuteCheck() == 1 || findCommute.get(0).getCommuteCheck() == 2) && findCommute.get(0).getClockIn().getHour() != 0){
 			message.setMessage("오늘자 출근은 처리가 되었습니다.");

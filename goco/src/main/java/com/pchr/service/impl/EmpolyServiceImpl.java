@@ -269,22 +269,29 @@ public class EmpolyServiceImpl implements EmployeeService {
 		List<Vacation> vacations = vacationRepo.findAllByEmployeeEmpNumOrderByVacationRequestDateDesc(empNum);
 		List<BusinessTrip> businesses = businessRepo.findAllByEmployeeEmpNumOrderByBusinessTripRequestDateDesc(empNum);
 		List<Long> fileIds = new ArrayList<Long>();
-		for (Vacation vacation : vacations) {
-			if (vacation.getFile().getFileId() != null) {
-				s3Util.deleteFile("vacation/" + vacation.getFile().getFileName()); // S3 데이터 삭제
-				fileIds.add(vacation.getFile().getFileId());
-			}
+		if (!vacations.isEmpty()) {
+			for (Vacation vacation : vacations) {
+//				vacation
+				if (vacation.getFile() != null) {
+					s3Util.deleteFile("vacation/" + vacation.getFile().getFileName()); // S3 데이터 삭제
+					fileIds.add(vacation.getFile().getFileId());
+				}
 
-		}
-		for (BusinessTrip business : businesses) {
-			if (business.getFile().getFileId() != null) {
-				s3Util.deleteFile("buiness/" + business.getFile().getFileName()); // S3 데이터 삭제
-				fileIds.add(business.getFile().getFileId());
 			}
 		}
-		fileRepo.deleteAllById(fileIds); // 모든 파일 DB 삭제
-		vacationRepo.deleteAll(vacations);
-		businessRepo.deleteAll(businesses);
+		if (!businesses.isEmpty()) {
+			for (BusinessTrip business : businesses) {
+				if (business.getFile() != null) {
+					s3Util.deleteFile("business/" + business.getFile().getFileName()); // S3 데이터 삭제
+					fileIds.add(business.getFile().getFileId());
+				}
+			}
+		}
+		if (!fileIds.isEmpty()) {
+			fileRepo.deleteAllById(fileIds); // 모든 파일 DB 삭제
+			vacationRepo.deleteAll(vacations);
+			businessRepo.deleteAll(businesses);
+		}
 		return deleteByEmpNum(empNum);
 	}
 

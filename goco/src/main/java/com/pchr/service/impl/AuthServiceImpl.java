@@ -105,7 +105,8 @@ public class AuthServiceImpl implements AuthService{
         	redisServiceImpl.deleteRedisValue(employeeDTO.getEmpId());
         	return tokenProvider.generateTokenDto(authentication);
         }catch(Exception e) {
-        	return failLogin(employeeDTO,response); 
+        	failLogin(employeeDTO,response);         	
+        	return null;
         }
     }
 	@Override
@@ -130,6 +131,7 @@ public class AuthServiceImpl implements AuthService{
 		}
 		response.addHeader("loginFail", "");
 		return null;
+
 	}
 
 	@Override
