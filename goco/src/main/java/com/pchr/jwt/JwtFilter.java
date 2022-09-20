@@ -16,7 +16,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final  TokenDataRepository tokenDataRepository;
     private String[] exceptURL = {"/api/user/menu/commute","/api/auth/login","/api/auth/logout","/api/auth/getallunit","/api/auth/checkinfo",
     		"/api/auth/sendemailforemail","/api/auth/find/1","/api/auth/signup","/api/auth/sendemailforid","/api/auth/find/2",
-    		"/api/auth/sendemailforpwd","/api/auth/find/3"};
+    		"/api/auth/sendemailforpwd","/api/auth/find/3","/api/auth/deleteCookie"};
 
     // 리프레쉬토큰으로 엑세스 생성 
     private void createCookie(HttpServletRequest request, HttpServletResponse response,String refreshToken) {
@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
 				++check;
 			}
 		}
-    	if(check!=11) {
+    	if(check!=12) {
 			System.out.println("URL : "+request.getRequestURI());
 				tokenProvider.cookieReset(response);
 				response.addHeader("refresh", "false");
