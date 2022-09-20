@@ -12,9 +12,10 @@ deploy:
   on:
     branch: main
 branches:
-  only: main
+  only: feature/yongju/update
 before_install:
 - openssl aes-256-cbc -K $encrypted_2f692484526a_key -iv $encrypted_2f692484526a_iv -in application.properties.enc -out application.properties -d
+
 - mkdir -p goco/src/main/resources
 - mv application.properties goco/src/main/resources
 - cd goco
