@@ -30,4 +30,5 @@ public interface AuthService {
 	public ResponseEntity<?> tokenError();
 	public TokenDTO failLogin(EmployeeDTO employeeDTO,HttpServletResponse response);
 	public boolean failLoginCheckNum(EmployeeDTO employeeDTO,HttpServletResponse response);
+
 }
