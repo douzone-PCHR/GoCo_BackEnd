@@ -140,4 +140,16 @@ public class AuthController {
 		return authService.logOut(request,response);
 	}
 	
+	/**
+	 * 쿠키지우는 함수 
+	 * 
+	 * @return int
+	 */
+	@GetMapping("/deleteCookie")
+	public int deleteCookie(HttpServletRequest request,HttpServletResponse response) {
+		return authService.deleteCookie(response);
+	}	
+	
+	
+	
 }
