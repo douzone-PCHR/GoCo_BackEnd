@@ -83,7 +83,7 @@ public class CommuteServiceImpl implements CommuteService {
 		int ClockOuthour = LocalDateTime.now().getHour();
 		commuteDTO.setCommuteId(findCommute.get(0).getCommuteId());
 		commuteDTO.setEmployee(findCommute.get(0).getEmployee());
-		if(findCommute.get(0).getCommuteStatus().equals("1") || findCommute.get(0).getCommuteStatus().equals("2")) {
+		if(commuteDTO.getClockIn() != null && findCommute.get(0).getCommuteCheck() != 2 && findCommute.get(0).getClockIn().getHour() == 0 ) {
 			commuteDTO.setCommuteCheck(2); // 출근 버튼 한번더 누르는거 방지 
 			commuteDTO.setClockOut(findCommute.get(0).getClockOut());
 			commuteDTO.setClockIn(LocalDateTime.now());
@@ -100,12 +100,11 @@ public class CommuteServiceImpl implements CommuteService {
 			
 		
 		}else if(commuteDTO.getClockOut() != null && findCommute.get(0).getCommuteCheck() != 1 && findCommute.get(0).getClockOut().getHour() == 0) {
-			if(commuteDTO.getCommuteStatus() == "1" && commuteDTO.getCommuteStatus() == "2") {
+			if(findCommute.get(0).getCommuteStatus().equals("1") || findCommute.get(0).getCommuteStatus().equals("2")) {
 				commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지 
 				commuteDTO.setClockIn(findCommute.get(0).getClockIn());
 				commuteDTO.setClockOut(LocalDateTime.now());
 				commuteDTO.setCommuteStatus("5");
-				
 				message.setMessage("퇴근 처리 되었습니다.");
 				message.setStatus(StatusEnum.OK);
 				
