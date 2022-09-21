@@ -83,7 +83,7 @@ public class CommuteServiceImpl implements CommuteService {
 		int ClockOuthour = LocalDateTime.now().getHour();
 		commuteDTO.setCommuteId(findCommute.get(0).getCommuteId());
 		commuteDTO.setEmployee(findCommute.get(0).getEmployee());
-		if(commuteDTO.getClockIn() != null && findCommute.get(0).getCommuteCheck() != 2 && findCommute.get(0).getClockIn().getHour() == 0 ) {
+		if(findCommute.get(0).getCommuteStatus().equals("1") || findCommute.get(0).getCommuteStatus().equals("2")) {
 			commuteDTO.setCommuteCheck(2); // 출근 버튼 한번더 누르는거 방지 
 			commuteDTO.setClockOut(findCommute.get(0).getClockOut());
 			commuteDTO.setClockIn(LocalDateTime.now());
