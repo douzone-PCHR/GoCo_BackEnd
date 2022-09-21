@@ -42,7 +42,7 @@ public class TokenDataImpl implements TokenData {
 		System.out.println("엑세스 : "+accessToken);
 		CookieGenerator cg = new CookieGenerator();
 		cg.setCookieName("accessToken");
-		cg.setCookieMaxAge(60*30); // 60초 * 30분
+		cg.setCookieMaxAge(4* 60 * 60); // 60초 * 30분
 		cg.setCookieSecure(true); // https로만 통신할 때만 쿠키를 전송한다는 옵션
 		cg.addCookie(response, accessToken);
 	}
