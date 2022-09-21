@@ -47,7 +47,7 @@ public class CommuteServiceImpl implements CommuteService {
 						LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
 								LocalDateTime.now().getDayOfMonth() + 1, 0, 0))
 				.stream().map(commute -> commute.toCommuteDto(commute)).collect(Collectors.toList());
-		
+
 		return result;
 	}
 
@@ -57,7 +57,7 @@ public class CommuteServiceImpl implements CommuteService {
 		LocalDateTime startDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
 				LocalDateTime.now().getDayOfMonth(), 0, 0);
 		LocalDateTime endDate = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
-				LocalDateTime.now().getDayOfMonth() , 23, 59);
+				LocalDateTime.now().getDayOfMonth(), 23, 59);
 		List<CommuteDTO> findAllByEmployeeEmpNum = commuteRepository.findAllByEmployeeEmpNum(empnum).stream()
 				.filter(commute -> (commute.getClockIn().isAfter(startDate) && commute.getClockOut().isBefore(endDate))
 						|| (commute.getClockIn().isEqual(startDate) && commute.getClockOut().isEqual(startDate)))
@@ -73,56 +73,64 @@ public class CommuteServiceImpl implements CommuteService {
 //		3 휴가
 //		4 출장
 		Message message = new Message();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-     
-        
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
 		Commute commuteEntity = commuteDTO.toUpdateCommute(commuteDTO);
 		List<CommuteDTO> findCommute = findById(commuteEntity.getEmployee().getEmpNum());
 		int ClockInhour = LocalDateTime.now().getHour();
 		int ClockOuthour = LocalDateTime.now().getHour();
-		
 		commuteDTO.setCommuteId(findCommute.get(0).getCommuteId());
 		commuteDTO.setEmployee(findCommute.get(0).getEmployee());
-		if(commuteDTO.getClockIn() != null && findCommute.get(0).getCommuteCheck() != 2 && findCommute.get(0).getClockIn().getHour() == 0 ) {
-			commuteDTO.setCommuteCheck(2); // 출근 버튼 한번더 누르는거 방지 
+		if (commuteDTO.getClockIn() != null && findCommute.get(0).getCommuteCheck() != 2
+				&& findCommute.get(0).getClockIn().getHour() == 0) {
+			commuteDTO.setCommuteCheck(2); // 출근 버튼 한번더 누르는거 방지
 			commuteDTO.setClockOut(findCommute.get(0).getClockOut());
 			commuteDTO.setClockIn(LocalDateTime.now());
-			commuteDTO.setCommuteStatus("2"); // 정상 출근 
-			
+			commuteDTO.setCommuteStatus("2"); // 정상 출근
+
 			message.setStatus(StatusEnum.OK);
-	        message.setMessage("정상 출근 처리 되었습니다.");
-			if(ClockInhour >= 9 ) {
+			message.setMessage("정상 출근 처리 되었습니다.");
+			if (ClockInhour >= 9) {
 				commuteDTO.setCommuteStatus("1"); // 지각
 				message.setMessage("지각 처리 되었습니다.");
 			}
 			Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
 			commuteRepository.save(entity);
-			
-		
-		}else if(commuteDTO.getClockOut() != null && findCommute.get(0).getCommuteCheck() != 1 && findCommute.get(0).getClockOut().getHour() == 0) {
-			commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지 
-			commuteDTO.setClockIn(findCommute.get(0).getClockIn());
-			commuteDTO.setClockOut(LocalDateTime.now());
-			commuteDTO.setCommuteStatus("5");
-			
-			message.setMessage("퇴근 처리 되었습니다.");
-			message.setStatus(StatusEnum.OK);
-			
-			Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
-			commuteRepository.save(entity);
-			
-			
-		}else if(commuteDTO.getClockIn() != null && (findCommute.get(0).getCommuteCheck() == 1 || findCommute.get(0).getCommuteCheck() == 2) && findCommute.get(0).getClockIn().getHour() != 0){
+
+		} else if (commuteDTO.getClockOut() != null && findCommute.get(0).getCommuteCheck() != 1
+				&& findCommute.get(0).getClockOut().getHour() == 0) {
+			if (findCommute.get(0).getCommuteStatus().equals("1")
+					|| findCommute.get(0).getCommuteStatus().equals("2")) {
+				commuteDTO.setCommuteCheck(1); // 퇴근 버튼 한번더 누르는거 방지
+				commuteDTO.setClockIn(findCommute.get(0).getClockIn());
+				commuteDTO.setClockOut(LocalDateTime.now());
+				commuteDTO.setCommuteStatus("5");
+
+				message.setMessage("퇴근 처리 되었습니다.");
+				message.setStatus(StatusEnum.OK);
+
+				Commute entity = commuteDTO.toUpdateCommute(commuteDTO);
+				commuteRepository.save(entity);
+			} else {
+				message.setMessage("출근 후 퇴근 버튼을 클릭 할 수 있습니다.");
+				message.setStatus(StatusEnum.OK);
+			}
+
+		} else if (commuteDTO.getClockIn() != null
+				&& (findCommute.get(0).getCommuteCheck() == 1 || findCommute.get(0).getCommuteCheck() == 2)
+				&& findCommute.get(0).getClockIn().getHour() != 0) {
 			message.setMessage("오늘자 출근은 처리가 되었습니다.");
 			message.setStatus(StatusEnum.ALREADY_DONE);
-			
-		}else if(commuteDTO.getClockOut() != null && (findCommute.get(0).getCommuteCheck() == 1 || findCommute.get(0).getCommuteCheck() == 2) && findCommute.get(0).getClockOut().getHour() != 0){
+
+		} else if (commuteDTO.getClockOut() != null
+				&& (findCommute.get(0).getCommuteCheck() == 1 || findCommute.get(0).getCommuteCheck() == 2)
+				&& findCommute.get(0).getClockOut().getHour() != 0) {
 			message.setMessage("오늘자 퇴근은 처리가 되었습니다.");
 			message.setStatus(StatusEnum.ALREADY_DONE);
-			
+
 		}
-		
+
 		return new ResponseEntity<>(message, headers, HttpStatus.OK);
 	}
 
@@ -147,9 +155,8 @@ public class CommuteServiceImpl implements CommuteService {
 
 		Map<String, Object> map = commuteRepository.findAllCommuteTime(SecurityUtil.getCurrentMemberId());
 		VacationAndBusinessVO vo = VacationAndBusinessVO.builder().startDate((Date) map.get("start_date"))
-				.endDate((Date) map.get("end_date"))
-				.commute_work_hour((BigDecimal) map.get("commute_work_hour"))
-				.commute_work_min((BigDecimal)	map.get("commute_work_min")) 
+				.endDate((Date) map.get("end_date")).commute_work_hour((BigDecimal) map.get("commute_work_hour"))
+				.commute_work_min((BigDecimal) map.get("commute_work_min"))
 				.vacation_count((Float) map.get("vacation_count")).build();
 		return vo;
 	}
@@ -185,13 +192,12 @@ public class CommuteServiceImpl implements CommuteService {
 
 	public List<CommuteDTO> findMenuCommuteStatus() {
 		List<CommuteDTO> list = null;
-		if(!"anonymousUser".equals(SecurityUtil.getCurrentMemberId())) {
-			list = commuteRepository.findMenuCommuteStatus(SecurityUtil.getCurrentMemberId())
-					.stream().map(commute -> commute.toCommuteDto(commute))
-					.collect(Collectors.toList());
+		if (!"anonymousUser".equals(SecurityUtil.getCurrentMemberId())) {
+			list = commuteRepository.findMenuCommuteStatus(SecurityUtil.getCurrentMemberId()).stream()
+					.map(commute -> commute.toCommuteDto(commute)).collect(Collectors.toList());
 		}
 		return list;
-		
+
 	}
 
 	public void deleteCommuteByEmpNum(Long empNum) {
