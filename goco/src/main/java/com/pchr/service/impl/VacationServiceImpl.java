@@ -82,7 +82,10 @@ public class VacationServiceImpl implements VacationService {
 			if (checkVacationsDTO.get("waitting").size() == 0) {
 				try {
 					// 프론트에서 빈파일이 넘어 왔을 때
-					if (multipartFile.getSize() != 0) {
+					String originalFileName = multipartFile.getOriginalFilename();
+					String fileCategory = originalFileName.substring(originalFileName.lastIndexOf("."),
+							originalFileName.length());
+					if (multipartFile.getSize() != 0 && fileCategory.contains("xls")) {
 
 						// fileDTO = S3에 Upload된
 						// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
@@ -91,9 +94,9 @@ public class VacationServiceImpl implements VacationService {
 						if (fileDTO != null) {
 							FileDTO newFileDTO = fileService.insertFile(fileDTO);
 							vacationDTO.setFile(newFileDTO);
+							vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 						}
 					}
-					vacationRepository.save(vacationDTO.toVacationEntity(vacationDTO));
 
 				} catch (AwsServiceException | SdkClientException | IOException e) {
 					e.printStackTrace();
@@ -155,9 +158,9 @@ public class VacationServiceImpl implements VacationService {
 		if (vacationDTO.getApproveYn() == ApproveEnum.APPROVE_WAITTING) {
 			if (vacationDTO.getFile() != null) {
 				s3Util.deleteFile("vacation/" + vacationDTO.getFile().getFileName());
+				vacationRepository.deleteById(vacationDTO.getVacationId());
 				fileService.deleteFile(vacationDTO.getFile().getFileId());
 			}
-			vacationRepository.deleteById(vacationDTO.getVacationId());
 		}
 	}
 
@@ -209,7 +212,7 @@ public class VacationServiceImpl implements VacationService {
 
 	public void deleteVacationByEmpNum(Long empNum) {
 		vacationRepository.deleteByEmpNum(empNum);
-		
+
 	}
 
 }
