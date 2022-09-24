@@ -78,8 +78,11 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 		if (checkBusinessTripsDTO.get("success").size() == 0) {
 			if (checkBusinessTripsDTO.get("waitting").size() == 0) {
 				try {
+					String originalFileName = multipartFile.getOriginalFilename();
+					String fileCategory = originalFileName.substring(originalFileName.lastIndexOf("."),
+							originalFileName.length());
 					// 프론트에서 빈파일이 넘어 왔을 때
-					if (multipartFile.getSize() != 0) {
+					if (multipartFile.getSize() != 0 && fileCategory.contains("xls")) {
 						// fileDTO = S3에 Upload된
 						// newFileDTO = fileService.insertFile 실행 후 DB에 저장된 DTO
 						FileDTO fileDTO = s3Util.S3Upload(multipartFile, "business/");
@@ -88,9 +91,9 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 							FileDTO newFileDTO = fileService.insertFile(fileDTO);
 							System.out.println(newFileDTO.getFileId());
 							businessTripDTO.setFile(newFileDTO);
+							businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
 						}
 					}
-					businessRepository.save(businessTripDTO.toBusinessTripEntity(businessTripDTO));
 
 				} catch (AwsServiceException | SdkClientException | IOException e) {
 					e.printStackTrace();
@@ -118,9 +121,9 @@ public class BusinessTripServiceImpl implements BusinessTripService {
 
 			if (businessTripDTO.getFile() != null) {
 				s3Util.deleteFile("business/" + businessTripDTO.getFile().getFileName());
+				businessRepository.deleteById(businessTripDTO.getBusinessTripId());
 				fileService.deleteFile(businessTripDTO.getFile().getFileId());
 			}
-			businessRepository.deleteById(businessTripDTO.getBusinessTripId());
 		}
 	}
 
