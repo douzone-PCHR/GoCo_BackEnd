@@ -57,8 +57,14 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	}	
 	@Override
 	public void makeRandomNumber() {
-		Random random = new Random();
-		authNum = String.valueOf(random.nextInt(999999));
+		Random random;
+		while(true) {
+			random = new Random();
+			authNum = String.valueOf(random.nextInt(999999));
+			if(!existsByAuthenticationNumber(authNum)) {// 인증번호가 없다면 반복문 탈출
+				break;
+			}
+		}
 	}
 	@Override	
 	public String mailText(String email) {
