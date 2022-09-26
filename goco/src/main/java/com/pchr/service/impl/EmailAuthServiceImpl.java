@@ -96,9 +96,12 @@ public class EmailAuthServiceImpl implements EmailAuthService{
 	
 	@Override	
 	public String save(String email) {
-		String authNum = mailText(email);// 메일보내는 부분, 메일을 보낸 후 인증 번호인 authNum 를 반환 받는다.
-		if(existsByAuthenticationNumber(authNum)) {// 반환받은 인증번호가 이미 테이블에 있는 경우 그 테이블을 지워준다.
-			deleteByAuthenticationNumber(authNum);
+		String authNum;
+		while(true) {
+			authNum = mailText(email);// 메일보내는 부분, 메일을 보낸 후 인증 번호인 authNum 를 반환 받는다.
+			if(!existsByAuthenticationNumber(authNum)) {// 인증번호가 없다면 반복문 탈출
+				break;
+			}
 		}
 		EmailAuth e =new EmailAuth(email,authNum,LocalDateTime.now().plusMinutes(5),1);
 		save(e);// 인증 데이터를 저장하기 위해 EmailAuth겍체 생성, 유효시간은 현재보다 5분 앞으로함
